@@ -1,9 +1,8 @@
-from custom_exception import SpaseERROR
-from custom_exception import make_spase_error
+from calculator import calculator
 
 
 def main():
-    make_spase_error()
+    calculator()
 
 
 if __name__ == "__main__":

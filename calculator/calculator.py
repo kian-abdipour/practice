@@ -1,5 +1,8 @@
+from custom_exception import SpaseERROR
+
+
 def calculator():
-    print("please between any number and math operation add (space).")
+    print("Please between any number and math operation add (space)\nIf it's finish type (q) to exist.")
     request = input(": ")
     list_character = request.split(" ")
     while request != "q":
@@ -40,7 +43,6 @@ def calculator():
 
                     else:
                         continue
-        multiplication_and_dvision()
 
         # This function exactly work like last function but in here we calculate total and subtraction
         # Tip: in math before and after any math operation we have a number like this (2 * 6 - 1)
@@ -77,11 +79,32 @@ def calculator():
 
                     else:
                         continue
-        total_subtraction()
-        answer_math = list_character[0]
-        print(answer_math)
-        print("Please between any number and math operation add (space)\nIf there is problem type (q) to check it.")
+
+        # This function has 2 parts
+        # This for check built in Error
+        def check_Error():
+            try:
+                multiplication_and_dvision()
+                total_subtraction()
+            except ValueError:
+                print("ValueError: please just type number")
+
+            answer_math = list_character[0]
+            print(answer_math)
+            # This is for checking custom ERROR
+            try:
+                if type(answer_math) != int and type(answer_math) != float:
+                    raise SpaseERROR("")
+                else:
+                    pass
+            except SpaseERROR:
+                print("SpaseERROR: please add correctly form of spase and just type math operation"
+                      "\nExample: 2 + 3 * 1\n")
+
+        check_Error()
+
+        answer = list_character[0]
         request = input(": ")
         list_character = request.split(" ")
-    return answer_math
+    return answer
 
