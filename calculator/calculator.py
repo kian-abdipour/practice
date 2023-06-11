@@ -20,7 +20,7 @@ def calculator():
                         number_before_math_operation = list_character[list_character.index(item) - 1]
                         number_after_math_operation = list_character[list_character.index(item) + 1]
 
-                        result_dvision = int(number_before_math_operation) / int(number_after_math_operation)
+                        result_dvision = float(number_before_math_operation) / float(number_after_math_operation)
 
                         list_character.insert(list_character.index(item) - 1, result_dvision)
                         list_character.remove(number_before_math_operation)
@@ -34,7 +34,7 @@ def calculator():
                         number_before_math_operation = list_character[list_character.index(item) - 1]
                         number_after_math_operation = list_character[list_character.index(item) + 1]
 
-                        result_multiplication = int(number_after_math_operation) * int(number_before_math_operation)
+                        result_multiplication = float(number_after_math_operation) * float(number_before_math_operation)
 
                         list_character.insert(list_character.index(item) - 1, result_multiplication)
                         list_character.remove(number_before_math_operation)
@@ -57,7 +57,7 @@ def calculator():
                         number_before_math_operation = list_character[list_character.index(item) - 1]
                         number_after_math_operation = list_character[list_character.index(item) + 1]
 
-                        result_total = int(number_before_math_operation) + int(number_after_math_operation)
+                        result_total = float(number_before_math_operation) + float(number_after_math_operation)
 
                         list_character.insert(list_character.index(item) - 1, result_total)
                         list_character.remove(number_before_math_operation)
@@ -70,7 +70,7 @@ def calculator():
                         number_before_math_operation = list_character[list_character.index(item) - 1]
                         number_after_math_operation = list_character[list_character.index(item) + 1]
 
-                        result_multiplication = int(number_before_math_operation) - int(number_after_math_operation)
+                        result_multiplication = float(number_before_math_operation) - float(number_after_math_operation)
 
                         list_character.insert(list_character.index(item) - 1, result_multiplication)
                         list_character.remove(number_before_math_operation)
@@ -89,8 +89,12 @@ def calculator():
             except ValueError:
                 print("ValueError: please just type number")
 
+            except IndexError:
+                print("you type just {a} and it don't hase any number".format(a=request))
+
             answer_math = list_character[0]
-            print(answer_math)
+            if type(answer_math) == int or type(answer_math) == float and len(list_character) == 1:
+                print(answer_math)
             # This is for checking custom ERROR
             try:
                 if type(answer_math) != int and type(answer_math) != float:
