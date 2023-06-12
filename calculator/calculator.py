@@ -3,9 +3,9 @@ from custom_exception import SpaseERROR
 
 def calculator():
     print("Please between any number and math operation add (space)\nIf it's finish type (q) to exist.")
-    request = input(": ")
-    list_character = request.split(" ")
-    while request != "q":
+    input_1 = input(": ")
+    list_character = input_1.split(" ")
+    while input_1 != "q":
         # I in this function we calculate the multiplication and division then separate the answer of them instead of
         # last number.
         # Tip: in math before and after any math operation we have a number like this (2 * 6 - 1)
@@ -81,8 +81,8 @@ def calculator():
                         continue
 
         # This function has 2 parts
-        # This for check built in Error
-        def check_Error():
+        # This is for check built in Error
+        def run_math_operation_and_check_Error():
             try:
                 multiplication_and_dvision()
                 total_subtraction()
@@ -90,11 +90,12 @@ def calculator():
                 print("ValueError: please just type number")
 
             except IndexError:
-                print("you type just {a} and it don't hase any number".format(a=request))
+                print("you type just {a} and it don't hase any number".format(a=input_1))
 
             answer_math = list_character[0]
             if type(answer_math) == int or type(answer_math) == float and len(list_character) == 1:
                 print(answer_math)
+
             # This is for checking custom ERROR
             try:
                 if type(answer_math) != int and type(answer_math) != float:
@@ -105,10 +106,9 @@ def calculator():
                 print("SpaseERROR: please add correctly form of spase and just type math operation"
                       "\nExample: 2 + 3 * 1\n")
 
-        check_Error()
+        run_math_operation_and_check_Error()
 
-        answer = list_character[0]
-        request = input(": ")
-        list_character = request.split(" ")
-    return answer
+        input_1 = input(": ")
+        list_character = input_1.split(" ")
+    return list_character[0]
 
