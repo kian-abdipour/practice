@@ -6,8 +6,7 @@ def make_list_character():
     while input_1 != "q":
         print("Please between any number and math operation add (space)\nIf it's finish type (q) to exist.")
         input_1 = input(": ")
-        list_character = input_1.split(" ")
-        return list_character
+        return input_1.split(" ")
 
 
 list_character = make_list_character()
@@ -43,14 +42,14 @@ def multiplication_and_dvision():
 
                 result_multiplication = float(number_after_math_operation) * float(number_before_math_operation)
 
-                list_character.insert(list_character.index(item) - 1, result_multiplication)
+                list_character.insert(make_list_character().index(item) - 1, result_multiplication)
                 list_character.remove(number_before_math_operation)
-                list_character.pop(list_character.index(item))
+                list_character.pop(make_list_character().index(item))
                 list_character.remove(number_after_math_operation)
 
             else:
                 continue
-    return list_character
+    return make_list_character()
 
 
 # This function exactly work like last function but in here we calculate total and subtraction
@@ -95,30 +94,30 @@ def run_math_operation_and_check_Error():
     try:
         multiplication_and_dvision()
         total_subtraction()
+
     except ValueError:
         print("ValueError: please just type number")
 
     except IndexError:
-        print("you type just and it don't hase any number")
-
-    answer_math = list_character[0]
-    if type(answer_math) == int or type(answer_math) == float and len(list_character) == 1:
-        print(answer_math)
+        print("you type just one character and it don't hase any number")
 
     # This is for checking custom ERROR
+    answer_math = list_character[0]
     try:
         if type(answer_math) != int and type(answer_math) != float:
             raise SpaseERROR("")
         else:
-            pass
+            print(list_character)
+
     except SpaseERROR:
         print("SpaseERROR: please add correctly form of spase and just type math operation"
               "\nExample: 2 + 3 * 1\n")
 
 
 def calculator():
-    run_math_operation_and_check_Error()
-    print(list_character[0])
+    while list_character[0] != "q":
+        run_math_operation_and_check_Error()
+        make_list_character()
 
 
 calculator()
