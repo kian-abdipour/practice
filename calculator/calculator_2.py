@@ -29,5 +29,3 @@ def run_math_operation_and_check_Error():
 def calculator():
     run_math_operation_and_check_Error()
 
-
-calculator()

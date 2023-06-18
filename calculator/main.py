@@ -1,4 +1,4 @@
-from calculator import calculator
+from calculator_2 import calculator
 
 
 def main():
