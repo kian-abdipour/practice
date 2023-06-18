@@ -9,4 +9,4 @@ if __name__ == "__main__":
     main()
 
 else:
-    print("im sorry but this file it's not a main file")
+    print("Im sorry but this file it's not a main file")
