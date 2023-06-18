@@ -1,11 +1,4 @@
-def make_list_character():
-    print("Please between any number and math operation add (space)\nIf it's finish type (q) to exist.")
-    input_1 = input(": ")
-    list_character = input_1.split(" ")
-    return list_character
-
-
-list_main_character = make_list_character()
+from make_list_main_character import list_main_character
 
 
 # I in this function we calculate the multiplication and division then separate the answer of them instead of
