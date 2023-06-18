@@ -5,17 +5,21 @@ list_consecutive = []
 # In here first we separate our integer and append it to list_integer then append the consecutive number to
 # list_consecutive and if we have 4 or more number in consecutive print our list none-repetitive.
 def make_list_integer():
-    print('please type something.')
+    
+    print('Please type something.')
     request = input(": ")
     my_string = request + "A"
+
     for item in my_string:
         if item.isdigit():
             list_integer.append(int(item))
 
     for item_2 in my_string:
         if item_2.isdigit():
+
             if my_string[my_string.index(item_2) + 1].isdigit():
                 list_consecutive.append(item_2)
+
             else:
                 list_consecutive.append(item_2)
                 break
@@ -30,4 +34,4 @@ if __name__ == "__main__":
     make_list_integer()
 
 else:
-    print("i'm sorry but it's not a main file")
+    print("I'm sorry but it's not a main file")
