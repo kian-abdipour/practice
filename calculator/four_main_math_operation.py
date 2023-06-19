@@ -1,4 +1,5 @@
 from make_list_main_character import list_main_character
+from make_list_main_character import make_list_character
 
 
 # I in this function we calculate the multiplication and division then separate the answer of them instead of
@@ -85,4 +86,7 @@ def total_subtraction():
 def calculate_math_operation():
     multiplication_and_dvision()
     total_subtraction()
-    return list_main_character
+    global list_main_character
+    answer_math = list_main_character[0]
+    list_main_character = make_list_character()
+    return answer_math
