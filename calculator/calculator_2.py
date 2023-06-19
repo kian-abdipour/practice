@@ -1,10 +1,11 @@
 from custom_exception import SpaseERROR
 from four_main_math_operation import calculate_math_operation
+from four_main_math_operation import new_list_main_character
 
 
 def run_math_operation_and_check_Error():
-    # This part is for checking custom ERROR
 
+    # This part is for checking custom ERROR
     answer_math = calculate_math_operation()  # This answer_math it's not that one you saw in
     # (file = four_main_math_operation) actually we move that one to here by return.
     while answer_math != "q":
@@ -20,12 +21,14 @@ def run_math_operation_and_check_Error():
             print("SpaseERROR: please add correctly form of spase and just type math operation."
                   "\nExample: 2 + 3 * 1\n")
 
+        # This part is for checking built in ERROR
         except ValueError:
             print("ValueError: please just type number")
 
         except IndexError:
             print("IndexError: You type just one character and it don't hase any number.")
 
+        new_list_main_character()
         answer_math = calculate_math_operation()
 
 

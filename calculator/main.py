@@ -1,6 +1,7 @@
 from calculator_2 import calculator
 
 
+# This is our main function, you can run calculator from here.
 def main():
     calculator()
 

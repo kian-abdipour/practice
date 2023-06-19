@@ -3,15 +3,15 @@ from make_list_main_character import make_list_character
 
 
 # I in this function we calculate the multiplication and division then separate the answer of them instead of
-# last number.
-# Tip: in math before and after any math operation we have a number like this (2 * 6 - 1)
+# Last number.
+# Tip: In math before and after any math operation we have a number like this (2 * 6 - 1)
 def multiplication_and_dvision():
     while '*' in list_main_character or '/' in list_main_character:
 
         for item in list_main_character:
             # This is the first part of this function.
             # In here we define the numbers that are before and after dvision and this is for tip that i sayed
-            # then we divided the number before dvision and number after dvision then
+            # Then we divided the number before dvision and number after dvision then
             # Remove this 3 character and separate answer in list_character.
             if item == '/':
                 number_before_math_operation = list_main_character[list_main_character.index(item) - 1]
@@ -26,7 +26,7 @@ def multiplication_and_dvision():
 
             # This is the second part of this function.
             # In here work like part 1 but the difference between this two it's the math operation
-            # first one is division the second part is multiplication.
+            # First one is division the second part is multiplication.
             elif item == '*':
                 number_before_math_operation = list_main_character[list_main_character.index(item) - 1]
                 number_after_math_operation = list_main_character[list_main_character.index(item) + 1]
@@ -64,8 +64,8 @@ def total_subtraction():
                 list_main_character.pop(list_main_character.index(item))
                 list_main_character.remove(number_after_math_operation)
 
-            # this is the second part of function
-            # this part work like last part but the difference is our math operation
+            # This is the second part of function
+            # This part work like last part but the difference is our math operation
             elif item == '-':
                 number_before_math_operation = list_main_character[list_main_character.index(item) - 1]
                 number_after_math_operation = list_main_character[list_main_character.index(item) + 1]
@@ -83,10 +83,18 @@ def total_subtraction():
     return list_main_character
 
 
+# This function is relation of our function's that we made.
+# After multiplication_and_dvision() and total_subtraction() len list_main_character is 1 and this object is our answer.
 def calculate_math_operation():
+    global list_main_character
     multiplication_and_dvision()
     total_subtraction()
-    global list_main_character
     answer_math = list_main_character[0]
-    list_main_character = make_list_character()
     return answer_math
+
+
+# This function is for get new math operation from user and if we don't do this, calculate_math_operation
+# Calculate the last math operation.
+def new_list_main_character():
+    global  list_main_character
+    list_main_character = make_list_character()
