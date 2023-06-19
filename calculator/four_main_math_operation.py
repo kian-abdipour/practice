@@ -89,7 +89,7 @@ def calculate_math_operation():
     global list_main_character
     multiplication_and_dvision()
     total_subtraction()
-    answer_math = list_main_character[0]
+    answer_math = list_main_character
     return answer_math
 
 

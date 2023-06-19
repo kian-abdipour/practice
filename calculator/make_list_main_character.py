@@ -6,4 +6,6 @@ def make_list_character():
     return list_character
 
 
+print("Tip: when you enter somthing for first time it doesn't work, "
+      "after that you can us calculator without any problem. This will be ok in the next update.")
 list_main_character = make_list_character()  # This is our main list because we can't import variable from function.
