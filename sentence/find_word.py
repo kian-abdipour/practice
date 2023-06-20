@@ -15,24 +15,19 @@ def get_and_find_word():
     global list_word
     print("If it's finish type (q).")
     list_word = get_sentence()
-    while list_word != ["q"]:
-        print("\nOk, type word that you want.")
-        input_word = input(": ")
 
-        if input_word == "q":
-            break
+    print("\nOk, type word that you want.")
+    input_word = input(": ")
 
-        if input_word in list_word:
-            print("\nYes! i found this word.\n")
+    if input_word in list_word:
+        print("\nYes! i found this word.\n")
 
-        else:
-            print("\nOh! i couldn't found this word.\n")
-
-        list_word = get_sentence()
+    else:
+        print("\nOh! i couldn't found this word.\n")
 
 
 # This function run the program and check the error
-def check_error():
+def run_and_check_error():
     global list_word
     list_word = "True"
     while list_word != ["q"]:
@@ -50,7 +45,7 @@ def check_error():
 
 
 if __name__ == "__main__":
-    get_and_find_word()
+    run_and_check_error()
 
 else:
     print("You should run this function in main file")

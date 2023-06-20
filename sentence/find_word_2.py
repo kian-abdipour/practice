@@ -22,7 +22,8 @@ def get_and_find_word():
     print(find_word(input_word))
 
 
-def check_error():
+
+def run_and_check_error():
     global list_word
     list_word = "True"
     while list_word != ["q"]:
@@ -40,7 +41,7 @@ def check_error():
 
 
 if __name__ == "__main__":
-    check_error()
+    run_and_check_error()
 
 else:
     print("You should")
