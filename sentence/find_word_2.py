@@ -18,9 +18,11 @@ def get_and_find_word():
     input_word = input(": ")
 
     # This function made whit lambda and check that we have word in sentence or not.
-    find_word = (lambda a: print("\nYes!, i found it") if (a in list_word) else print("\nNo, i couldn't found it"))
-    print(find_word(input_word))
+    find_word = (lambda a:
+                 print("\nYes!, i found it") if (a.lower() in list_word) or (input_word.upper() in list_word)
+                 else print("\nNo, i couldn't found it"))
 
+    print(find_word(input_word))
 
 
 def run_and_check_error():

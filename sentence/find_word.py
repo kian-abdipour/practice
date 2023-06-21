@@ -19,8 +19,11 @@ def get_and_find_word():
     print("\nOk, type word that you want.")
     input_word = input(": ")
 
-    if input_word in list_word:
+    if ((input_word.lower() in list_word) or (input_word.upper() in list_word)) and (list_word != ["q"]):
         print("\nYes! i found this word.\n")
+
+    elif list_word == ["q"]:
+        pass
 
     else:
         print("\nOh! i couldn't found this word.\n")
@@ -29,7 +32,7 @@ def get_and_find_word():
 # This function run the program and check the error
 def run_and_check_error():
     global list_word
-    list_word = "True"
+    list_word = [1]
     while list_word != ["q"]:
         try:
 
