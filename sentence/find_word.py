@@ -28,8 +28,8 @@ def get_and_find_word(list_word):
 
 # This function run the program and check the error
 def run_and_check_error(no_sentence):
-    print("If it's finish type (q).")
     list_word = get_and_find_word(make_list_word())
+    print("If it's finish type (q).")
     while list_word != ["q"]:
         try:
 
