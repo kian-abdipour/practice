@@ -3,7 +3,6 @@ from custom_exseption import NoSentence
 
 # This function get sentence and make a list of word that are in sentence.
 def get_sentence():
-    global list_word
     print("Please type a sentence.")
     input_sentence = input(": ")
     list_word = input_sentence.split(" ")
@@ -23,23 +22,27 @@ def get_and_find_word():
                  else print("\nNo, i couldn't found it"))
 
     print(find_word(input_word))
+    return list_word
 
 
 def run_and_check_error():
-    global list_word
-    list_word = "True"
+    list_word = get_and_find_word()
     while list_word != ["q"]:
         try:
 
-            get_and_find_word()
             if len(list_word) == 1 and list_word != ["q"]:
                 raise NoSentence("")
+
+            elif list_word == ["q"]:
+                pass
 
             else:
                 pass
 
         except NoSentence:
             print("\nNoSentence_Error: You should type sentence not word.\n")
+
+        list_word = get_and_find_word()
 
 
 if __name__ == "__main__":
