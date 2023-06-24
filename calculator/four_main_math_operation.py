@@ -86,7 +86,6 @@ def total_subtraction():
 # This function is relation of our function's that we made.
 # After multiplication_and_dvision() and total_subtraction() len list_main_character is 1 and this object is our answer.
 def calculate_math_operation():
-    global list_main_character
     multiplication_and_dvision()
     total_subtraction()
     answer_math = list_main_character

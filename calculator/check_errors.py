@@ -1,13 +1,14 @@
 from custom_exception import SpaseERROR
 from four_main_math_operation import calculate_math_operation
 from four_main_math_operation import new_list_main_character
+from make_list_main_character import list_main_character
 
 
 def run_math_operation_and_check_Error():
 
     # This part is for checking custom ERROR
-    list_answer_math = ["True"]
-    while list_answer_math[0] != "q":
+    while_manager_calculator = True
+    while while_manager_calculator:
 
         try:
 
@@ -30,6 +31,12 @@ def run_math_operation_and_check_Error():
 
         except IndexError:
             print("\nIndexError: You type just one character and it don't hase any number.\n")
+
+        if list_answer_math[0] == "q":
+            while_manager_calculator = False
+
+        else:
+            while_manager_calculator = True
 
 
 def calculator():

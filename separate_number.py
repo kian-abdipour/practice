@@ -1,21 +1,19 @@
 list_integers = []
+list_str = []
 
 
 # This function first check if item is digit then
 # put the item in list_integers.
 def make_list_integers():
-    print("Please type somthing")
-    my_string = input(": ")
-    for item in my_string:
+    input_string = input(": ")
+    for item in input_string:
         if item.isdigit():
-            number = list(my_string).pop(list(my_string).index(item))
+            number = list(input_string).pop(list(input_string).index(item))
             list_integers.append(int(number))
+
         else:
-            continue
+            list_str.append(item)
     list_integers.sort()
-
-
-make_list_integers()
 
 
 # This function first check we have 3 item or not then make it non-repetitive.
@@ -24,8 +22,29 @@ def make_list_non_repetitive():
         list_integer = set(list_integers)  # This is for make list non-repetitive
         list_integer = list(list_integer)  # Again make list because we need list
         print(list_integer)
+
     else:
         list_integers.clear()
 
 
-make_list_non_repetitive()
+def main():
+    while_manager = True
+    while while_manager:
+        make_list_integers()
+        make_list_non_repetitive()
+
+        if list_str == ["q"]:
+            while_manager = False
+
+        else:
+            while_manager = True
+
+        list_str.clear()
+        list_integers.clear()
+
+
+if __name__ == "__main__":
+    main()
+
+else:
+    print("You should run this program in main file.")
