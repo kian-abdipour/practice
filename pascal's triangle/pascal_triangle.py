@@ -1,11 +1,11 @@
 # This function is clear but if you can't understand you cana read comment that you will see
-def mosalas_khaiam():
+def pascal_triangle():
     # First in here I get the number of row that user want
     print("Please type number of row that you want to see.")
     print("If it's finish type q")
     input_number_row = input(": ")
-    while_manager = True  # This is my while manager and I manage it in the end of function
-    while while_manager:
+    while_response = True  # This is my while manager and I manage it in the end of function
+    while while_response:
         # In this part I set the 2 first row as default because it's clear
         if int(input_number_row) == 1:
             print([1])
@@ -43,20 +43,17 @@ def mosalas_khaiam():
 
             enumerate_list_main_character = list(enumerate(list_new_characters))
 
-        print("Please type number of row that you want to see.")
         input_number_row = input(": ")
         if input_number_row == "q":
-            while_manager = False
-
-        else:
-            while_manager = True
+            while_response = False
 
 
 if __name__ == "__main__":
     try:
-        mosalas_khaiam()
+        pascal_triangle()
 
     except ValueError:
         print("ValueError: You shod just type number not letters or any think else")
 else:
     print("Im sorry you should run this program in main file.")
+
