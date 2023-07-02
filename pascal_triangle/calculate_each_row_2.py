@@ -10,14 +10,14 @@ def calculate_each_row(input_number_row):
         print([1, 1])
         return [1]
 
-    else:
+    elif int(input_number_row) > 2:
         print([1])
         print([1, 1])
 
     number_row = 2  # Actually this is my row manager and start from 2 because I set 2 row as default
     list_main_character = [1, 1]
 
-    while number_row != int(input_number_row):
+    while number_row != int(input_number_row) and int(input_number_row) > 0:
 
         # In this part I use enumerate because get repetitious index of item
         enumerate_list_main_character = list(enumerate(list_main_character))

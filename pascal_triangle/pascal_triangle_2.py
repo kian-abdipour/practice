@@ -15,8 +15,16 @@ def pascal_triangle():
             while_response = False
 
 
+def run_and_check_errors():
+    try:
+        pascal_triangle()
+
+    except ValueError:
+        print("ValueError: You must type number not any thing else")
+
+
 if __name__ == "__main__":
-    pascal_triangle()
+    run_and_check_errors()
 
 else:
     print("You must run this program in main file")
