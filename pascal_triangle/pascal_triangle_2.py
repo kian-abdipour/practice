@@ -6,8 +6,14 @@ def pascal_triangle():
     print("Please type number of row that you want to see.")
     print("If it's finish type q")
     input_number_row = input(": ")
-    while_response = True  # This is my while manager and I manage it in the end of function
+    while_response = True
     while while_response:
+        try:
+            int_input_number_row = int(input_number_row)
+
+        except ValueError:
+            return print("You should type just natural number not", "(" + input_number_row + ")")
+
         calculate_each_row(input_number_row)
 
         input_number_row = input(": ")
@@ -15,16 +21,8 @@ def pascal_triangle():
             while_response = False
 
 
-def run_and_check_errors():
-    try:
-        pascal_triangle()
-
-    except ValueError:
-        print("ValueError: You must type number not any thing else")
-
-
 if __name__ == "__main__":
-    run_and_check_errors()
+    pascal_triangle()
 
 else:
     print("You must run this program in main file")
