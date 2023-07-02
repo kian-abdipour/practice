@@ -6,8 +6,14 @@ def pascal_triangle():
     print("Please type number of row that you want to see.")
     print("If it's finish type q")
     input_number_row = input(": ")
+
     print("Before show you the pascal triangle choose and type messi or ronaldo")
     input_messi_or_ronaldo = input(": ")
+
+    print("If you're sour about {messi_or_ronaldo} type ok else type no".format(messi_or_ronaldo=input_messi_or_ronaldo)
+          )
+    input_ok_or_no = input(": ")
+
     while_response = True
     while while_response:
         try:
@@ -22,12 +28,20 @@ def pascal_triangle():
             return print("You should type just natural number not", "(" + input_number_row + ")")
 
         try:
+
             if input_messi_or_ronaldo != "messi" and input_messi_or_ronaldo != "ronaldo":
-                int_input_messi_or_ronaldo = int(input_messi_or_ronaldo)
-                str_inpt_messi_or_ronaldo = str(input_messi_or_ronaldo)
+                raise ValueError
 
         except ValueError:
             return print("ValueError: You should choose and type messi or ronaldo")
+
+        try:
+
+            if input_ok_or_no != "ok" and input_ok_or_no != "no":
+                raise ValueError
+
+        except ValueError:
+            return print("ValueError: you should type ok or no not ({ok_or_no})".format(ok_or_no=input_ok_or_no))
 
         calculate_each_row(input_number_row)
 
