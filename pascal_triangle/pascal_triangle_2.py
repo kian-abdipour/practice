@@ -33,7 +33,8 @@ def pascal_triangle():
                 raise ValueError
 
         except ValueError:
-            return print("ValueError: You should choose and type messi or ronaldo")
+            return print("ValueError: You should choose and type messi or ronaldo not ({messi_ronaldo})".
+                         format(messi_ronaldo=input_messi_or_ronaldo))
 
         try:
 
