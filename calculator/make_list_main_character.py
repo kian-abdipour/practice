@@ -7,13 +7,10 @@ def make_list_character():
     print("Please between any number and math operation add (space)\nIf it's finish type (q) to exist.")
     input_1 = input(": ")
     list_character = input_1.split(" ")
-    try:
-        if len(list_character) <= 1 and list_character[0] != "q":
-            raise SpaseERROR("")
 
-    except SpaseERROR:
-        return print("\nSpaseError: You type something with out any space you should type a math operation with apace"
-                     " like this:"" 2 + 4\n")
+    if len(list_character) <= 1 and list_character[0] != "q":
+        raise SpaseERROR("\nSpaseError: You type something with out any space you should "
+                         "type a math operation with apace  like this: 2 + 4\n")
 
     try:
         for item in list_character:
@@ -26,13 +23,9 @@ def make_list_character():
     except ValueError:
         return print("\nValueError: you must type just number not letters or something else\n")
 
-    try:
-        if ("**" in list_character) or ("%" in list_character):
-            raise OnSupportedMathOperation("")
-
-    except OnSupportedMathOperation:
-        return print("OnSupportedMathOperation: Im sorry but this program just have 4 math operation and doesn't "
-                     "support ** and %")
+    if ("**" in list_character) or ("%" in list_character):
+        raise OnSupportedMathOperation("OnSupportedMathOperation: Im sorry but this program"
+                                       " just have 4 math operation and doesn't support ** and %")
 
     return list_character
 

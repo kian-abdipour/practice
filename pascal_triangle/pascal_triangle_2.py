@@ -16,15 +16,16 @@ def pascal_triangle():
 
     while_response = True
     while while_response:
-        try:
-            if input_number_row != "q":
+        if input_number_row != "q":
+
+            try:
                 int_input_number_row = int(input_number_row)
 
-            else:
-                break
+            except ValueError:
+                return print("You should type just natural number not", "(" + input_number_row + ")")
 
-        except ValueError:
-            return print("You should type just natural number not", "(" + input_number_row + ")")
+        else:
+            break
 
         try:
             if input_messi_or_ronaldo != "messi" and input_messi_or_ronaldo != "ronaldo":

@@ -29,15 +29,8 @@ def run_and_check_error():
     print("If it's finish type (q).")
     while_manager = True
     while while_manager:
-        try:
-            if len(list_word) == 1:
-                raise NoSentence("")
-
-            else:
-                pass
-
-        except NoSentence:
-            return print("\nNoSentence_Error: You should type sentence not word.\n")
+        if len(list_word) == 1:
+            raise NoSentence("\nNoSentence_Error: You should type sentence not word.\n")
 
         list_word = get_and_find_word(make_list_word())
 
