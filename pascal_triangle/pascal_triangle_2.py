@@ -17,7 +17,6 @@ def pascal_triangle():
     while_response = True
     while while_response:
         try:
-
             if input_number_row != "q":
                 int_input_number_row = int(input_number_row)
 
@@ -28,7 +27,6 @@ def pascal_triangle():
             return print("You should type just natural number not", "(" + input_number_row + ")")
 
         try:
-
             if input_messi_or_ronaldo != "messi" and input_messi_or_ronaldo != "ronaldo":
                 raise ValueError
 
@@ -37,7 +35,6 @@ def pascal_triangle():
                          format(messi_ronaldo=input_messi_or_ronaldo))
 
         try:
-
             if input_ok_or_no != "ok" and input_ok_or_no != "no":
                 raise ValueError
 
