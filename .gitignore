@@ -1,7 +1,4 @@
-__pycache__
-
-<<<<<<< HEAD
-kian
-=======
-.idea
->>>>>>> a568125a9cff068359f5a5c1cf9d9ebbe989a253
+# Default ignored files
+/shelf/
+/workspace.xml
+.idea/
