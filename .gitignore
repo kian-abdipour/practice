@@ -3,4 +3,4 @@
 /workspace.xml
 .idea/
 __pycache__/
-README.md
+*.md
