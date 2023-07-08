@@ -1,4 +1,5 @@
 from manage_actions import super_admin
+from manage_actions import admin
 
 
 def manage_pages():
@@ -13,7 +14,7 @@ def manage_pages():
             pass
 
         elif input_number_role == "2":
-            pass
+            admin()
 
         elif input_number_role == "3":
             super_admin()

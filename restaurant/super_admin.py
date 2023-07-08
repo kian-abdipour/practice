@@ -1,12 +1,9 @@
-from admin import Admin
-
-
 class SupperAdmin:
     def __init__(self, first_name, last_name):
         self.first_name = first_name
         self.last_name = last_name
-        self.list_admin = []
-        self.super_admin_code = "1386"
+    list_admin = []
+    super_admin_code = "1386"
 
     # This function is for login super admin, and we have just one super admin in this program
     # If condition of login will be true user can continue ass super admin
@@ -14,14 +11,14 @@ class SupperAdmin:
         print("Enter super admin code login")
         input_super_admin_code = input(": ")
 
-        condition_of_login = False
+        condition_of_login_super_admin = False
         if input_super_admin_code == self.super_admin_code:
-            condition_of_login = True
+            condition_of_login_super_admin = True
 
         else:
             print("super admin code not found")
 
-        return condition_of_login
+        return condition_of_login_super_admin
 
     # This function is one of actions that super admin can do
     # This function is clear and append a new admin to list_admin
@@ -41,12 +38,9 @@ class SupperAdmin:
         except ValueError:
             return print("ValueError: Your admin code must be number with out any space like: 3476.")
 
-        admin_obj = Admin(input_first_name_of_admin, input_last_name_of_admin, int_input_admin_code)
-
-        list_information_admin = [admin_obj.first_name, admin_obj.last_name, admin_obj.admin_code]
+        list_information_admin = [input_first_name_of_admin, input_last_name_of_admin, int_input_admin_code]
 
         self.list_admin.append(list_information_admin)
-        print(self.list_admin)
 
     # This function is second action that super admin can do
     # It work like previous function but the difference is that this function pop admin from list_admin
@@ -85,6 +79,7 @@ class SupperAdmin:
               "\n1 - Name admin\n2 - Last name admin\n3 - Admin code\n")
         input_number_information_admin = input(": ")
 
+        # Make Type safe
         try:
             int_input_number_information_admin = int(input_number_information_admin)
 
@@ -151,7 +146,7 @@ class SupperAdmin:
         else:
             print("Changes not applied")
 
+    # This function is for display each admin information to user choose intended admin
     def display_admins(self):
-        # This loop is for display each admin information to user choose intended admin
         for admin in self.list_admin:
             print(self.list_admin.index(admin) + 1, " -- ", "(", admin[0], admin[1], ")", "code: ", admin[2])
