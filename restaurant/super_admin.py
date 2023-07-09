@@ -150,3 +150,4 @@ class SupperAdmin:
     def display_admins(self):
         for admin in self.list_admin:
             print(self.list_admin.index(admin) + 1, " -- ", "(", admin[0], admin[1], ")", "code: ", admin[2])
+

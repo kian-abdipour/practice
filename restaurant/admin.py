@@ -5,13 +5,15 @@ menu_obj = Menu()
 
 
 class Admin:
-    first_name = None
-    last_name = None
-    admin_code = None
+    def __init__(self):
+        self.first_name = None
+        self.last_name = None
+        self.admin_code = None
+    list_customer_and_transaction = []
 
     # This function is for login admin with a code that super admin set
-    @classmethod
-    def admin_login(cls):
+    def admin_login(self):
+
         print("Enter your admin code")
         input_admin_code = input(": ")
 
@@ -26,12 +28,12 @@ class Admin:
         for admin in SupperAdmin.list_admin:
             if admin[2] == int_input_admin_code:
                 condition_of_login_admin = True
-                cls.first_name = admin[0]
-                cls.last_name = admin[1]
-                cls.admin_code = admin[2]
+                self.first_name = admin[0]
+                self.last_name = admin[1]
+                self.admin_code = admin[2]
 
         if condition_of_login_admin:
-            print("\n", cls.first_name, cls.last_name, "welcome to your admin panel\n")
+            print("\n", self.first_name, self.last_name, "welcome to your admin panel\n")
 
         else:
             print("Admin code not found")
@@ -41,7 +43,7 @@ class Admin:
     # With name food append a price of food by integer type
     @staticmethod
     def add_food():
-        print("Enter name of food {number_food}".format(number_food=len(menu_obj.list_food) + 1))
+        print("Enter name of food {number_food}".format(number_food=len(Menu.list_food) + 1))
         input_new_name_food = input(": ")
 
         print("Enter price of {name_food} the type of money is tooman".format(name_food=input_new_name_food))
@@ -55,13 +57,13 @@ class Admin:
             return print("ValueError: you should type just number")
 
         food_and_price = [input_new_name_food, int_input_new_price_food]
-        menu_obj.list_food.append(food_and_price)
+        Menu.list_food.append(food_and_price)
 
     # This function remove the food that user want
     @staticmethod
     def remove_food():
-        for food in menu_obj.list_food:
-            print(len(menu_obj.list_food), " -- ", "(", food[0], ")", "price: ", food[1])
+        for food in Menu.list_food:
+            print(len(Menu.list_food), " -- ", "(", food[0], ")", "price: ", food[1])
 
         input_number_food_for_remove = input(": ")
         # Make type safe
@@ -72,9 +74,9 @@ class Admin:
             return print("ValueError: You should just type number")
 
         condition_of_remove = False
-        for food in menu_obj.list_food:
-            if menu_obj.list_food.index(food) + 1 == int_input_number_food_for_remove:
-                menu_obj.list_food.pop(int_input_number_food_for_remove - 1)
+        for food in Menu.list_food:
+            if Menu.list_food.index(food) + 1 == int_input_number_food_for_remove:
+                Menu.list_food.pop(int_input_number_food_for_remove - 1)
                 condition_of_remove = True
 
         if condition_of_remove:
@@ -86,8 +88,8 @@ class Admin:
     # This function is clear and show the all food that we have in list_food
     @staticmethod
     def display_menu():
-        for food in menu_obj.list_food:
-            print(len(menu_obj.list_food), " -- ", "(", food[0], ")", "price: ", food[1])
+        for food in Menu.list_food:
+            print(Menu.list_food.index(food) + 1, " -- ", "(", food[0], ")", "price: ", food[1])
 
     @staticmethod
     def confirmation_the_active_transaction():
