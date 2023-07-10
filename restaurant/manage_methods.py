@@ -4,7 +4,7 @@ from menu import Menu
 from customer import Customer
 
 
-super_admin_obj = SupperAdmin("Kian", "Abdipour")
+super_admin_obj = SupperAdmin("Kian", "Abdipour")  # This set default because it's name of owner's program
 admin_obj = Admin()
 
 customer_obj = Customer()
@@ -89,6 +89,7 @@ def manage_admin_methods():
                 while_response = False
 
 
+# This function work like past's functions and set that when each function will be run
 def manage_customer_methods():
     print("Choose one of this number \n1 -- login\n2 -- signup\n")
     input_number_login_or_signup = input(": ")

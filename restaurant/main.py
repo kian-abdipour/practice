@@ -3,6 +3,7 @@ from manage_methods import manage_admin_methods
 from manage_methods import manage_customer_methods
 
 
+# Again in here we have page manager that set each page of role when will be show
 def manage_pages():
     while_response = True
     print("Welcome to relax food")
