@@ -8,7 +8,7 @@ class Customer:
         self.username = None
         self.password = None
         self.list_orders = []
-    login_username_for_now = None
+    username_of_login_for_now = None
 
     # This method get the user's username and password then append to list_information_login_customer
     def signup_customer(self):
@@ -31,7 +31,7 @@ class Customer:
         print("Please enter password of your relax account")
         input_signup_password = input(": ")
 
-        cls.login_username_for_now = input_login_username
+        cls.username_of_login_for_now = input_login_username
         condition_of_login = False
         for item in list_information_login_customer:
             if item[0] == input_login_username and item[1] == input_signup_password:
@@ -74,7 +74,7 @@ class Customer:
 
         condition_of_order = False
         for customer in list_information_login_customer:
-            if customer[0] == self.login_username_for_now:
+            if customer[0] == self.username_of_login_for_now:
                 list_information_login_customer[list_information_login_customer.index(customer)].\
                     append(self.list_orders[0])
                 condition_of_order = True
@@ -91,8 +91,8 @@ class Customer:
     # This method display order of account that user say and show the total of fee's order
     def display_orders_and_receipt(cls):
         for customer in list_information_login_customer:
-            if customer[0] == cls.login_username_for_now:
-                if len(customer) > 2:
+            if customer[0] == cls.username_of_login_for_now:
+                if len(customer) > 3:
                     print("You have ordered this foods:")
                     for information in customer:
                         if type(information) == list:
@@ -101,10 +101,11 @@ class Customer:
                 else:
                     print("You don't have any orders")
 
+        print(list_information_login_customer)
         total = 0
         for customer_2 in list_information_login_customer:
-            if customer_2[0] == cls.login_username_for_now:
-                if len(customer_2) > 2:
+            if customer_2[0] == cls.username_of_login_for_now:
+                if len(customer_2) > 3:
                     for information_2 in customer_2:
                         if type(information_2) == list:
                             total = information_2[1] + total

@@ -54,8 +54,23 @@ class Admin:
         except ValueError:
             return print("ValueError: you should type just number")
 
-        food_and_price = [input_new_name_food, int_input_new_price_food]
-        Menu.list_foods.append(food_and_price)
+        print("Enter number type of food \n1 -- food\n2 -- appetizer\n3 -- drinks")
+        input_number_type_of_food = input(": ")
+
+        if input_number_type_of_food == "1":
+            food_and_price_and_type_food = [input_new_name_food, int_input_new_price_food, "food"]
+            Menu.list_foods.append(food_and_price_and_type_food)
+
+        elif input_number_type_of_food == "2":
+            food_and_price_and_type_food = [input_new_name_food, int_input_new_price_food, "appetizer"]
+            Menu.list_foods.append(food_and_price_and_type_food)
+
+        elif input_number_type_of_food == "3":
+            food_and_price_and_type_food = [input_new_name_food, int_input_new_price_food, "drinks"]
+            Menu.list_foods.append(food_and_price_and_type_food)
+
+        else:
+            print("Number not found")
 
     # This method remove the food that user want
     @staticmethod
@@ -87,7 +102,7 @@ class Admin:
     @staticmethod
     def display_menu():
         for food in Menu.list_foods:
-            print(Menu.list_foods.index(food) + 1, " -- ", "(", food[0], ")", "price: ", food[1])
+            print(Menu.list_foods.index(food) + 1, " -- ", "(", food[0], ",", "type: ", food[2], ")", "price:", food[1])
 
     # This method confirm the orders
     # First check that we have orders or not then get the username that admin want to confirm the order
@@ -100,15 +115,15 @@ class Admin:
             number_account_that_have_orders = 0
             print("Please enter username of user that you want to confirm his orders")
             for customer in list_information_login_customer:
-                if len(customer) > 2:
+                if len(customer) > 3:
                     print(list_information_login_customer.index(customer) + 1, " -- ", customer[0])
                     number_account_that_have_orders += 1
 
             input_username_for_admin = input(": ")
             if number_account_that_have_orders > 0:
                 for customer in list_information_login_customer:
-                    if len(customer) > 2 and input_username_for_admin == customer[0]:
-                        while len(customer) != 2:
+                    if len(customer) > 3 and input_username_for_admin == customer[0]:
+                        while len(customer) != 3:
                             list_information_login_customer[list_information_login_customer.index(customer)].pop()
                 print("Confirmation was successful")
 
@@ -123,7 +138,7 @@ class Admin:
     def display_orders_of_user():
         number_account_that_have_orders = 0
         for customer in list_information_login_customer:
-            if len(customer) > 2:
+            if len(customer) > 3:
                 print(list_information_login_customer.index(customer) + 1, " -- ", customer[0])
                 number_account_that_have_orders += 1
 
