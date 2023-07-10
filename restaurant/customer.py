@@ -92,7 +92,7 @@ class Customer:
     def display_orders_and_receipt(cls):
         for customer in list_information_login_customer:
             if customer[0] == cls.username_of_login_for_now:
-                if len(customer) > 3:
+                if len(customer) > 2:
                     print("You have ordered this foods:")
                     for information in customer:
                         if type(information) == list:
