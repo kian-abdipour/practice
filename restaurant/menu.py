@@ -1,3 +1,4 @@
 class Menu:
-    list_food = []
-
+    list_foods = []
+    list_drinks = []
+    list_appetizer = []

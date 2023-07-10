@@ -2,8 +2,6 @@ from menu import Menu
 from super_admin import SupperAdmin
 from customer import list_information_login_customer
 
-menu_obj = Menu()
-
 
 class Admin:
     def __init__(self):
@@ -43,7 +41,7 @@ class Admin:
     # With name food append a price of food by integer type
     @staticmethod
     def add_food():
-        print("Enter name of food {number_food}".format(number_food=len(Menu.list_food) + 1))
+        print("Enter name of food {number_food}".format(number_food=len(Menu.list_foods) + 1))
         input_new_name_food = input(": ")
 
         print("Enter price of {name_food} the type of money is dollar".format(name_food=input_new_name_food))
@@ -57,13 +55,13 @@ class Admin:
             return print("ValueError: you should type just number")
 
         food_and_price = [input_new_name_food, int_input_new_price_food]
-        Menu.list_food.append(food_and_price)
+        Menu.list_foods.append(food_and_price)
 
     # This method remove the food that user want
     @staticmethod
     def remove_food():
-        for food in Menu.list_food:
-            print(len(Menu.list_food), " -- ", "(", food[0], ")", "price: ", food[1])
+        for food in Menu.list_foods:
+            print(len(Menu.list_foods), " -- ", "(", food[0], ")", "price: ", food[1])
 
         input_number_food_for_remove = input(": ")
         # Make type safe
@@ -74,9 +72,9 @@ class Admin:
             return print("ValueError: You should just type number")
 
         condition_of_remove = False
-        for food in Menu.list_food:
-            if Menu.list_food.index(food) + 1 == int_input_number_food_for_remove:
-                Menu.list_food.pop(int_input_number_food_for_remove - 1)
+        for food in Menu.list_foods:
+            if Menu.list_foods.index(food) + 1 == int_input_number_food_for_remove:
+                Menu.list_foods.pop(int_input_number_food_for_remove - 1)
                 condition_of_remove = True
 
         if condition_of_remove:
@@ -88,8 +86,8 @@ class Admin:
     # This method is clear and show the all food that we have in list_food
     @staticmethod
     def display_menu():
-        for food in Menu.list_food:
-            print(Menu.list_food.index(food) + 1, " -- ", "(", food[0], ")", "price: ", food[1])
+        for food in Menu.list_foods:
+            print(Menu.list_foods.index(food) + 1, " -- ", "(", food[0], ")", "price: ", food[1])
 
     # This method confirm the orders
     # First check that we have orders or not then get the username that admin want to confirm the order
@@ -97,8 +95,8 @@ class Admin:
     # customer
     @staticmethod
     def confirmation_the_active_transaction():
-        while_response = True
-        while while_response:
+        progress = True
+        while progress:
             number_account_that_have_orders = 0
             print("Please enter username of user that you want to confirm his orders")
             for customer in list_information_login_customer:
@@ -118,13 +116,12 @@ class Admin:
                 print("Now we don't have any order")
 
             if input_username_for_admin == "q":
-                while_response = False
+                progress = False
 
     # This method show the customer that have already order
     @staticmethod
     def display_orders_of_user():
         number_account_that_have_orders = 0
-        print("Please enter username of user that you want to confirm his orders")
         for customer in list_information_login_customer:
             if len(customer) > 2:
                 print(list_information_login_customer.index(customer) + 1, " -- ", customer[0])

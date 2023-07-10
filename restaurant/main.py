@@ -5,11 +5,11 @@ from manage_methods import manage_customer_methods
 
 # Again in here we have page manager that set each page of role when will be show
 def manage_pages():
-    while_response = True
     print("Welcome to relax food")
     print("Type q to exist")
 
-    while while_response:
+    progress = True
+    while progress:
         print("Please choose your role \n1 -- customer\n2 -- admin\n3 -- super admin")
         input_number_role = input(": ")
 
@@ -23,7 +23,7 @@ def manage_pages():
             manage_super_admin_methods()
 
         if input_number_role == "q":
-            while_response = False
+            progress = False
 
 
 if __name__ == "__main__":

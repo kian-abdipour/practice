@@ -5,39 +5,40 @@ list_information_login_customer = []  # All data that we have about customer is 
 
 class Customer:
     def __init__(self):
-        self.full_name = None
+        self.username = None
         self.password = None
         self.list_orders = []
-        self.list_transaction = []
+    login_username_for_now = None
 
     # This method get the user's username and password then append to list_information_login_customer
     def signup_customer(self):
         print("Enter your username")
-        self.full_name = input(": ")
+        self.username = input(": ")
 
         print("Enter your password")
         self.password = input(": ")
 
-        information_customer = [self.full_name, self.password]
+        information_customer = [self.username, self.password]
         list_information_login_customer.append(information_customer)
 
+    @classmethod
     # This method check that we have this username pass or not if we don't have customer can't see the next
     # Page
-    @staticmethod
-    def login_customer():
+    def login_customer(cls):
         print("Please enter username of your relax account")
-        input_signup_full_name = input(": ")
+        input_login_username = input(": ")
 
         print("Please enter password of your relax account")
         input_signup_password = input(": ")
 
+        cls.login_username_for_now = input_login_username
         condition_of_login = False
         for item in list_information_login_customer:
-            if item[0] == input_signup_full_name and item[1] == input_signup_password:
+            if item[0] == input_login_username and item[1] == input_signup_password:
                 condition_of_login = True
 
         if condition_of_login:
-            print("Welcome to relax account ", input_signup_full_name)
+            print("Welcome to relax account ", input_login_username)
 
         else:
             print("Username or password not found")
@@ -47,8 +48,11 @@ class Customer:
     # This method first display menu then get the number of food that customer want to order
     # Then add this food to list_customer that are in list_information_login_customer
     def order_food(self):
-        for food in Menu.list_food:
-            print(Menu.list_food.index(food) + 1, " -- ", food[0], "price: ", food[1])
+        for food in Menu.list_foods:
+            print(Menu.list_foods.index(food) + 1, " -- ", food[0], "price: ", food[1])
+
+        if Menu.list_foods == 0:
+            print("Sorry but now we don't have any food now")
 
         input_number_food_for_order = input(": ")
         try:
@@ -57,15 +61,20 @@ class Customer:
         except ValueError:
             return print("ValueError: You should type just number")
 
-        for food in Menu.list_food:
-            if Menu.list_food.index(food) + 1 == int_input_number_food_for_order:
+        try:
+            # This variable is for handle index error
+            last_item_list_food = Menu.list_foods[int_input_number_food_for_order - 1]
+
+        except IndexError:
+            return print("IndexError: Number not found")
+
+        for food in Menu.list_foods:
+            if Menu.list_foods.index(food) + 1 == int_input_number_food_for_order:
                 self.list_orders.append(food)
 
-        print("Please enter your username that you want to record order for him or enter your user name")
-        input_first_name_for_order = input(": ")
         condition_of_order = False
         for customer in list_information_login_customer:
-            if customer[0] == input_first_name_for_order:
+            if customer[0] == self.login_username_for_now:
                 list_information_login_customer[list_information_login_customer.index(customer)].\
                     append(self.list_orders[0])
                 condition_of_order = True
@@ -78,13 +87,11 @@ class Customer:
 
         self.list_orders.clear()
 
+    @classmethod
     # This method display order of account that user say and show the total of fee's order
-    @staticmethod
-    def display_orders_and_receipt():
-        print("Please enter your username account")
-        input_username_for_receipt = input(": ")
+    def display_orders_and_receipt(cls):
         for customer in list_information_login_customer:
-            if input_username_for_receipt == customer[0]:
+            if customer[0] == cls.login_username_for_now:
                 if len(customer) > 2:
                     print("You have ordered this foods:")
                     for information in customer:
@@ -96,7 +103,7 @@ class Customer:
 
         total = 0
         for customer_2 in list_information_login_customer:
-            if input_username_for_receipt == customer_2[0]:
+            if customer_2[0] == cls.login_username_for_now:
                 if len(customer_2) > 2:
                     for information_2 in customer_2:
                         if type(information_2) == list:
