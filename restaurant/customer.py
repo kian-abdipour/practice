@@ -12,7 +12,7 @@ class Customer:
         self.list_transaction = []
 
     def signup_customer(self):
-        print("Enter your full name")
+        print("Enter your username")
         self.full_name = input(": ")
 
         print("Enter your password")
@@ -23,10 +23,10 @@ class Customer:
 
     @staticmethod
     def login_customer():
-        print("Please enter your full name relax account")
+        print("Please enter username of your relax account")
         input_signup_full_name = input(": ")
 
-        print("Please enter your password relax account")
+        print("Please enter password of your relax account")
         input_signup_password = input(": ")
 
         condition_of_login = False
@@ -64,17 +64,38 @@ class Customer:
             if customer[0] == input_first_name_for_order:
                 list_information_signup_customer[list_information_signup_customer.index(customer)].\
                     append(self.list_orders[0])
+                condition_of_order = True
 
         if condition_of_order:
             print("Record order was successful ")
 
         else:
-            print("This user name doesn't have account in relax restaurant")
+            print("This user name doesn't have account in relax restaurant try again")
 
         self.list_orders.clear()
-        print(self.list_orders)
-        print(list_information_signup_customer)
 
     @staticmethod
-    def display_orders():
-        print(list_information_signup_customer)
+    def display_orders_and_receipt():
+        print("Please enter your username account")
+        input_username_for_receipt = input(": ")
+        for customer in list_information_signup_customer:
+            if input_username_for_receipt == customer[0]:
+                if len(customer) > 2:
+                    print("You have ordered this foods:")
+                    for information in customer:
+                        if type(information) == list:
+                            print(customer[0], " -- ", information[0], "price: ", information[1])
+
+                else:
+                    print("You don't have any orders")
+
+        total = 0
+        for customer_2 in list_information_signup_customer:
+            if input_username_for_receipt == customer_2[0]:
+                if len(customer_2) > 2:
+                    for information_2 in customer_2:
+                        if type(information_2) == list:
+                            total = information_2[1] + total
+
+        print("Total: ", total)
+

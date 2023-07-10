@@ -1,5 +1,6 @@
 from menu import Menu
 from super_admin import SupperAdmin
+from customer import list_information_signup_customer
 
 menu_obj = Menu()
 
@@ -9,7 +10,6 @@ class Admin:
         self.first_name = None
         self.last_name = None
         self.admin_code = None
-    list_customer_and_transaction = []
 
     # This function is for login admin with a code that super admin set
     def admin_login(self):
@@ -46,7 +46,7 @@ class Admin:
         print("Enter name of food {number_food}".format(number_food=len(Menu.list_food) + 1))
         input_new_name_food = input(": ")
 
-        print("Enter price of {name_food} the type of money is tooman".format(name_food=input_new_name_food))
+        print("Enter price of {name_food} the type of money is dollar".format(name_food=input_new_name_food))
         input_new_price_food = input(": ")
 
         # Make type safe
@@ -93,5 +93,40 @@ class Admin:
 
     @staticmethod
     def confirmation_the_active_transaction():
-        pass
+        while_response = True
+        while while_response:
+            number_account_that_have_orders = 0
+            print("Please enter username of user that you want to confirm his orders")
+            for customer in list_information_signup_customer:
+                if len(customer) > 2:
+                    print(list_information_signup_customer.index(customer) + 1, " -- ", customer[0])
+                    number_account_that_have_orders += 1
 
+            input_username_for_admin = input(": ")
+            if number_account_that_have_orders > 0:
+                for customer in list_information_signup_customer:
+                    if len(customer) > 2 and input_username_for_admin == customer[0]:
+                        while len(customer) != 2:
+                            list_information_signup_customer[list_information_signup_customer.index(customer)].pop()
+                print("Confirmation was successful")
+
+            else:
+                print("Now we don't have any order")
+
+            if input_username_for_admin == "q":
+                while_response = False
+
+    @staticmethod
+    def display_orders_of_user():
+        number_account_that_have_orders = 0
+        print("Please enter username of user that you want to confirm his orders")
+        for customer in list_information_signup_customer:
+            if len(customer) > 2:
+                print(list_information_signup_customer.index(customer) + 1, " -- ", customer[0])
+                number_account_that_have_orders += 1
+
+        if number_account_that_have_orders > 0:
+            pass
+
+        else:
+            print("Now we don't have any order")

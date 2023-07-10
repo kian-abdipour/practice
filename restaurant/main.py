@@ -1,6 +1,6 @@
-from manage_methods import manage_super_admin
-from manage_methods import manage_admin
-from manage_methods import manage_customer
+from manage_methods import manage_super_admin_methods
+from manage_methods import manage_admin_methods
+from manage_methods import manage_customer_methods
 
 
 def manage_pages():
@@ -13,13 +13,13 @@ def manage_pages():
         input_number_role = input(": ")
 
         if input_number_role == "1":
-            manage_customer()
+            manage_customer_methods()
 
         elif input_number_role == "2":
-            manage_admin()
+            manage_admin_methods()
 
         elif input_number_role == "3":
-            manage_super_admin()
+            manage_super_admin_methods()
 
         if input_number_role == "q":
             while_response = False
