@@ -48,10 +48,10 @@ class Customer:
     # This method first display menu then get the number of food that customer want to order
     # Then add this food to list_customer that are in list_information_login_customer
     def order_food(self):
-        for food in Menu.list_foods:
-            print(Menu.list_foods.index(food) + 1, " -- ", food[0], "price: ", food[1])
+        for food in Menu.list_edible:
+            print(Menu.list_edible.index(food) + 1, " -- ", food[0], "price: ", food[1])
 
-        if Menu.list_foods == 0:
+        if Menu.list_edible == 0:
             print("Sorry but now we don't have any food now")
 
         input_number_food_for_order = input(": ")
@@ -63,13 +63,13 @@ class Customer:
 
         try:
             # This variable is for handle index error
-            last_item_list_food = Menu.list_foods[int_input_number_food_for_order - 1]
+            last_item_list_food = Menu.list_edible[int_input_number_food_for_order - 1]
 
         except IndexError:
             return print("IndexError: Number not found")
 
-        for food in Menu.list_foods:
-            if Menu.list_foods.index(food) + 1 == int_input_number_food_for_order:
+        for food in Menu.list_edible:
+            if Menu.list_edible.index(food) + 1 == int_input_number_food_for_order:
                 self.list_orders.append(food)
 
         condition_of_order = False

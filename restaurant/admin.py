@@ -41,7 +41,7 @@ class Admin:
     # With name food append a price of food by integer type
     @staticmethod
     def add_food():
-        print("Enter name of food {number_food}".format(number_food=len(Menu.list_foods) + 1))
+        print("Enter name of food {number_food}".format(number_food=len(Menu.list_edible) + 1))
         input_new_name_food = input(": ")
 
         print("Enter price of {name_food} the type of money is dollar".format(name_food=input_new_name_food))
@@ -59,15 +59,15 @@ class Admin:
 
         if input_number_type_of_food == "1":
             food_and_price_and_type_food = [input_new_name_food, int_input_new_price_food, "food"]
-            Menu.list_foods.append(food_and_price_and_type_food)
+            Menu.list_edible.append(food_and_price_and_type_food)
 
         elif input_number_type_of_food == "2":
             food_and_price_and_type_food = [input_new_name_food, int_input_new_price_food, "appetizer"]
-            Menu.list_foods.append(food_and_price_and_type_food)
+            Menu.list_edible.append(food_and_price_and_type_food)
 
         elif input_number_type_of_food == "3":
             food_and_price_and_type_food = [input_new_name_food, int_input_new_price_food, "drinks"]
-            Menu.list_foods.append(food_and_price_and_type_food)
+            Menu.list_edible.append(food_and_price_and_type_food)
 
         else:
             print("Number not found")
@@ -75,8 +75,8 @@ class Admin:
     # This method remove the food that user want
     @staticmethod
     def remove_food():
-        for food in Menu.list_foods:
-            print(len(Menu.list_foods), " -- ", "(", food[0], ")", "price: ", food[1])
+        for food in Menu.list_edible:
+            print(len(Menu.list_edible), " -- ", "(", food[0], ")", "price: ", food[1])
 
         input_number_food_for_remove = input(": ")
         # Make type safe
@@ -87,9 +87,9 @@ class Admin:
             return print("ValueError: You should just type number")
 
         condition_of_remove = False
-        for food in Menu.list_foods:
-            if Menu.list_foods.index(food) + 1 == int_input_number_food_for_remove:
-                Menu.list_foods.pop(int_input_number_food_for_remove - 1)
+        for food in Menu.list_edible:
+            if Menu.list_edible.index(food) + 1 == int_input_number_food_for_remove:
+                Menu.list_edible.pop(int_input_number_food_for_remove - 1)
                 condition_of_remove = True
 
         if condition_of_remove:
@@ -101,8 +101,8 @@ class Admin:
     # This method is clear and show the all food that we have in list_food
     @staticmethod
     def display_menu():
-        for food in Menu.list_foods:
-            print(Menu.list_foods.index(food) + 1, " -- ", "(", food[0], ",", "type: ", food[2], ")", "price:", food[1])
+        for food in Menu.list_edible:
+            print(Menu.list_edible.index(food) + 1, " -- ", "(", food[0], ",", "type: ", food[2], ")", "price:", food[1])
 
     # This method confirm the orders
     # First check that we have orders or not then get the username that admin want to confirm the order
