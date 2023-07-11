@@ -41,33 +41,32 @@ class Admin:
     # With name food append a price of food by integer type
     @staticmethod
     def add_food():
-        print("Enter name of food {number_food}".format(number_food=len(Menu.list_edible) + 1))
-        input_new_name_food = input(": ")
+        print("Enter number type of food \n1 -- food\n2 -- appetizer\n3 -- drinks")
+        input_number_type_of_item = input(": ")
 
-        print("Enter price of {name_food} the type of money is dollar".format(name_food=input_new_name_food))
-        input_new_price_food = input(": ")
+        print("Enter name of food {number_food}".format(number_food=len(Menu.list_all_items) + 1))
+        input_new_name_item = input(": ")
 
-        # Make type safe
+        print("Enter price of {name_food} the type of money is dollar".format(name_food=input_new_name_item))
+        input_new_price_item = input(": ")
+
         try:
-            int_input_new_price_food = int(input_new_price_food)
+            int_input_new_price_item = int(input_new_price_item)
 
         except ValueError:
-            return print("ValueError: you should type just number")
+            return print("ValueError: You should type just number")
 
-        print("Enter number type of food \n1 -- food\n2 -- appetizer\n3 -- drinks")
-        input_number_type_of_food = input(": ")
+        item = (input_new_name_item, int_input_new_price_item)
+        Menu.list_all_items.append(item)
 
-        if input_number_type_of_food == "1":
-            food_and_price_and_type_food = [input_new_name_food, int_input_new_price_food, "food"]
-            Menu.list_edible.append(food_and_price_and_type_food)
+        if input_number_type_of_item == "1":
+            Menu.list_foods.append(item)
 
-        elif input_number_type_of_food == "2":
-            food_and_price_and_type_food = [input_new_name_food, int_input_new_price_food, "appetizer"]
-            Menu.list_edible.append(food_and_price_and_type_food)
+        elif input_number_type_of_item == "2":
+            Menu.list_appetizers.append(item)
 
-        elif input_number_type_of_food == "3":
-            food_and_price_and_type_food = [input_new_name_food, int_input_new_price_food, "drinks"]
-            Menu.list_edible.append(food_and_price_and_type_food)
+        elif input_number_type_of_item == "3":
+            Menu.list_drinks.append(item)
 
         else:
             print("Number not found")
@@ -75,8 +74,12 @@ class Admin:
     # This method remove the food that user want
     @staticmethod
     def remove_food():
-        for food in Menu.list_edible:
-            print(len(Menu.list_edible), " -- ", "(", food[0], ")", "price: ", food[1])
+        print("Enter number type of food \n1 -- food\n2 -- appetizer\n3 -- drinks")
+        input_number_type_of_item = input(": ")
+
+        for item in Menu.list_all_items:
+            print(Menu.list_all_items.index(item) + 1, " -- ", "(", item[0], ")",
+                  "price: ", item[1])
 
         input_number_food_for_remove = input(": ")
         # Make type safe
@@ -87,9 +90,9 @@ class Admin:
             return print("ValueError: You should just type number")
 
         condition_of_remove = False
-        for food in Menu.list_edible:
-            if Menu.list_edible.index(food) + 1 == int_input_number_food_for_remove:
-                Menu.list_edible.pop(int_input_number_food_for_remove - 1)
+        for item in Menu.list_name_items:
+            if Menu.list_name_items.index(item) + 1 == int_input_number_food_for_remove:
+                Menu.list_name_items.pop(int_input_number_food_for_remove - 1)
                 condition_of_remove = True
 
         if condition_of_remove:
@@ -101,8 +104,8 @@ class Admin:
     # This method is clear and show the all food that we have in list_food
     @staticmethod
     def display_menu():
-        for food in Menu.list_edible:
-            print(Menu.list_edible.index(food) + 1, " -- ", "(", food[0], ",", "type: ", food[2], ")", "price:", food[1]
+        for food in Menu.list_name_items:
+            print(Menu.list_name_items.index(food) + 1, " -- ", "(", food[0], ",", "type: ", food[2], ")", "price:", food[1]
                   )
 
     # This method confirm the orders

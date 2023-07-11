@@ -52,7 +52,7 @@ class Customer:
             print(Menu.list_edible.index(food) + 1, " -- ", "(", food[0], ",", "type: ", food[2], ")", "price:", food[1]
                   )
 
-        if Menu.list_edible == 0:
+        if Menu.list_name_items == 0:
             print("Sorry but now we don't have any food now")
 
         input_number_food_for_order = input(": ")
@@ -64,13 +64,13 @@ class Customer:
 
         try:
             # This variable is for handle index error
-            last_item_list_food = Menu.list_edible[int_input_number_food_for_order - 1]
+            last_item_list_food = Menu.list_name_items[int_input_number_food_for_order - 1]
 
         except IndexError:
             return print("IndexError: Number not found")
 
-        for food in Menu.list_edible:
-            if Menu.list_edible.index(food) + 1 == int_input_number_food_for_order:
+        for food in Menu.list_name_items:
+            if Menu.list_name_items.index(food) + 1 == int_input_number_food_for_order:
                 self.list_orders.append(food)
 
         condition_of_order = False
