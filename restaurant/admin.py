@@ -44,7 +44,7 @@ class Admin:
         print("Enter number type of food \n1 -- food\n2 -- appetizer\n3 -- drinks")
         input_number_type_of_item = input(": ")
 
-        print("Enter name of food {number_food}".format(number_food=len(Menu.list_all_items) + 1))
+        print("Enter name of food {number_food}".format(number_food=Menu.list_name_items + 1))
         input_new_name_item = input(": ")
 
         print("Enter price of {name_food} the type of money is dollar".format(name_food=input_new_name_item))
@@ -56,20 +56,20 @@ class Admin:
         except ValueError:
             return print("ValueError: You should type just number")
 
-        item = (input_new_name_item, int_input_new_price_item)
-        Menu.list_all_items.append(item)
-
         if input_number_type_of_item == "1":
-            Menu.list_foods.append(item)
+            Menu.list_type_items.append("food")
 
         elif input_number_type_of_item == "2":
-            Menu.list_appetizers.append(item)
+            Menu.list_type_items.append("appetizer")
 
         elif input_number_type_of_item == "3":
-            Menu.list_drinks.append(item)
+            Menu.list_type_items.append("drinks")
 
         else:
             print("Number not found")
+
+        Menu.list_name_items.append(input_new_name_item)
+        Menu.list_price_items.append(int_input_new_price_item)
 
     # This method remove the food that user want
     @staticmethod
@@ -77,9 +77,26 @@ class Admin:
         print("Enter number type of food \n1 -- food\n2 -- appetizer\n3 -- drinks")
         input_number_type_of_item = input(": ")
 
-        for item in Menu.list_all_items:
-            print(Menu.list_all_items.index(item) + 1, " -- ", "(", item[0], ")",
-                  "price: ", item[1])
+        for item in Menu.list_type_items:
+            if input_number_type_of_item == "1" and item == "food":
+                print(Menu.list_type_items.index(item), " -- ",
+                      "(", Menu.list_name_items[Menu.list_type_items.index(item)], ")",
+                      "type: ", item,
+                      "Price: ", Menu.list_price_items[Menu.list_price_items.index(item)])
+
+        for item in Menu.list_type_items:
+            if input_number_type_of_item == "2" and item == "appetizer":
+                print(Menu.list_type_items.index(item), " -- ",
+                      "(", Menu.list_name_items[Menu.list_type_items.index(item)], ")",
+                      "type: ", item,
+                      "Price: ", Menu.list_price_items[Menu.list_price_items.index(item)])
+
+        for item in Menu.list_type_items:
+            if input_number_type_of_item == "2" and item == "drinks":
+                print(Menu.list_type_items.index(item), " -- ",
+                      "(", Menu.list_name_items[Menu.list_type_items.index(item)], ")",
+                      "type: ", item,
+                      "Price: ", Menu.list_price_items[Menu.list_price_items.index(item)])
 
         input_number_food_for_remove = input(": ")
         # Make type safe

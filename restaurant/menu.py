@@ -1,6 +1,5 @@
 class Menu:
-    list_all_items = []
-    list_foods = []
-    list_appetizers = []
-    list_drinks = []
+    list_type_items = []
+    list_name_items = []
+    list_price_items = []
 
