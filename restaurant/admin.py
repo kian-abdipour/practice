@@ -1,6 +1,7 @@
 from menu import Menu
 from super_admin import SupperAdmin
 from customer import list_information_login_customer
+from item import Item
 
 
 class Admin:
@@ -41,82 +42,62 @@ class Admin:
     # With name food append a price of food by integer type
     @staticmethod
     def add_food():
-        print("Enter number type of food \n1 -- food\n2 -- appetizer\n3 -- drinks")
+        print("Enter number of type item \n1 -- food\n2 -- appetizer\n3 -- drink")
         input_number_type_of_item = input(": ")
+        type_item = None
+        if input_number_type_of_item == "1":
+            type_item = "food"
 
-        print("Enter name of food {number_food}".format(number_food=Menu.list_name_items + 1))
-        input_new_name_item = input(": ")
+        elif input_number_type_of_item == "2":
+            type_item = "appetizer"
 
-        print("Enter price of {name_food} the type of money is dollar".format(name_food=input_new_name_item))
-        input_new_price_item = input(": ")
+        elif input_number_type_of_item == "3":
+            type_item = "drink"
+
+        else:
+            return print("Number not found")
+        
+        print("Enter name of item")
+        input_name_of_item = input(": ")
+
+        print("Enter price of {name_item} the currency of money is dollar".format(name_item=input_name_of_item))
+        input_price_of_item = input(": ")
 
         try:
-            int_input_new_price_item = int(input_new_price_item)
+            int_input_price_of_item = int(input_price_of_item)
 
         except ValueError:
             return print("ValueError: You should type just number")
 
-        if input_number_type_of_item == "1":
-            Menu.list_type_items.append("food")
-
-        elif input_number_type_of_item == "2":
-            Menu.list_type_items.append("appetizer")
-
-        elif input_number_type_of_item == "3":
-            Menu.list_type_items.append("drinks")
-
-        else:
-            print("Number not found")
-
-        Menu.list_name_items.append(input_new_name_item)
-        Menu.list_price_items.append(int_input_new_price_item)
+        item = Item(input_name_of_item, int_input_price_of_item, type_item)
+        Menu.list_item.append(item)
 
     # This method remove the food that user want
     @staticmethod
     def remove_food():
-        print("Enter number type of food \n1 -- food\n2 -- appetizer\n3 -- drinks")
-        input_number_type_of_item = input(": ")
+        for item in Menu.list_item:
+            print(Menu.list_item.index(item) + 1, " -- ", "(", item.name_item, "price: ", item.price_item, ")",
+                  "type: ", item.type_item)
 
-        for item in Menu.list_type_items:
-            if input_number_type_of_item == "1" and item == "food":
-                print(Menu.list_type_items.index(item), " -- ",
-                      "(", Menu.list_name_items[Menu.list_type_items.index(item)], ")",
-                      "type: ", item,
-                      "Price: ", Menu.list_price_items[Menu.list_price_items.index(item)])
+        #input_number_food_for_remove = input(": ")
+        ## Make type safe
+        #try:
+        #    int_input_number_food_for_remove = int(input_number_food_for_remove)
 
-        for item in Menu.list_type_items:
-            if input_number_type_of_item == "2" and item == "appetizer":
-                print(Menu.list_type_items.index(item), " -- ",
-                      "(", Menu.list_name_items[Menu.list_type_items.index(item)], ")",
-                      "type: ", item,
-                      "Price: ", Menu.list_price_items[Menu.list_price_items.index(item)])
+        #except ValueError:
+        #    return print("ValueError: You should just type number")
 
-        for item in Menu.list_type_items:
-            if input_number_type_of_item == "2" and item == "drinks":
-                print(Menu.list_type_items.index(item), " -- ",
-                      "(", Menu.list_name_items[Menu.list_type_items.index(item)], ")",
-                      "type: ", item,
-                      "Price: ", Menu.list_price_items[Menu.list_price_items.index(item)])
+        #condition_of_remove = False
+        #for item in Menu.list_name_items:
+        #    if Menu.list_name_items.index(item) + 1 == int_input_number_food_for_remove:
+        #        Menu.list_name_items.pop(int_input_number_food_for_remove - 1)
+        #        condition_of_remove = True
 
-        input_number_food_for_remove = input(": ")
-        # Make type safe
-        try:
-            int_input_number_food_for_remove = int(input_number_food_for_remove)
+        #if condition_of_remove:
+        #    print("Remove food was successful")
 
-        except ValueError:
-            return print("ValueError: You should just type number")
-
-        condition_of_remove = False
-        for item in Menu.list_name_items:
-            if Menu.list_name_items.index(item) + 1 == int_input_number_food_for_remove:
-                Menu.list_name_items.pop(int_input_number_food_for_remove - 1)
-                condition_of_remove = True
-
-        if condition_of_remove:
-            print("Remove food was successful")
-
-        else:
-            print("Remove food was unsuccessful")
+        #else:
+        #    print("Remove food was unsuccessful")
 
     # This method is clear and show the all food that we have in list_food
     @staticmethod
