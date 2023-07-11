@@ -101,11 +101,10 @@ class Customer:
                 else:
                     print("You don't have any orders")
 
-        print(list_information_login_customer)
         total = 0
         for customer_2 in list_information_login_customer:
             if customer_2[0] == cls.username_of_login_for_now:
-                if len(customer_2) > 3:
+                if len(customer_2) > 2:
                     for information_2 in customer_2:
                         if type(information_2) == list:
                             total = information_2[1] + total
