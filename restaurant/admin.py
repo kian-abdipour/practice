@@ -102,7 +102,8 @@ class Admin:
     @staticmethod
     def display_menu():
         for food in Menu.list_edible:
-            print(Menu.list_edible.index(food) + 1, " -- ", "(", food[0], ",", "type: ", food[2], ")", "price:", food[1])
+            print(Menu.list_edible.index(food) + 1, " -- ", "(", food[0], ",", "type: ", food[2], ")", "price:", food[1]
+                  )
 
     # This method confirm the orders
     # First check that we have orders or not then get the username that admin want to confirm the order

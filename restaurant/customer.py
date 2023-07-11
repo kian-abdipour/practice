@@ -49,7 +49,8 @@ class Customer:
     # Then add this food to list_customer that are in list_information_login_customer
     def order_food(self):
         for food in Menu.list_edible:
-            print(Menu.list_edible.index(food) + 1, " -- ", food[0], "price: ", food[1])
+            print(Menu.list_edible.index(food) + 1, " -- ", "(", food[0], ",", "type: ", food[2], ")", "price:", food[1]
+                  )
 
         if Menu.list_edible == 0:
             print("Sorry but now we don't have any food now")
