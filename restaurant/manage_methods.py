@@ -56,31 +56,38 @@ def manage_admin_methods():
         progress = True
         while progress:
             print("Enter one of this number \n1 -- add food\n2 -- remove food\n3 -- menu"
-                  "\n4 -- confirmation transactions\n5 -- display account that have orders")
+                  "\n4 -- confirmation transactions\n5 -- display account that have orders\n6 -- add category")
             input_action_of_admin = input(": ")
 
             if input_action_of_admin == "1":
-                admin.add_food()
+                if len(Menu.list_categories) > 0:
+                    admin.add_item()
+
+                else:
+                    print("You don't have any food, first you should add food to menu")
 
             elif input_action_of_admin == "2":
-                if len(Menu.list_all_items) > 0:
+                if len(Menu.list_categories) > 0:
                     admin.remove_food()
 
                 else:
                     print("You don't have any food, first you should add food to menu")
 
             elif input_action_of_admin == "3":
-                if len(Menu.list_all_items) > 0:
+                if len(Menu.list_categories) > 0:
                     admin.display_menu()
 
                 else:
-                    print("You don't have any food, first you should add food to menu")
+                    print("You don't have any category, first you should add category to menu")
 
             elif input_action_of_admin == "4":
                 admin.confirmation_the_active_transaction()
 
             elif input_action_of_admin == "5":
                 admin.display_orders_of_user()
+
+            elif input_action_of_admin == "6":
+                admin.add_category()
 
             else:
                 print("number not found")

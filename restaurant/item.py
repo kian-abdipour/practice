@@ -4,4 +4,3 @@ class Item:
         self.name_category = name_category
         self.price = price
 
-
