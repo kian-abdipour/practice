@@ -44,18 +44,6 @@ class Admin:
     def add_food():
         print("Enter number of type item \n1 -- food\n2 -- appetizer\n3 -- drink")
         input_number_type_of_item = input(": ")
-        type_item = None
-        if input_number_type_of_item == "1":
-            type_item = "food"
-
-        elif input_number_type_of_item == "2":
-            type_item = "appetizer"
-
-        elif input_number_type_of_item == "3":
-            type_item = "drink"
-
-        else:
-            return print("Number not found")
         
         print("Enter name of item")
         input_name_of_item = input(": ")
@@ -69,15 +57,33 @@ class Admin:
         except ValueError:
             return print("ValueError: You should type just number")
 
-        item = Item(input_name_of_item, int_input_price_of_item, type_item)
-        Menu.list_item.append(item)
+        category_item = None
+        if input_number_type_of_item == "1":
+            category_item = "food"
+            item = Item(input_name_of_item, category_item, int_input_price_of_item)
+            Menu.list_foods.append(item)
+
+        elif input_number_type_of_item == "2":
+            category_item = "appetizer"
+            item = Item(input_name_of_item, category_item, int_input_price_of_item)
+            Menu.list_appetizers.append(item)
+
+        elif input_number_type_of_item == "3":
+            category_item = "drink"
+            item = Item(input_name_of_item, category_item, int_input_price_of_item)
+            Menu.list_drinks.append(item)
+
+        else:
+            return print("Number not found")
+
+        Menu.list_all_items.append(item)
 
     # This method remove the food that user want
     @staticmethod
     def remove_food():
         for item in Menu.list_item:
-            print(Menu.list_item.index(item) + 1, " -- ", "(", item.name_item, "price: ", item.price_item, ")",
-                  "type: ", item.type_item)
+            print(Menu.list_item.index(item) + 1, " -- ", "(", item.name, "price: ", item.price, ")",
+                  "type: ", item.name_category)
 
         #input_number_food_for_remove = input(": ")
         ## Make type safe
@@ -102,9 +108,23 @@ class Admin:
     # This method is clear and show the all food that we have in list_food
     @staticmethod
     def display_menu():
-        for food in Menu.list_name_items:
-            print(Menu.list_name_items.index(food) + 1, " -- ", "(", food[0], ",", "type: ", food[2], ")", "price:", food[1]
-                  )
+        print("Enter a number\n1 -- All menu\n2 -- All category\n3 -- Number each category that use")
+        input_number_display = input(": ")
+        if input_number_display == "1":
+            for item in Menu.list_all_items:
+                print(Menu.list_all_items.index(item) + 1, " -- ", "(", item.name, "price: ", item.price, ")",
+                      "type: ", item.name_category)
+
+        elif input_number_display == "2":
+            for name_category in Menu.list_name_category:
+                print(Menu.list_name_category.index(name_category) + 1, " -- ", name_category)
+
+        elif input_number_display == "3":
+            print("foods: ", len(Menu.list_foods), "\nappetizers: ", len(Menu.list_appetizers),
+                  "\ndrinks: ", len(Menu.list_drinks))
+
+        else:
+            return print("Number not found")
 
     # This method confirm the orders
     # First check that we have orders or not then get the username that admin want to confirm the order

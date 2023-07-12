@@ -63,14 +63,14 @@ def manage_admin_methods():
                 admin.add_food()
 
             elif input_action_of_admin == "2":
-                if len(Menu.list_name_items) > 0:
+                if len(Menu.list_all_items) > 0:
                     admin.remove_food()
 
                 else:
                     print("You don't have any food, first you should add food to menu")
 
             elif input_action_of_admin == "3":
-                if len(Menu.list_name_items) > 0:
+                if len(Menu.list_all_items) > 0:
                     admin.display_menu()
 
                 else:
