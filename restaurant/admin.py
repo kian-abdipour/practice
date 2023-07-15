@@ -1,4 +1,4 @@
-from menu import Menu
+#from menu import Menu
 from super_admin import SupperAdmin
 from customer import list_information_login_customer
 from item import Item
@@ -10,6 +10,7 @@ class Admin:
         self.first_name = None
         self.last_name = None
         self.admin_code = None
+    list_categories = []
 
     # This method is for login admin with a code that super admin set
     def admin_login(self):
@@ -39,19 +40,19 @@ class Admin:
             print("Admin code not found")
         return condition_of_login_admin
 
-    @staticmethod
-    def add_category():
-        print("Enter name of category {number_category}".format(number_category=len(Menu.list_categories) + 1))
+    @classmethod
+    def add_category(cls):
+        print("Enter name of category {number_category}".format(number_category=len(cls.list_categories) + 1))
         name_of_category = input(": ")
         category = Category(name_of_category)
-        Menu.list_categories.append(category)
+        cls.list_categories.append(category)
 
     # This method append food to list_food in menu class
     # With name food append a price of food by integer type
-    @staticmethod
-    def add_item():
-        for category in Menu.list_categories:
-            print(Menu.list_categories.index(category) + 1, " -- ", category.name)
+    @classmethod
+    def add_item(cls):
+        for category in cls.list_categories:
+            print(cls.list_categories.index(category) + 1, " -- ", category.name)
 
         try:
             print("Enter number of category that you want")
@@ -66,8 +67,8 @@ class Admin:
         except ValueError:
             return print("ValueError: You should type just number")
 
-        for category in Menu.list_categories:
-            if index_category_of_item - 1 == Menu.list_categories.index(category):
+        for category in cls.list_categories:
+            if index_category_of_item - 1 == cls.list_categories.index(category):
                 item = Item(name_of_item, category.name, price_of_item)
                 category.list_items.append(item)
                 print("Add item was successful ")
@@ -100,15 +101,15 @@ class Admin:
         #    print("Remove food was unsuccessful")
 
     # This method is clear and show the all food that we have in list_food
-    @staticmethod
-    def display_menu():
+    @classmethod
+    def display_menu(cls):
         print("Enter a number\n1 -- All menu\n2 -- All category\n3 -- Number of each category that use")
         number_display = input(": ")
         if number_display == "1":
-            for category in Menu.list_categories:
+            for category in cls.list_categories:
                 if len(category.list_items) > 0:
                     for item in category.list_items:
-                        print(Menu.list_categories.index(item) + 1, " -- ", "(", item.name,
+                        print(cls.list_categories.index(item) + 1, " -- ", "(", item.name,
                               "category:", item.name_category, ")", " price: ", item.price)
 
                 else:
@@ -116,12 +117,12 @@ class Admin:
                                  format(name_category=category.name))
 
         elif number_display == "2":
-            for category in Menu.list_categories:
-                print(Menu.list_categories.index(category) + 1, " -- ", category.name)
+            for category in cls.list_categories:
+                print(cls.list_categories.index(category) + 1, " -- ", category.name)
 
         elif number_display == "3":
-            for category in Menu.list_categories:
-                print(Menu.list_categories.index(category) + 1, " -- ", category.name+":", len(category.list_items))
+            for category in cls.list_categories:
+                print(cls.list_categories.index(category) + 1, " -- ", category.name+":", len(category.list_items))
 
         else:
             print("Number not found")

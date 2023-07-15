@@ -1,3 +1,4 @@
-class Menu:
-    list_categories = []
-
+#class Menu:
+#    list_categories = []
+#
+#
