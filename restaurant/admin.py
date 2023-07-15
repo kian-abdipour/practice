@@ -42,8 +42,8 @@ class Admin:
     @staticmethod
     def add_category():
         print("Enter name of category {number_category}".format(number_category=len(Menu.list_categories) + 1))
-        input_name_of_category = input(": ")
-        category = Category(input_name_of_category)
+        name_of_category = input(": ")
+        category = Category(name_of_category)
         Menu.list_categories.append(category)
 
     # This method append food to list_food in menu class
@@ -53,34 +53,24 @@ class Admin:
         for category in Menu.list_categories:
             print(Menu.list_categories.index(category) + 1, " -- ", category.name)
 
-        print("Enter number of category that you want")
-        input_number_category_of_item = input(": ")
-        
-        print("Enter name of item")
-        input_name_of_item = input(": ")
-
-        print("Enter price of {name_item} the currency of money is dollar".format(name_item=input_name_of_item))
-        input_price_of_item = input(": ")
-
         try:
-            int_input_number_type_of_item = int(input_number_category_of_item)
-            int_input_price_of_item = int(input_price_of_item)
+            print("Enter number of category that you want")
+            index_category_of_item = int(input(": "))
+
+            print("Enter name of item")
+            name_of_item = input(": ")
+
+            print("Enter price of {name_item} the currency of money is dollar".format(name_item=name_of_item))
+            price_of_item = int(input(": "))
 
         except ValueError:
             return print("ValueError: You should type just number")
 
-        condition_of_add_food = False
         for category in Menu.list_categories:
-            if int_input_number_type_of_item - 1 == Menu.list_categories.index(category):
-                item = Item(input_name_of_item, category.name, int_input_price_of_item)
+            if index_category_of_item - 1 == Menu.list_categories.index(category):
+                item = Item(name_of_item, category.name, price_of_item)
                 category.list_items.append(item)
-                condition_of_add_food = True
-
-        if condition_of_add_food:
-            print("Add item was successful ")
-
-        else:
-            print("Add items wasn't successful")
+                print("Add item was successful ")
 
     # This method remove the food that user want
     @staticmethod
@@ -113,8 +103,8 @@ class Admin:
     @staticmethod
     def display_menu():
         print("Enter a number\n1 -- All menu\n2 -- All category\n3 -- Number of each category that use")
-        input_number_display = input(": ")
-        if input_number_display == "1":
+        number_display = input(": ")
+        if number_display == "1":
             for category in Menu.list_categories:
                 if len(category.list_items) > 0:
                     for item in category.list_items:
@@ -125,13 +115,16 @@ class Admin:
                     return print("You don't have any item in category {name_category}".
                                  format(name_category=category.name))
 
-        elif input_number_display == "2":
+        elif number_display == "2":
             for category in Menu.list_categories:
                 print(Menu.list_categories.index(category) + 1, " -- ", category.name)
 
-        elif input_number_display == "3":
+        elif number_display == "3":
             for category in Menu.list_categories:
                 print(Menu.list_categories.index(category) + 1, " -- ", category.name+":", len(category.list_items))
+
+        else:
+            print("Number not found")
 
     # This method confirm the orders
     # First check that we have orders or not then get the username that admin want to confirm the order
