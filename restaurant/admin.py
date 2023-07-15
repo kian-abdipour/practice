@@ -2,7 +2,7 @@ from menu import Menu
 from super_admin import SupperAdmin
 from customer import list_information_login_customer
 from item import Item
-from category import Category
+#from category import Category
 
 
 class Admin:
@@ -43,7 +43,10 @@ class Admin:
     def add_category():
         print("Enter name of category {number_category}".format(number_category=len(Menu.list_categories) + 1))
         name_of_category = input(": ")
-        category = Category(name_of_category)
+        category = {
+            "name": name_of_category,
+            "list_items": []
+        }
         Menu.list_categories.append(category)
 
     # This method append food to list_food in menu class
@@ -51,7 +54,7 @@ class Admin:
     @staticmethod
     def add_item():
         for category in Menu.list_categories:
-            print(Menu.list_categories.index(category) + 1, " -- ", category.name)
+            print(Menu.list_categories.index(category) + 1, " -- ", category.get("name"))
 
         try:
             print("Enter number of category that you want")
@@ -68,8 +71,8 @@ class Admin:
 
         for category in Menu.list_categories:
             if index_category_of_item - 1 == Menu.list_categories.index(category):
-                item = Item(name_of_item, category.name, price_of_item)
-                category.list_items.append(item)
+                item = Item(name_of_item, category["name"], price_of_item)
+                category["list_items"].append(item)
                 print("Add item was successful ")
 
     # This method remove the food that user want
@@ -106,9 +109,10 @@ class Admin:
         number_display = input(": ")
         if number_display == "1":
             for category in Menu.list_categories:
-                if len(category.list_items) > 0:
-                    for item in category.list_items:
-                        print(Menu.list_categories.index(item) + 1, " -- ", "(", item.name,
+                if len(category["list_items"]) > 0:
+                    print(category["list_items"])
+                    for item in category["list_items"]:
+                        print(category["list_items"].index(item) + 1, " -- ", "(", item.name,
                               "category:", item.name_category, ")", " price: ", item.price)
 
                 else:
@@ -117,11 +121,11 @@ class Admin:
 
         elif number_display == "2":
             for category in Menu.list_categories:
-                print(Menu.list_categories.index(category) + 1, " -- ", category.name)
+                print(Menu.list_categories.index(category) + 1, " -- ", category["name"])
 
         elif number_display == "3":
             for category in Menu.list_categories:
-                print(Menu.list_categories.index(category) + 1, " -- ", category.name+":", len(category.list_items))
+                print(Menu.list_categories.index(category) + 1, " -- ", category["name"]+":", len(category["List_items"]))
 
         else:
             print("Number not found")

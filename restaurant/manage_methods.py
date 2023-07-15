@@ -64,7 +64,7 @@ def manage_admin_methods():
                     admin.add_item()
 
                 else:
-                    print("You don't have any food, first you should add food to menu")
+                    print("You don't have any category, first you should add category to menu")
 
             elif input_action_of_admin == "2":
                 if len(Menu.list_categories) > 0:
