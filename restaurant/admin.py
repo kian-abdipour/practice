@@ -54,7 +54,7 @@ class Admin:
     @staticmethod
     def add_item():
         for category in Menu.list_categories:
-            print(Menu.list_categories.index(category) + 1, " -- ", category.get("name"))
+            print(Menu.list_categories.index(category) + 1, " -- ", category["name"])
 
         try:
             print("Enter number of category that you want")
@@ -110,7 +110,6 @@ class Admin:
         if number_display == "1":
             for category in Menu.list_categories:
                 if len(category["list_items"]) > 0:
-                    print(category["list_items"])
                     for item in category["list_items"]:
                         print(category["list_items"].index(item) + 1, " -- ", "(", item.name,
                               "category:", item.name_category, ")", " price: ", item.price)
