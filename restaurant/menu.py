@@ -2,15 +2,6 @@ class Menu:
     list_categories = []
 
     @classmethod
-    def display_categories(cls):
-        if len(cls.list_categories) > 0:
-            for category in Menu.list_categories:
-                print(Menu.list_categories.index(category) + 1, " -- ", category.name)
-
-        else:
-            print("Now we don't have any category")
-
-    @classmethod
     def display_menu(cls):
         print("Enter a number\n1 -- All menu\n2 -- All category\n3 -- Number of each category that use")
         number_type_of_display = input(": ")
@@ -34,4 +25,13 @@ class Menu:
 
         else:
             print("Number not found")
+
+    @classmethod
+    def display_categories(cls):
+        if len(cls.list_categories) > 0:
+            for category in Menu.list_categories:
+                print(Menu.list_categories.index(category) + 1, " -- ", category.name)
+
+        else:
+            print("Now we don't have any category")
 
