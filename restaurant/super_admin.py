@@ -9,10 +9,10 @@ class SupperAdmin:
     # If condition of login will be true user can continue ass super admin
     def super_admin_login(self):
         print("Enter super admin code login")
-        input_super_admin_code = input(": ")
+        super_admin_code = input(": ")
 
         condition_of_login_super_admin = False
-        if input_super_admin_code == self.super_admin_code:
+        if super_admin_code == self.super_admin_code:
             condition_of_login_super_admin = True
 
         else:
@@ -24,21 +24,21 @@ class SupperAdmin:
     # This function is clear and append a new admin to list_admin
     def add_admin_by_super_admin(self):
         print("Enter first name of admin {number_admin}".format(number_admin=len(self.list_admin) + 1))
-        input_first_name_of_admin = input(": ")
+        first_name_of_admin = input(": ")
 
-        print("Enter last name of {first_name_admin}".format(first_name_admin=input_first_name_of_admin))
-        input_last_name_of_admin = input(": ")
+        print("Enter last name of {first_name_admin}".format(first_name_admin=first_name_of_admin))
+        last_name_of_admin = input(": ")
 
         print("Enter admin code's {full_name_admin}"
-              .format(full_name_admin=input_first_name_of_admin + " " + input_last_name_of_admin))
-        input_admin_code = input(": ")
+              .format(full_name_admin=first_name_of_admin + " " + last_name_of_admin))
+
         try:
-            int_input_admin_code = int(input_admin_code)
+            input_admin_code = int(input(": "))
 
         except ValueError:
             return print("ValueError: Your admin code must be number with out any space like: 3476.")
 
-        list_information_admin = [input_first_name_of_admin, input_last_name_of_admin, int_input_admin_code]
+        list_information_admin = [first_name_of_admin, last_name_of_admin, input_admin_code]
 
         self.list_admin.append(list_information_admin)
 

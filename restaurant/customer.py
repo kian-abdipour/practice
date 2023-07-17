@@ -4,41 +4,42 @@ list_information_login_customer = []  # All data that we have about customer is 
 
 
 class Customer:
-    def __init__(self):
-        self.username = None
-        self.password = None
+    def __init__(self, username, password):
+        self.username = username
+        self.password = password
         self.list_orders = []
-    username_of_login_for_now = None
+    username_login_customer_for_now = None
 
+    @staticmethod
     # This method get the user's username and password then append to list_information_login_customer
-    def signup_customer(self):
+    def signup_customer():
         print("Enter your username")
-        self.username = input(": ")
+        username = input(": ")
 
         print("Enter your password")
-        self.password = input(": ")
+        password = input(": ")
 
-        information_customer = [self.username, self.password]
-        list_information_login_customer.append(information_customer)
+        customer = Customer(username, password)
+        list_information_login_customer.append(customer)
 
     @classmethod
     # This method check that we have this username pass or not if we don't have customer can't see the next
     # Page
     def login_customer(cls):
         print("Please enter username of your relax account")
-        input_login_username = input(": ")
+        login_username = input(": ")
 
         print("Please enter password of your relax account")
-        input_signup_password = input(": ")
+        signup_password = input(": ")
 
-        cls.username_of_login_for_now = input_login_username
+        cls.username_login_customer_for_now = login_username
         condition_of_login = False
-        for item in list_information_login_customer:
-            if item[0] == input_login_username and item[1] == input_signup_password:
+        for customer in list_information_login_customer:
+            if customer.username == login_username and customer.password == signup_password:
                 condition_of_login = True
 
         if condition_of_login:
-            print("Welcome to relax account ", input_login_username)
+            print("Welcome to relax account ", login_username)
 
         else:
             print("Username or password not found")
@@ -47,68 +48,60 @@ class Customer:
 
     # This method first display menu then get the number of food that customer want to order
     # Then add this food to list_customer that are in list_information_login_customer
-    def order_food(self):
-        for food in Menu.list_edible:
-            print(Menu.list_edible.index(food) + 1, " -- ", "(", food[0], ",", "type: ", food[2], ")", "price:", food[1]
-                  )
+    def order_item(self):
+        Menu.display_categories()
 
-        if Menu.list_name_items == 0:
-            print("Sorry but now we don't have any food now")
-
-        input_number_food_for_order = input(": ")
         try:
-            int_input_number_food_for_order = int(input_number_food_for_order)
+            number_category = int(input(": ")) - 1
+            # This variable is for handle index error
+            last_item_list_food = Menu.list_categories[number_category - 1]
 
         except ValueError:
-            return print("ValueError: You should type just number")
-
-        try:
-            # This variable is for handle index error
-            last_item_list_food = Menu.list_name_items[int_input_number_food_for_order - 1]
+            return print("ValueError: You must type just number")
 
         except IndexError:
-            return print("IndexError: Number not found")
+            return print("IndexError: You must type just number")
+        
+        for category in Menu.list_categories:
+            if Menu.list_categories.index(category) == number_category:
+                for item in category.list_items:
+                    print(category.list_items.index(item) + 1, " -- ", item.name, "price: ", item.price)
+        
+        try:
+            number_item = int(input(": ")) - 1
+            
+        except ValueError:
+            return print("ValueError: Number not found")
 
-        for food in Menu.list_name_items:
-            if Menu.list_name_items.index(food) + 1 == int_input_number_food_for_order:
-                self.list_orders.append(food)
+        condition_of_select_item = False
+        for category in Menu.list_categories:
+            if Menu.list_categories.index(category) == number_category:
+                for item in category.list_items:
+                    if category.list_items.index(item) == number_item:
+                        selected_item = item
+                        condition_of_select_item = True
 
-        condition_of_order = False
-        for customer in list_information_login_customer:
-            if customer[0] == self.username_of_login_for_now:
-                list_information_login_customer[list_information_login_customer.index(customer)].\
-                    append(self.list_orders[0])
-                condition_of_order = True
-
-        if condition_of_order:
-            print("Record order was successful ")
+        if condition_of_select_item:
+            for customer in list_information_login_customer:
+                if self.username_login_customer_for_now == customer.username:
+                    customer.list_orders.append(selected_item)
+                    print("Record item was successful")
 
         else:
-            print("This user name doesn't have account in relax restaurant try again")
-
-        self.list_orders.clear()
+            print("Number not found")
 
     @classmethod
     # This method display order of account that user say and show the total of fee's order
     def display_orders_and_receipt(cls):
-        for customer in list_information_login_customer:
-            if customer[0] == cls.username_of_login_for_now:
-                if len(customer) > 2:
-                    print("You have ordered this foods:")
-                    for information in customer:
-                        if type(information) == list:
-                            print(customer[0], " -- ", information[0], "price: ", information[1])
-
-                else:
-                    print("You don't have any orders")
-
         total = 0
-        for customer_2 in list_information_login_customer:
-            if customer_2[0] == cls.username_of_login_for_now:
-                if len(customer_2) > 2:
-                    for information_2 in customer_2:
-                        if type(information_2) == list:
-                            total = information_2[1] + total
+        for customer in list_information_login_customer:
+            if customer.username == cls.username_login_customer_for_now:
+                if len(customer.list_orders) > 0:
+                    for order in customer.list_orders:
+                        print(customer.list_orders.index(order) + 1, " -- ", order.name,
+                              "price: ", order.price,
+                              "category: ", order.name_category)
+                        total += order.price
 
-        print("Total: ", total)
+        print("total: ", total)
 

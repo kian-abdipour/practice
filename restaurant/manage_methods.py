@@ -2,12 +2,14 @@ from super_admin import SupperAdmin
 from admin import Admin
 from menu import Menu
 from customer import Customer
-
+from item import Item
+from category import Category
 
 super_admin = SupperAdmin("Kian", "Abdipour")  # This set default because it's name of owner's program
 admin = Admin()
-
-customer = Customer()
+customer = Customer(None, None)
+item = Item(None, None, None)
+category = Category(None)
 
 
 # This function manage methods that are in SuperAdmin class
@@ -61,33 +63,33 @@ def manage_admin_methods():
 
             if input_action_of_admin == "1":
                 if len(Menu.list_categories) > 0:
-                    admin.add_item()
+                    Item.add_item()
 
                 else:
                     print("You don't have any food, first you should add food to menu")
 
             elif input_action_of_admin == "2":
                 if len(Menu.list_categories) > 0:
-                    admin.remove_food()
+                    item.remove_item()
 
                 else:
                     print("You don't have any food, first you should add food to menu")
 
             elif input_action_of_admin == "3":
                 if len(Menu.list_categories) > 0:
-                    admin.display_menu()
+                    Menu.display_menu()
 
                 else:
                     print("You don't have any category, first you should add category to menu")
 
             elif input_action_of_admin == "4":
-                admin.confirmation_the_active_transaction()
+                admin.confirmation_the_orders()
 
             elif input_action_of_admin == "5":
-                admin.display_orders_of_user()
+                admin.display_orders_of_customer()
 
             elif input_action_of_admin == "6":
-                admin.add_category()
+                category.add_category()
 
             else:
                 print("number not found")
@@ -109,7 +111,7 @@ def manage_customer_methods():
                 print("Enter one of this number \n1 -- order food\n2 -- list orders and receipt")
                 input_number_actions_customer = input(": ")
                 if input_number_actions_customer == "1":
-                    customer.order_food()
+                    customer.order_item()
 
                 elif input_number_actions_customer == "2":
                     customer.display_orders_and_receipt()
