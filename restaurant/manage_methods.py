@@ -60,21 +60,21 @@ def manage_admin_methods():
             input_action_of_admin = input(": ")
 
             if input_action_of_admin == "1":
-                if len(Menu.list_categories) > 0:
+                if len(Menu.categories) > 0:
                     admin.add_item()
 
                 else:
                     print("You don't have any category, first you should add category to menu")
 
             elif input_action_of_admin == "2":
-                if len(Menu.list_categories) > 0:
+                if len(Menu.categories) > 0:
                     admin.remove_food()
 
                 else:
                     print("You don't have any food, first you should add food to menu")
 
             elif input_action_of_admin == "3":
-                if len(Menu.list_categories) > 0:
+                if len(Menu.categories) > 0:
                     admin.display_menu()
 
                 else:

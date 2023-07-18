@@ -41,24 +41,21 @@ class Admin:
 
     @staticmethod
     def add_category():
-        print("Enter name of category {number_category}".format(number_category=len(Menu.list_categories) + 1))
+        print("Enter name of category {number_category}".format(number_category=len(Menu.categories) + 1))
         name_of_category = input(": ")
-        category = {
-            "name": name_of_category,
-            "list_items": []
-        }
-        Menu.list_categories.append(category)
+
+        Menu.categories[name_of_category] = []
 
     # This method append food to list_food in menu class
     # With name food append a price of food by integer type
     @staticmethod
     def add_item():
-        for category in Menu.list_categories:
-            print(Menu.list_categories.index(category) + 1, " -- ", category["name"])
+        for category in Menu.categories:
+            print(category)
 
         try:
-            print("Enter number of category that you want")
-            index_category_of_item = int(input(": "))
+            print("Enter name of category that you want")
+            name_category = input(": ")
 
             print("Enter name of item")
             name_of_item = input(": ")
@@ -67,13 +64,18 @@ class Admin:
             price_of_item = int(input(": "))
 
         except ValueError:
-            return print("ValueError: You should type just number")
+            return print("ValueError: You should type just number for price of item")
 
-        for category in Menu.list_categories:
-            if index_category_of_item - 1 == Menu.list_categories.index(category):
-                item = Item(name_of_item, category["name"], price_of_item)
-                category["list_items"].append(item)
-                print("Add item was successful ")
+        condition_of_add_item = False
+        for key, value in Menu.categories.items():
+            if name_category == key:
+                item = Item(name_of_item, price_of_item)
+                value.append(item)
+                print("Add item was successful")
+                condition_of_add_item = True
+
+        if condition_of_add_item is False:
+            print("Category not found")
 
     # This method remove the food that user want
     @staticmethod
@@ -102,29 +104,26 @@ class Admin:
         #else:
         #    print("Remove food was unsuccessful")
 
+
     # This method is clear and show the all food that we have in list_food
     @staticmethod
     def display_menu():
         print("Enter a number\n1 -- All menu\n2 -- All category\n3 -- Number of each category that use")
         number_display = input(": ")
-        if number_display == "1":
-            for category in Menu.list_categories:
-                if len(category["list_items"]) > 0:
-                    for item in category["list_items"]:
-                        print(category["list_items"].index(item) + 1, " -- ", "(", item.name,
-                              "category:", item.name_category, ")", " price: ", item.price)
 
-                else:
-                    return print("You don't have any item in category {name_category}".
-                                 format(name_category=category.name))
+        list_categories = list(Menu.categories.items())
+        if number_display == "1":
+            for key, value in list_categories:
+                for item in value:
+                    print(key+":", item.name, ">>>", item.price)
 
         elif number_display == "2":
-            for category in Menu.list_categories:
-                print(Menu.list_categories.index(category) + 1, " -- ", category["name"])
+            for category in list_categories:
+                print(list_categories.index(category) + 1, " -- ", category[0])
 
         elif number_display == "3":
-            for category in Menu.list_categories:
-                print(Menu.list_categories.index(category) + 1, " -- ", category["name"]+":", len(category["List_items"]))
+            for key, value in list_categories:
+                print(key+":", len(value))
 
         else:
             print("Number not found")

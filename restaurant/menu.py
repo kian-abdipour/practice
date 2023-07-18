@@ -1,3 +1,3 @@
 class Menu:
-    list_categories = []
+    categories = {}
 
