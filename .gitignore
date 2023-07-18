@@ -9,3 +9,5 @@ __pycache__/*
 *.pyc
 alpha-prj/*
 restaurant_env/*
+venv/*
+venv
