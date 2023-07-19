@@ -3,10 +3,10 @@ from customer import list_information_login_customer
 
 
 class Admin:
-    def __init__(self):
-        self.first_name = None
-        self.last_name = None
-        self.admin_code = None
+    def __init__(self, first_name=None, last_name=None, admin_code=None):
+        self.first_name = first_name
+        self.last_name = last_name
+        self.admin_code = admin_code
 
     # This method is for login admin with a code that super admin set
     def admin_login(self):
