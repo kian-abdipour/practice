@@ -24,7 +24,7 @@ def manage_super_admin_methods():
             input_action_of_super_admin = input(": ")
 
             if input_action_of_super_admin == "1":
-                super_admin.add_admin_by_super_admin()
+                admin.add_admin()
 
             elif input_action_of_super_admin == "2":
                 if len(super_admin.list_admin) > 0:

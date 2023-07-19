@@ -8,9 +8,9 @@ class Admin:
         self.last_name = last_name
         self.admin_code = admin_code
 
+    @staticmethod
     # This method is for login admin with a code that super admin set
-    def admin_login(self):
-
+    def admin_login():
         print("Enter your admin code")
         input_admin_code = input(": ")
 
@@ -23,14 +23,12 @@ class Admin:
 
         condition_of_login_admin = False
         for admin in SupperAdmin.list_admin:
-            if admin[2] == int_input_admin_code:
+            if admin.admin_code == int_input_admin_code:
                 condition_of_login_admin = True
-                self.first_name = admin[0]
-                self.last_name = admin[1]
-                self.admin_code = admin[2]
+                break
 
         if condition_of_login_admin:
-            print("\n", self.first_name, self.last_name, "welcome to your admin panel\n")
+            print("\n", admin.first_name, admin.last_name, "welcome to your admin panel\n")
 
         else:
             print("Admin code not found")
@@ -78,4 +76,26 @@ class Admin:
             for customer in list_information_login_customer:
                 for order in customer.list_orders:
                     print(customer.username, " -- ", order.name, "price:", order.price)
+
+    @staticmethod
+    # This function is one of actions that super admin can do
+    # This function is clear and append a new admin to list_admin
+    def add_admin():
+        print("Enter first name of admin {number_admin}".format(number_admin=len(SupperAdmin.list_admin) + 1))
+        first_name_of_admin = input(": ")
+
+        print("Enter last name of {first_name_admin}".format(first_name_admin=first_name_of_admin))
+        last_name_of_admin = input(": ")
+
+        print("Enter admin code's {full_name_admin}"
+              .format(full_name_admin=first_name_of_admin + " " + last_name_of_admin))
+
+        try:
+            input_admin_code = int(input(": "))
+
+        except ValueError:
+            return print("ValueError: Your admin code must be number with out any space like: 3476.")
+
+        admin = Admin(first_name_of_admin, last_name_of_admin, input_admin_code)
+        SupperAdmin.list_admin.append(admin)
 
