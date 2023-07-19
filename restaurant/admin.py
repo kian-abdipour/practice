@@ -50,14 +50,14 @@ class Admin:
     def add_item():
         for category in Menu.categories:
             print(category)
+            
+        print("Enter name of category that you want")
+        name_category = input(": ")
+
+        print("Enter name of item")
+        name_of_item = input(": ")
 
         try:
-            print("Enter name of category that you want")
-            name_category = input(": ")
-
-            print("Enter name of item")
-            name_of_item = input(": ")
-
             print("Enter price of {name_item} the currency of money is dollar".format(name_item=name_of_item))
             price_of_item = int(input(": "))
 
@@ -110,7 +110,7 @@ class Admin:
         if number_display == "1":
             for key, value in list_categories:
                 for item in value:
-                    print(key+":", item.name, ">>>", item.price)
+                    print(key, ":", item.name, ">>>", item.price)
 
         elif number_display == "2":
             for category in list_categories:
@@ -118,7 +118,7 @@ class Admin:
 
         elif number_display == "3":
             for key, value in list_categories:
-                print(key+":", len(value))
+                print(key, ":", len(value))
 
         else:
             print("Number not found")
