@@ -6,7 +6,6 @@ from customer import Customer
 
 super_admin = SupperAdmin("Kian", "Abdipour")  # This set default because it's name of owner's program
 admin = Admin()
-
 customer = Customer()
 
 

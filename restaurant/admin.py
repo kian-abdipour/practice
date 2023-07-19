@@ -2,7 +2,6 @@ from menu import Menu
 from super_admin import SupperAdmin
 from customer import list_information_login_customer
 from item import Item
-#from category import Category
 
 
 class Admin:
@@ -43,9 +42,7 @@ class Admin:
     def add_category():
         print("Enter name of category {number_category}".format(number_category=len(Menu.categories) + 1))
         name_of_category = input(": ")
-
-        Menu.categories[name_of_category] \
-            = []
+        Menu.categories[name_of_category] = []
 
     # This method append food to list_food in menu class
     # With name food append a price of food by integer type
@@ -67,15 +64,12 @@ class Admin:
         except ValueError:
             return print("ValueError: You should type just number for price of item")
 
-        condition_of_add_item = False
-        for key, value in Menu.categories.items():
-            if name_category == key:
-                item = Item(name_of_item, price_of_item)
-                value.append(item)
-                print("Add item was successful")
-                condition_of_add_item = True
+        if name_category in Menu.categories.keys():
+            item = Item(name_of_item, price_of_item)
+            Menu.categories[name_category].append(item)
+            print("Add item was successful")
 
-        if condition_of_add_item is False:
+        else:
             print("Category not found")
 
     # This method remove the food that user want
