@@ -44,7 +44,8 @@ class Admin:
         print("Enter name of category {number_category}".format(number_category=len(Menu.categories) + 1))
         name_of_category = input(": ")
 
-        Menu.categories[name_of_category] = []
+        Menu.categories[name_of_category] \
+            = []
 
     # This method append food to list_food in menu class
     # With name food append a price of food by integer type
