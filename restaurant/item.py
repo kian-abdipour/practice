@@ -12,14 +12,17 @@ class Item:
     @staticmethod
     def add_item():
         Menu.display_categories()
-
         try:
             print("Enter number of category that you want")
             index_category_of_item = int(input(": "))
 
-            print("Enter name of item")
-            name_of_item = input(": ")
+        except ValueError:
+            return print("You should type just number")
 
+        print("Enter name of item")
+        name_of_item = input(": ")
+
+        try:
             print("Enter price of {name_item} the currency of money is dollar".format(name_item=name_of_item))
             price_of_item = int(input(": "))
 
