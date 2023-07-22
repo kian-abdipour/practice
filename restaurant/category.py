@@ -2,7 +2,7 @@ from menu import Menu
 
 
 class Category:
-    def __init__(self, name):
+    def __init__(self, name=None):
         self.name = name
         self.list_items = []
 

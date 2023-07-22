@@ -2,9 +2,8 @@ from menu import Menu
 
 
 class Item:
-    def __init__(self, name, name_category, price):
+    def __init__(self, name=None, price=None):
         self.name = name
-        self.name_category = name_category
         self.price = price
 
     # This method append food to list_food in menu class
@@ -31,7 +30,7 @@ class Item:
 
         for category in Menu.list_categories:
             if index_category_of_item - 1 == Menu.list_categories.index(category):
-                item = Item(name_of_item, category.name, price_of_item)
+                item = Item(name_of_item, price_of_item)
                 category.list_items.append(item)
                 print("Add item was successful ")
 

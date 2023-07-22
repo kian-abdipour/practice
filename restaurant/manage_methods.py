@@ -7,9 +7,9 @@ from category import Category
 
 super_admin = SupperAdmin("Kian", "Abdipour")  # This set default because it's name of owner's program
 admin = Admin()
-customer = Customer(None, None)
-item = Item(None, None, None)
-category = Category(None)
+customer = Customer()
+item = Item()
+category = Category()
 
 
 # This function manage methods that are in SuperAdmin class

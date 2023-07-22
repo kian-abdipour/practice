@@ -4,7 +4,7 @@ list_information_login_customer = []  # All data that we have about customer is 
 
 
 class Customer:
-    def __init__(self, username, password):
+    def __init__(self, username=None, password=None):
         self.username = username
         self.password = password
         self.list_orders = []
