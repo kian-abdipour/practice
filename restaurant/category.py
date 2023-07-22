@@ -1,4 +1,4 @@
-from menu import Menu
+from customer import list_categories
 
 
 class Category:
@@ -8,9 +8,9 @@ class Category:
 
     @staticmethod
     def add_category():
-        print("Enter name of category {number_category}".format(number_category=len(Menu.list_categories) + 1))
+        print("Enter name of category {number_category}".format(number_category=len(list_categories) + 1))
         name_of_category = input(": ")
         category = Category(name_of_category)
-        Menu.list_categories.append(category)
+        list_categories.append(category)
         print("Add category was successful")
 

@@ -1,9 +1,9 @@
 from super_admin import SupperAdmin
 from admin import Admin
-from menu import Menu
 from customer import Customer
 from item import Item
 from category import Category
+from customer import list_categories
 
 super_admin = SupperAdmin("Kian", "Abdipour")  # This set default because it's name of owner's program
 admin = Admin()
@@ -62,22 +62,22 @@ def manage_admin_methods():
             input_action_of_admin = input(": ")
 
             if input_action_of_admin == "1":
-                if len(Menu.list_categories) > 0:
+                if len(list_categories) > 0:
                     Item.add_item()
 
                 else:
                     print("You don't have any food, first you should add food to menu")
 
             elif input_action_of_admin == "2":
-                if len(Menu.list_categories) > 0:
+                if len(list_categories) > 0:
                     item.remove_item()
 
                 else:
                     print("You don't have any food, first you should add food to menu")
 
             elif input_action_of_admin == "3":
-                if len(Menu.list_categories) > 0:
-                    Menu.display_menu()
+                if len(list_categories) > 0:
+                    customer.display_menu()
 
                 else:
                     print("You don't have any category, first you should add category to menu")

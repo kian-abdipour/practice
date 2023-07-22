@@ -1,6 +1,5 @@
-from menu import Menu
-
 list_information_login_customer = []  # All data that we have about customer is in this variable as list
+list_categories = []
 
 
 class Customer:
@@ -46,15 +45,24 @@ class Customer:
 
         return condition_of_login
 
+    @staticmethod
+    def display_categories():
+        if len(list_categories) > 0:
+            for category in list_categories:
+                print(list_categories.index(category) + 1, " -- ", category.name)
+
+        else:
+            print("Now we don't have any category")
+
     # This method first display menu then get the number of food that customer want to order
     # Then add this food to list_customer that are in list_information_login_customer
     def order_item(self):
-        Menu.display_categories()
+        Customer.display_categories()
 
         try:
             number_category = int(input(": ")) - 1
             # This variable is for handle index error
-            last_item_list_food = Menu.list_categories[number_category - 1]
+            last_item_list_food = list_categories[number_category - 1]
 
         except ValueError:
             return print("ValueError: You must type just number")
@@ -62,8 +70,8 @@ class Customer:
         except IndexError:
             return print("IndexError: You must type just number")
         
-        for category in Menu.list_categories:
-            if Menu.list_categories.index(category) == number_category:
+        for category in list_categories:
+            if list_categories.index(category) == number_category:
                 for item in category.list_items:
                     print(category.list_items.index(item) + 1, " -- ", item.name, "price: ", item.price)
         
@@ -74,8 +82,8 @@ class Customer:
             return print("ValueError: Number not found")
 
         condition_of_select_item = False
-        for category in Menu.list_categories:
-            if Menu.list_categories.index(category) == number_category:
+        for category in list_categories:
+            if list_categories.index(category) == number_category:
                 for item in category.list_items:
                     if category.list_items.index(item) == number_item:
                         selected_item = item
@@ -99,9 +107,33 @@ class Customer:
                 if len(customer.list_orders) > 0:
                     for order in customer.list_orders:
                         print(customer.list_orders.index(order) + 1, " -- ", order.name,
-                              "price: ", order.price,
-                              "category: ", order.name_category)
+                              "price: ", order.price)
                         total += order.price
 
         print("total: ", total)
+
+    @staticmethod
+    def display_menu():
+        print("Enter a number\n1 -- All menu\n2 -- All category\n3 -- Number of each category that use")
+        number_type_of_display = input(": ")
+        if number_type_of_display == "1":
+            for category in list_categories:
+                if len(category.list_items) > 0:
+                    for item in category.list_items:
+                        print(category.list_items.index(item) + 1, " -- ", "(", item.name,
+                              "category:", category.name, ")",
+                              "price:", item.price)
+
+                else:
+                    print("We don't have any food in", category.name)
+
+        elif number_type_of_display == "2":
+            Customer.display_categories()
+
+        elif number_type_of_display == "3":
+            for category in list_categories:
+                print(list_categories.index(category) + 1, " -- ", category.name + ":", len(category.list_items))
+
+        else:
+            print("Number not found")
 
