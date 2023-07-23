@@ -1,5 +1,5 @@
 list_information_login_customer = []  # All data that we have about customer is in this variable as list
-list_categories = []
+list_categories = []  # All instance about categories and items are in this variable
 
 
 class Customer:
