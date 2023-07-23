@@ -7,7 +7,7 @@ class Customer:
         self.username = username
         self.password = password
         self.list_orders = []
-    username_login_customer_for_now = None
+    username_login_customer_for_now = None  # This is for set a username that is login now and do some method on it
 
     @staticmethod
     # This method get the user's username and password then append to list_information_login_customer
