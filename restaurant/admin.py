@@ -99,3 +99,17 @@ class Admin:
         admin = Admin(first_name_of_admin, last_name_of_admin, input_admin_code)
         SupperAdmin.list_admin.append(admin)
 
+    def __repr__(self):
+        return print("This model has 3 attribute and you can define it by positional argument like this"
+                     "admin = Admin('Kian', 'Abdipour', 12)")
+
+    def __str__(self):
+        return print(f"Admin=: {self.first_name} {self.last_name} code = {self.admin_code}")
+
+    def __bool__(self):
+        if self.admin_code < 100:
+            return True
+
+        else:
+            return False
+

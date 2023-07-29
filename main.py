@@ -1,4 +1,9 @@
 class Person:
+    def __new__(cls, *args, **kwargs):
+        print("Instance is creation")
+        instance = super().__new__(cls)
+        return instance
+
     def __init__(self, first_name, last_name, age):
         self.first_name = first_name
         self.last_name = last_name
@@ -35,9 +40,6 @@ class Person:
     def __sub__(self, other):
         return Person("Kian", "Abdipour", self.age - other.age)
 
-    def __del__(self):
-        print("Person destroyed")
-
     def __bool__(self):
         if self.age > 18:
             return True
@@ -52,13 +54,15 @@ class Person:
         return float(self.age)
 
     def __getattr__(self, item):
-        print("   df")
+        return print(item)
+
+    def __del__(self):
+        return print("Person destroyed")
+
 
 hossein = Person("hossein", "Hassani", 15)
 ali = Person("Ali", "Hassani", 26)
-jj = hossein - ali
-del jj
-
-print(hossein.does_not_exist)
-print(repr(hossein))
+print(ali.kk)
+#jj = hossein - ali
+#print(jj)
 
