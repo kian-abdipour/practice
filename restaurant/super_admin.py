@@ -64,9 +64,9 @@ class SupperAdmin:
 #        return print("{attribute} Attribute not found".format(attribute=attribute))
 
     def __repr__(self):
-        return print("This model has first_name and last_name attribute and you should define it by positional "
-                     "argument like this super_admin = SuperAdmin('kian', 'abdipour')")
+        return ("This model has first_name and last_name attribute and you should define it by positional "
+                "argument like this super_admin = SuperAdmin('kian', 'abdipour')")
 
     def __str__(self):
-        return print(f"Super admin: {self.first_name} {self.last_name}")
+        return f"Super admin: {self.first_name} {self.last_name}"
 

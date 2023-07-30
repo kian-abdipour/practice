@@ -70,11 +70,11 @@ class Item:
             print("Number not found")
 
     def __repr__(self):
-        return print("This model has 2 attribute name and price, price must be an integer and you can define it "
-                     "by positional argument like this item = Item('pizza', 20)")
+        return ("This model has 2 attribute name and price, price must be an integer and you can define it by"
+                " positional argument like this: item = Item('pizza', 20)")
 
     def __str__(self):
-        return print(f"Item: {self.name} price: {self.price}")
+        return f"Item: {self.name} price: {self.price}"
 
     def __gt__(self, instance_2):
         return self.price > instance_2.price

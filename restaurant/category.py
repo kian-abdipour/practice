@@ -15,9 +15,9 @@ class Category:
         print("Add category was successful")
 
     def __repr__(self):
-        return print("This category has one attribute it's name")
+        return "This category has one attribute it's name"
 
     def __str__(self):
-        return print(f"Category: {self.name}")
+        return f"Category: {self.name}"
 
 

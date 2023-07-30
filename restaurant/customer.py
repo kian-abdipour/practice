@@ -138,8 +138,8 @@ class Customer:
             print("Number not found")
 
     def __repr__(self):
-        return print("This model hase 2 attribute username and password, and you define instance by positional argument"
-                     "like this: customer: Customer(kian, 'bmw1386z4')")
+        return ("This model hase 2 attribute username and password, and you define instance by positional argument"
+                "like this: customer: Customer(kian, 'bmw1386z4')")
 
     def __str__(self):
-        return print(f"Customer: {self.username} password: {self.password}")
+        return f"Customer: {self.username} password: {self.password}"
