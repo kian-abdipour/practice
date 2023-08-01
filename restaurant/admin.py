@@ -106,10 +106,3 @@ class Admin:
     def __str__(self):
         return f"Admin= {self.first_name} {self.last_name} code = {self.admin_code}"
 
-    def __bool__(self):
-        if self.admin_code < 100:
-            return True
-
-        else:
-            return False
-

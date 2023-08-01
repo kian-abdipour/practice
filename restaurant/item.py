@@ -76,13 +76,6 @@ class Item:
     def __str__(self):
         return f"Item: {self.name} price: {self.price}"
 
-    def __gt__(self, instance_2):
-        return self.price > instance_2.price
-
-    def __bool__(self):
-        if self.price < 200:
-            return True
-
-        else:
-            return False
+    def __gt__(self, other_instance):
+        return self.price > other_instance.price
 
