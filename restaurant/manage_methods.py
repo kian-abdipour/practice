@@ -4,12 +4,14 @@ from menu import Menu
 from customer import Customer
 from item import Item
 from category import Category
+from order import Order
 
 super_admin = SupperAdmin("Kian", "Abdipour")  # This set default because it's name of owner's program
 admin = Admin()
 customer = Customer()
 item = Item()
 category = Category()
+order = Order()
 
 
 # This function manage methods that are in SuperAdmin class
@@ -111,10 +113,10 @@ def manage_customer_methods():
                 print("Enter one of this number \n1 -- order food\n2 -- list orders and receipt")
                 input_number_actions_customer = input(": ")
                 if input_number_actions_customer == "1":
-                    customer.order_item()
+                    order.order_item()
 
                 elif input_number_actions_customer == "2":
-                    customer.display_orders_and_receipt()
+                    order.display_orders_and_receipt()
 
                 else:
                     if input_number_actions_customer != "q":

@@ -1,5 +1,5 @@
 from super_admin import SupperAdmin
-from customer import list_information_login_customer
+from customer import list_information_signup_customer
 
 
 class Admin:
@@ -44,7 +44,7 @@ class Admin:
         while progress:
             number_account_that_have_orders = 0
             print("Please enter username of user that you want to confirm his orders")
-            for customer in list_information_login_customer:
+            for customer in list_information_signup_customer:
                 if len(customer.list_orders) > 0:
                     number_account_that_have_orders += 1
                     print(customer.username)
@@ -52,7 +52,7 @@ class Admin:
             condition_of_confirmation = False
             username_username_customer = input(": ")
             if number_account_that_have_orders > 0:
-                for customer in list_information_login_customer:
+                for customer in list_information_signup_customer:
                     if len(customer.list_orders) > 0 and username_username_customer == customer.username:
                         customer.list_orders.clear()
                         condition_of_confirmation = True
@@ -72,8 +72,8 @@ class Admin:
     # This method show the customer that have already order
     @staticmethod
     def display_orders_of_customer():
-        if len(list_information_login_customer) > 0:
-            for customer in list_information_login_customer:
+        if len(list_information_signup_customer) > 0:
+            for customer in list_information_signup_customer:
                 for order in customer.list_orders:
                     print(customer.username, " -- ", order.name, "price:", order.price)
 

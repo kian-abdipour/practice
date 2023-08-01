@@ -1,14 +1,15 @@
 from menu import Menu
 
-list_information_login_customer = []  # All data that we have about customer is in this variable as list
+list_information_signup_customer = []  # All data that we have about customer is in this variable as list
 
 
 class Customer:
+    username_login_customer_for_now = None
+
     def __init__(self, username=None, password=None):
         self.username = username
         self.password = password
-        self.list_orders = []
-    username_login_customer_for_now = None
+#        self.list_orders = []
 
     @staticmethod
     # This method get the user's username and password then append to list_information_login_customer
@@ -20,7 +21,7 @@ class Customer:
         password = input(": ")
 
         customer = Customer(username, password)
-        list_information_login_customer.append(customer)
+        list_information_signup_customer.append(customer)
 
     @classmethod
     # This method check that we have this username pass or not if we don't have customer can't see the next
@@ -34,7 +35,7 @@ class Customer:
 
         cls.username_login_customer_for_now = login_username
         condition_of_login = False
-        for customer in list_information_login_customer:
+        for customer in list_information_signup_customer:
             if customer.username == login_username and customer.password == signup_password:
                 condition_of_login = True
 
@@ -45,63 +46,4 @@ class Customer:
             print("Username or password not found")
 
         return condition_of_login
-
-    # This method first display menu then get the number of food that customer want to order
-    # Then add this food to list_customer that are in list_information_login_customer
-    def order_item(self):
-        Menu.display_categories()
-
-        try:
-            number_category = int(input(": ")) - 1
-            # This variable is for handle index error
-            last_item_list_food = Menu.list_categories[number_category - 1]
-
-        except ValueError:
-            return print("ValueError: You must type just number")
-
-        except IndexError:
-            return print("IndexError: You must type just number")
-        
-        for category in Menu.list_categories:
-            if Menu.list_categories.index(category) == number_category:
-                for item in category.list_items:
-                    print(category.list_items.index(item) + 1, " -- ", item.name, "price: ", item.price)
-        
-        try:
-            number_item = int(input(": ")) - 1
-            
-        except ValueError:
-            return print("ValueError: Number not found")
-
-        condition_of_select_item = False
-        for category in Menu.list_categories:
-            if Menu.list_categories.index(category) == number_category:
-                for item in category.list_items:
-                    if category.list_items.index(item) == number_item:
-                        selected_item = item
-                        condition_of_select_item = True
-
-        if condition_of_select_item:
-            for customer in list_information_login_customer:
-                if self.username_login_customer_for_now == customer.username:
-                    customer.list_orders.append(selected_item)
-                    print("Record item was successful")
-
-        else:
-            print("Number not found")
-
-    @classmethod
-    # This method display order of account that user say and show the total of fee's order
-    def display_orders_and_receipt(cls):
-        total = 0
-        for customer in list_information_login_customer:
-            if customer.username == cls.username_login_customer_for_now:
-                if len(customer.list_orders) > 0:
-                    for order in customer.list_orders:
-                        print(customer.list_orders.index(order) + 1, " -- ", order.name,
-                              "price: ", order.price,
-                              "category: ", order.name_category)
-                        total += order.price
-
-        print("total: ", total)
 
