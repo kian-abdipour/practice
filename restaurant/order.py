@@ -52,15 +52,23 @@ class Order:
                 if Customer.username_login_customer_for_now == customer.username:
                     order = Order(customer)
                     order.list_items.append(selected_item)
-                    if len(list_orders) == 0:
-                        list_orders.append(order)
-                        print("Record item was successful")
 
-                    else:
-                        for order in list_orders:
-                            if order.customer_that_is_order.username == customer.username:
-                                order.list_items.append(selected_item)
-                                print("Record item was successful")
+            condition_of_order = False
+            for order in list_orders:
+                if order.customer_that_is_order.username == Customer.username_login_customer_for_now:
+                    order.list_items.append(selected_item)
+                    print("Record item was successful")
+                    condition_of_order = True
+
+            if condition_of_order:
+                print("True")
+                print(list_orders)
+                pass
+
+            else:
+                list_orders.append(order)
+                print("False")
+                print(list_orders)
 
         else:
             print("Number not found")
@@ -71,7 +79,9 @@ class Order:
         total = 0
         for order in list_orders:
             if order.customer_that_is_order.username == Customer.username_login_customer_for_now:
+                print("found")
                 for item in order.list_items:
+                    print("found_2")
                     print(order.customer_that_is_order.username, " -- ", item.name, "Price: ", item.price)
                     total += item.price
 

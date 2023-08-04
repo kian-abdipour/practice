@@ -7,7 +7,7 @@ class Menu:
         number_type_of_display = input(": ")
         if number_type_of_display == "1":
             for category in cls.list_categories:
-                print(category.name)
+                print(category.name, ":")
                 if len(category.list_items) > 0:
                     for item in category.list_items:
                         print(category.list_items.index(item) + 1, " -- ", "(", item.name,
