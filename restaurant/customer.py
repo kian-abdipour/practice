@@ -1,5 +1,3 @@
-from menu import Menu
-
 list_information_signup_customer = []  # All data that we have about customer is in this variable as list
 
 

@@ -20,27 +20,29 @@ class SupperAdmin:
 
         return condition_of_login_super_admin
 
+    @classmethod
     # This function is second action that super admin can do
     # It work like previous function but the difference is that this function pop admin from list_admin
-    def remove_admin_by_supper_admin(self):
+    def remove_admin_by_supper_admin(cls):
         print("Enter number of admin that you want to remove")
 
         # This loop is for display each admin information to user choose intended admin
-        for admin in self.list_admin:
-            print(self.list_admin.index(admin) + 1, " -- ", "(", admin[0], admin[1], ")", "code: ", admin[2])
+        for admin in cls.list_admin:
+            print(cls.list_admin.index(admin) + 1, " -- ",
+                  "(", admin.first_name, admin.last_name, ")",
+                  "code: ", admin.admin_code)
 
         # This try except is our type safe part of this function
-        input_number_admin_for_remove = input(": ")
         try:
-            int_input_number_admin_for_remove = int(input_number_admin_for_remove)
+            number_admin_for_remove = int(input(": "))
 
         except ValueError:
             return print("ValueError: You should type number not letters or something else.")
 
         condition_of_remove = False
-        for admin in self.list_admin:
-            if self.list_admin.index(admin)+1 == int_input_number_admin_for_remove:
-                self.list_admin.pop(int_input_number_admin_for_remove - 1)
+        for admin in cls.list_admin:
+            if cls.list_admin.index(admin)+1 == number_admin_for_remove:
+                cls.list_admin.pop(number_admin_for_remove - 1)
                 condition_of_remove = True
 
         if condition_of_remove:
@@ -51,9 +53,13 @@ class SupperAdmin:
 
     # This function is for display each admin information to user choose intended admin
     def display_admins(self):
-        for admin in self.list_admin:
-            print(self.list_admin.index(admin) + 1, " -- ", "(", admin.first_name, admin.last_name, ")",
-                  "code: ", admin.admin_code)
+        if len(self.list_admin) > 0:
+            for admin in self.list_admin:
+                print(self.list_admin.index(admin) + 1, " -- ", "(", admin.first_name, admin.last_name, ")",
+                      "code: ", admin.admin_code)
+
+        else:
+            print("We don't have any admin")
 
     # This function is a little difference and longer than previous functions
     # First highlighting an information that user want to modify

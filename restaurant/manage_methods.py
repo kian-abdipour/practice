@@ -85,10 +85,10 @@ def manage_admin_methods():
                     print("You don't have any category, first you should add category to menu")
 
             elif input_action_of_admin == "4":
-                admin.confirmation_the_orders()
+                order.confirmation_the_orders()
 
             elif input_action_of_admin == "5":
-                admin.display_orders_of_customer()
+                order.display_orders_and_receipt_for_admin()
 
             elif input_action_of_admin == "6":
                 category.add_category()
@@ -116,7 +116,7 @@ def manage_customer_methods():
                     order.order_item()
 
                 elif input_number_actions_customer == "2":
-                    order.display_orders_and_receipt()
+                    order.display_orders_and_receipt_for_customer()
 
                 else:
                     if input_number_actions_customer != "q":

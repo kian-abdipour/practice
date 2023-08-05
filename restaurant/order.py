@@ -3,7 +3,6 @@ from customer import list_information_signup_customer
 from customer import Customer
 
 list_orders = []
-#customer = Customer()
 
 
 class Order:
@@ -54,36 +53,61 @@ class Order:
                     order.list_items.append(selected_item)
 
             condition_of_order = False
-            for order in list_orders:
-                if order.customer_that_is_order.username == Customer.username_login_customer_for_now:
-                    order.list_items.append(selected_item)
+            for order_2 in list_orders:
+                if order_2.customer_that_is_order.username == Customer.username_login_customer_for_now:
+                    order_2.list_items.append(selected_item)
                     print("Record item was successful")
                     condition_of_order = True
 
-            if condition_of_order:
-                print("True")
-                print(list_orders)
-                pass
-
-            else:
+            if not condition_of_order:
                 list_orders.append(order)
-                print("False")
-                print(list_orders)
 
         else:
             print("Number not found")
 
     @staticmethod
     # This method display order of account that user say and show the total of fee's order
-    def display_orders_and_receipt():
+    def display_orders_and_receipt_for_customer():
         total = 0
         for order in list_orders:
             if order.customer_that_is_order.username == Customer.username_login_customer_for_now:
-                print("found")
                 for item in order.list_items:
-                    print("found_2")
                     print(order.customer_that_is_order.username, " -- ", item.name, "Price: ", item.price)
                     total += item.price
 
         print("Total: ", total)
+
+    @staticmethod
+    def display_orders_and_receipt_for_admin():
+        if len(list_orders) > 0:
+            for order in list_orders:
+                for item in order.list_items:
+                    print(order.customer_that_is_order.username, " -- ", item.name, "Price:",  item.price)
+
+        else:
+            print("Now we don't have any order")
+
+    @staticmethod
+    def confirmation_the_orders():
+        progress = True
+        while progress:
+            Order.display_orders_and_receipt_for_admin()
+            username_for_confirmation = input(": ")
+            condition_of_confirmation = False
+            for order in list_orders:
+                if order.customer_that_is_order.username == username_for_confirmation:
+                    list_orders.remove(order)
+                    condition_of_confirmation = True
+
+            else:
+                print("Please enter username of user that you want to confirm his orders")
+
+            if condition_of_confirmation:
+                print("Confirmation was successful")
+
+            else:
+                print("Username not found")
+
+            if username_for_confirmation == "q":
+                progress = False
 
