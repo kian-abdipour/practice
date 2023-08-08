@@ -21,8 +21,7 @@ def manage_super_admin_methods():
         print("Type q to go back")
         progress = True
         while progress:
-            print("Enter one of this number \n1 -- add admin\n2 -- remove admin\n3 -- modify information of admin"
-                  "\n4 -- display admins")
+            print("Enter one of this number \n1 -- add admin\n2 -- remove admin\n3 -- display admins")
             input_action_of_super_admin = input(": ")
 
             if input_action_of_super_admin == "1":
@@ -37,13 +36,10 @@ def manage_super_admin_methods():
 
             elif input_action_of_super_admin == "3":
                 if len(super_admin.list_admin) > 0:
-                    super_admin.modify_the_admin_information_by_super_admin()
+                    super_admin.display_admins()
 
                 else:
                     print("You don't have any admin, first you should add admin")
-
-            elif input_action_of_super_admin == "4":
-                super_admin.display_admins()
 
             else:
                 print("Number not found")

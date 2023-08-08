@@ -1,6 +1,7 @@
 from menu import Menu
 from customer import list_information_signup_customer
 from customer import Customer
+from decorators import representing
 
 list_orders = []
 
@@ -11,6 +12,7 @@ class Order:
         self.list_items = []
 
     @staticmethod
+    @representing
     # This method first display menu then get the number of food that customer want to order
     # Then add this food to list_customer that are in list_information_login_customer
     def order_item():
@@ -66,6 +68,7 @@ class Order:
             print("Number not found")
 
     @staticmethod
+    @representing
     # This method display order of account that user say and show the total of fee's order
     def display_orders_and_receipt_for_customer():
         total = 0
@@ -88,6 +91,7 @@ class Order:
             print("Now we don't have any order")
 
     @staticmethod
+    @representing
     def confirmation_the_orders():
         progress = True
         while progress:

@@ -1,4 +1,5 @@
 from menu import Menu
+from decorators import representing
 
 
 class Category:
@@ -7,6 +8,7 @@ class Category:
         self.list_items = []
 
     @staticmethod
+    @representing
     def add_category():
         print("Enter name of category {number_category}".format(number_category=len(Menu.list_categories) + 1))
         name_of_category = input(": ")

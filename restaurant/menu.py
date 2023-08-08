@@ -1,7 +1,11 @@
+from decorators import representing
+
+
 class Menu:
     list_categories = []
 
     @classmethod
+    @representing
     def display_menu(cls):
         print("Enter a number\n1 -- All menu\n2 -- All category\n3 -- Number of each category that use")
         number_type_of_display = input(": ")

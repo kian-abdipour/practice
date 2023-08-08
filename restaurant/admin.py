@@ -1,4 +1,5 @@
 from super_admin import SupperAdmin
+from decorators import representing
 
 
 class Admin:
@@ -8,6 +9,7 @@ class Admin:
         self.admin_code = admin_code
 
     @staticmethod
+    @representing
     # This method is for login admin with a code that super admin set
     def admin_login():
         print("Enter your admin code")
@@ -34,6 +36,7 @@ class Admin:
         return condition_of_login_admin
 
     @staticmethod
+    @representing
     # This function is one of actions that super admin can do
     # This function is clear and append a new admin to list_admin
     def add_admin():

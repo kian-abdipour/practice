@@ -1,4 +1,5 @@
 from menu import Menu
+from decorators import representing
 
 
 class Item:
@@ -9,6 +10,7 @@ class Item:
     # This method append food to list_food in menu class
     # With name food append a price of food by integer type
     @staticmethod
+    @representing
     def add_item():
         Menu.display_categories()
         try:
@@ -35,6 +37,7 @@ class Item:
                 print("Add item was successful ")
 
     @staticmethod
+    @representing
     # This method remove the food that user want
     def remove_item():
         Menu.display_categories()

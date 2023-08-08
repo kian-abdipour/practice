@@ -1,3 +1,6 @@
+from decorators import representing
+
+
 list_information_signup_customer = []  # All data that we have about customer is in this variable as list
 
 
@@ -10,6 +13,7 @@ class Customer:
 #        self.list_orders = []
 
     @staticmethod
+    @representing
     # This method get the user's username and password then append to list_information_login_customer
     def signup_customer():
         print("Enter your username")
@@ -22,6 +26,7 @@ class Customer:
         list_information_signup_customer.append(customer)
 
     @classmethod
+    @representing
     # This method check that we have this username pass or not if we don't have customer can't see the next
     # Page
     def login_customer(cls):
