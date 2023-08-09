@@ -68,8 +68,7 @@ class Order:
             print("Number not found")
 
     @staticmethod
-    @representing
-    # This method display order of account that user say and show the total of fee's order
+    # This method display order of account that is login and show the total fee of order
     def display_orders_and_receipt_for_customer():
         total = 0
         for order in list_orders:
@@ -81,17 +80,26 @@ class Order:
         print("Total: ", total)
 
     @staticmethod
+    # This method is like last one but the difference is that
+    # Last one display just one orders that is for customer is login now but this method
+    # Display all orders that we have in list_orders for admin
     def display_orders_and_receipt_for_admin():
+        total = 0
         if len(list_orders) > 0:
             for order in list_orders:
                 for item in order.list_items:
                     print(order.customer_that_is_order.username, " -- ", item.name, "Price:",  item.price)
+                    total += item.price
+
+                print(order.customer_that_is_order.username, " -- total: ", total)
 
         else:
             print("Now we don't have any order")
 
     @staticmethod
     @representing
+    # This first display the orders that are in list_orders
+    # Then set the order that admin want and remove if from list_orders
     def confirmation_the_orders():
         progress = True
         while progress:

@@ -37,8 +37,8 @@ class Admin:
 
     @staticmethod
     @representing
-    # This function is one of actions that super admin can do
-    # This function is clear and append a new admin to list_admin
+    # This method is one of actions that super admin can do
+    # This method is clear and append a new admin to list_admin
     def add_admin():
         print("Enter first name of admin {number_admin}".format(number_admin=len(SupperAdmin.list_admin) + 1))
         first_name_of_admin = input(": ")

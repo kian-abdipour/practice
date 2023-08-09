@@ -5,6 +5,7 @@ from customer import Customer
 from item import Item
 from category import Category
 from order import Order
+from order import list_orders
 
 super_admin = SupperAdmin("Kian", "Abdipour")  # This set default because it's name of owner's program
 admin = Admin()
@@ -15,7 +16,7 @@ order = Order()
 
 
 # This function manage methods that are in SuperAdmin class
-# Actually this function set that when each method will be run
+# Actually this function set that when each method will be call
 def manage_super_admin_methods():
     if super_admin.super_admin_login():
         print("Type q to go back")
@@ -55,8 +56,8 @@ def manage_admin_methods():
         print("Type q to bo back")
         progress = True
         while progress:
-            print("Enter one of this number \n1 -- add food\n2 -- remove food\n3 -- menu"
-                  "\n4 -- confirmation transactions\n5 -- display account that have orders\n6 -- add category")
+            print("Enter one of this number \n1 -- add item\n2 -- remove item\n3 -- menu"
+                  "\n4 -- confirmation orders\n5 -- display account that have orders\n6 -- add category")
             input_action_of_admin = input(": ")
 
             if input_action_of_admin == "1":
@@ -81,7 +82,11 @@ def manage_admin_methods():
                     print("You don't have any category, first you should add category to menu")
 
             elif input_action_of_admin == "4":
-                order.confirmation_the_orders()
+                if len(list_orders) > 0:
+                    order.confirmation_the_orders()
+
+                else:
+                    print("Now we don't have any orders")
 
             elif input_action_of_admin == "5":
                 order.display_orders_and_receipt_for_admin()
@@ -96,7 +101,7 @@ def manage_admin_methods():
                 progress = False
 
 
-# This function work like past's functions and set that when each function will be run
+# This function work like pasts functions and set that when each function will be run
 def manage_customer_methods():
     print("Choose one of this number \n1 -- login\n2 -- signup\n")
     input_number_login_or_signup = input(": ")
@@ -106,7 +111,7 @@ def manage_customer_methods():
             progress = True
             print("Type q to go back")
             while progress:
-                print("Enter one of this number \n1 -- order food\n2 -- list orders and receipt")
+                print("Enter one of this number \n1 -- order item\n2 -- list orders and receipt")
                 input_number_actions_customer = input(": ")
                 if input_number_actions_customer == "1":
                     order.order_item()

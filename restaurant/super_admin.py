@@ -26,8 +26,7 @@ class SupperAdmin:
 
     @classmethod
     @representing
-    # This function is second action that super admin can do
-    # It work like previous function but the difference is that this function pop admin from list_admin
+    # This method remove an admin from list_admin in SuperAdmin model that super admin want
     def remove_admin_by_supper_admin(cls):
         print("Enter number of admin that you want to remove")
 

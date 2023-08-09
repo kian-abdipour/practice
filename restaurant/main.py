@@ -3,8 +3,9 @@ from manage_methods import manage_admin_methods
 from manage_methods import manage_customer_methods
 
 
-# Again in here we have page manager that set each page of role when will be show
-def manage_pages():
+# Again in here we have tab manager that set each tab of role when will be show
+# In here the user choose his role
+def manage_tabs():
     print("Welcome to relax food")
     print("Type q to exist")
 
@@ -27,7 +28,7 @@ def manage_pages():
 
 
 if __name__ == "__main__":
-    manage_pages()
+    manage_tabs()
 
 else:
     print("you should run this program in the main file")
