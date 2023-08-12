@@ -3,11 +3,11 @@ def get_number_fibonacci():
     try:
         number_fibonacci = int(input(": "))
 
-    except TypeError:
+    except ValueError:
         return print("ValueError: You should type number")
 
-    if number_fibonacci < 0:
-        print("You should type positive number")
+    if number_fibonacci <= 0:
+        return print("You should type positive number")
 
     return number_fibonacci
 
@@ -27,9 +27,19 @@ def calculate_fibonacci_Numbers(number_fibonacci, numbers):
         return new_number
 
 
+def main():
+    progress = True
+    while progress:
+        number_fibonacci = get_number_fibonacci()
+        print(calculate_fibonacci_Numbers(number_fibonacci, [0, 1]))
+        print(0)
+
+        if number_fibonacci == "q":
+            progress = False
+
+
 if __name__ == "__main__":
-    print(calculate_fibonacci_Numbers(get_number_fibonacci(), [0, 1]))
-    print(0)
+    main()
 
 else:
     print("You must run this program in main file")
