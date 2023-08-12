@@ -14,9 +14,18 @@ def check_reversible(string):
     print(string == string_2)
 
 
+def main():
+    progress = True
+    while progress:
+        string = get_string()
+        check_reversible(string)
+
+        if string == "q":
+            progress = False
+
+
 if __name__ == "__main__":
-    check_reversible(get_string())
+    main()
 
 else:
     print("You must run this program in main file")
-
