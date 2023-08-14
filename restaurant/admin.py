@@ -12,19 +12,17 @@ class Admin:
     @representing
     # This method is for login admin with a code that super admin set
     def admin_login():
-        print("Enter your admin code")
-        input_admin_code = input(": ")
-
         # Make type safe
         try:
-            int_input_admin_code = int(input_admin_code)
+            print("Enter your admin code")
+            input_admin_code = int(input(": "))
 
         except ValueError:
             return print("ValueError: You should just type number")
 
         condition_of_login_admin = False
         for admin in SupperAdmin.list_admin:
-            if admin.admin_code == int_input_admin_code:
+            if admin.admin_code == input_admin_code:
                 condition_of_login_admin = True
                 break
 

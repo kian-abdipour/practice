@@ -10,7 +10,6 @@ class Customer:
     def __init__(self, username=None, password=None):
         self.username = username
         self.password = password
-#        self.list_orders = []
 
     @staticmethod
     @representing
