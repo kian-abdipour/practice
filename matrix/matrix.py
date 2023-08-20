@@ -1,4 +1,4 @@
-def make_list():
+def make_matrix():
     layout_lines = int(input(": "))
     lucky_list = []
 
@@ -59,24 +59,4 @@ def check_vertical_and_slash_line(list_lines):
 
     return False
 
-
-def main():
-    lines = make_list()
-    print(lines)
-
-    if check_horizontal_line(lines):
-        return True
-
-    elif check_vertical_and_slash_line(lines):
-        return True
-
-    lines.reverse()
-    if check_vertical_and_slash_line(lines):
-        return True
-
-    return False
-
-
-if __name__ == "__main__":
-    print(main())
-
+print(make_matrix())
