@@ -51,7 +51,6 @@ def check_vertical_and_slash_line(list_lines):
                         if again_line_2[counter_index] == number[1]:
                             counter += 1
                             if counter == 5:
-                                print(again_line_2)
                                 print(number[1], "WINNER from slash")
                                 return True
 
