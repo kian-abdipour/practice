@@ -86,7 +86,6 @@ def check_vertical_and_slash_line(list_lines):
 
         for number in enum_line:
             counter = 0
-            counter_index = 0
             if number[1] != 0:
 
                 for again_line in list_lines:
@@ -99,12 +98,62 @@ def check_vertical_and_slash_line(list_lines):
                     else:
                         counter = 0
 
-                counter = 0
-                for again_line_2 in list_lines:
-                    if again_line_2[enum_line.index(number) + 1] == number[1]:
+                counter_index = enum_line.index(number)
+                for again_line_2 in list_lines[list_lines.index(line)+1:]:
+                    counter_index += 1
+                    if again_line_2[counter_index] == number[1]:
                         counter += 1
                         if counter == 5:
-                            print("From vertical")
+                            print("From slash")
+                            return True
+
+                    else:
+                        counter = 0
+
+    return False
+
+
+def check_slash_lines_from_wright(number_to_be_true, list_lines):
+    for line in list_lines:
+        enumerate_line = list(enumerate(line))
+
+        for number in enumerate_line:
+            count_of_one = 1
+            count_of_negative_one = 1
+
+            if number[1] == 1 or number[1] == -1:
+                counter = enumerate_line.index(number)
+                for again_line in list_lines[list_lines.index(line) + 1: list_lines.index(line) + 5]:
+                    counter += 1
+                    if counter < len(line):
+                        if again_line[counter] == 1:
+                            count_of_one += 1
+
+                        elif again_line[counter] == -1:
+                            count_of_negative_one += 1
+
+                        if count_of_one == number_to_be_true or count_of_negative_one == number_to_be_true:
+                            print(again_line)
+                            return True
+
+                    else:
+                        break
+
+    return False
+
+
+def check_vertical_line_2(list_lines):
+    for line in list_lines:
+        enum_line = list(enumerate(line))
+
+        for number in enum_line:
+            counter = 0
+            if number[1] != 0:
+
+                for again_line in list_lines:
+                    if again_line[enum_line.index(number)] == number[1]:
+                        counter += 1
+                        if counter == 5:
                             return True
 
                     else:
