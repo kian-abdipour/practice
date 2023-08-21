@@ -59,4 +59,3 @@ def check_vertical_and_slash_line(list_lines):
 
     return False
 
-print(make_matrix())
