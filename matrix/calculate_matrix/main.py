@@ -1,6 +1,6 @@
-from matrix.calculate_matrix.matrix import make_matrix
-from matrix.calculate_matrix.matrix import check_horizontal_line
-from matrix.calculate_matrix.matrix import check_vertical_and_slash_line
+from matrix import make_matrix
+from matrix import check_horizontal_line
+from matrix import check_vertical_and_slash_line
 
 
 def main():

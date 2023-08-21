@@ -80,7 +80,7 @@ def check_is_unit_matrix(matrix, condition_lower_and_upper_matrix):
 
 
 def check_is_lower_triangular_matrix(matrix, condition_square_matrix):
-    if condition_square_matrix:
+    if condition_square_matrix and len(matrix[0]) > 1:
         for line in matrix[:-1]:
             if not any(line[matrix.index(line) + 1:]):
                 pass
@@ -95,7 +95,7 @@ def check_is_lower_triangular_matrix(matrix, condition_square_matrix):
 
 
 def check_is_upper_triangular_matrix(matrix, condition_square_matrix):
-    if condition_square_matrix:
+    if condition_square_matrix and len(matrix[0]) > 1:
         for line in matrix[1:]:
             if not any(line[:matrix.index(line)]):
                 pass

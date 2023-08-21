@@ -11,7 +11,12 @@ from represent_matrix import make_coherence_matrix
 
 
 def main():
-    matrix = []
+    matrix = [[1]]
+    if len(matrix) > 0 and type(matrix) == list:
+        pass
+
+    else:
+        return print("This is not a matrix")
 
     is_square_matrix = check_is_square_matrix(matrix)
     print("1 _ Square matrix:", is_square_matrix)
