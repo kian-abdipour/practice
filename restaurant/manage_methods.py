@@ -29,18 +29,10 @@ def manage_super_admin_methods():
                 admin.add_admin()
 
             elif input_action_of_super_admin == "2":
-                if len(super_admin.list_admin) > 0:
-                    super_admin.remove_admin_by_supper_admin()
-
-                else:
-                    print("You don't have any admin, first you should add admin")
+                admin.remove_admin()
 
             elif input_action_of_super_admin == "3":
-                if len(super_admin.list_admin) > 0:
-                    super_admin.display_admins()
-
-                else:
-                    print("You don't have any admin, first you should add admin")
+                admin.display_admins()
 
             else:
                 print("Number not found")
@@ -53,7 +45,7 @@ def manage_super_admin_methods():
 # This function manage admin methods that are in Admin class
 def manage_admin_methods():
     if admin.admin_login():
-        print("Type q to bo back")
+        print("Type q to go back")
         progress = True
         while progress:
             print("Enter one of this number \n1 -- add item\n2 -- remove item\n3 -- menu"
@@ -61,11 +53,7 @@ def manage_admin_methods():
             input_action_of_admin = input(": ")
 
             if input_action_of_admin == "1":
-                if len(Menu.list_categories) > 0:
-                    Item.add_item()
-
-                else:
-                    print("You don't have any food, first you should add food to menu")
+                Item.add_item()
 
             elif input_action_of_admin == "2":
                 if len(Menu.list_categories) > 0:

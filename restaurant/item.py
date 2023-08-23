@@ -1,5 +1,6 @@
-from menu import Menu
-from decorators import representing
+import json
+
+from category import Category
 
 
 class Item:
@@ -10,34 +11,39 @@ class Item:
     # This method append food to list_food in menu class
     # With name food append a price of food by integer type
     @staticmethod
-    @representing
     def add_item():
-        Menu.display_categories()
+        with open("category_datas.json", "r") as category_file:
+            load_data = json.load(category_file)
+
+        Category.display_categories()
         try:
             print("Enter number of category that you want")
-            index_category_of_item = int(input(": "))
+            number_category_of_item = int(input(": "))
+
+            print("Enter name of item")
+            name_of_item = input(": ")
+
+            print(f"Enter price of {name_of_item} the currency of money is dollar")
+            price_of_item = int(input(": "))
 
         except ValueError:
             return print("You should type just number")
 
-        print("Enter name of item")
-        name_of_item = input(": ")
+        item = Item(name_of_item, price_of_item)
+        data = {
+            "name": item.name,
+            "price": item.price
+        }
+        for category in load_data["categories"]:
+            if load_data["categories"].index(category)+1 == number_category_of_item:
+                category["list_items"].append(data)
 
-        try:
-            print("Enter price of {name_item} the currency of money is dollar".format(name_item=name_of_item))
-            price_of_item = int(input(": "))
+        with open("category_datas.json", "w") as category_file:
+            json.dump(load_data, category_file)
 
-        except ValueError:
-            return print("ValueError: You should type just number")
-
-        for category in Menu.list_categories:
-            if index_category_of_item - 1 == Menu.list_categories.index(category):
-                item = Item(name_of_item, price_of_item)
-                category.list_items.append(item)
-                print("Add item was successful ")
+        print("Add item was successful")
 
     @staticmethod
-    @representing
     # This method remove the food that user want
     def remove_item():
         Menu.display_categories()

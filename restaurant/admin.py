@@ -1,5 +1,4 @@
-from super_admin import SupperAdmin
-from decorators import representing
+import json
 
 
 class Admin:
@@ -9,7 +8,6 @@ class Admin:
         self.admin_code = admin_code
 
     @staticmethod
-    @representing
     # This method is for login admin with a code that super admin set
     def admin_login():
         # Make type safe
@@ -20,25 +18,24 @@ class Admin:
         except ValueError:
             return print("ValueError: You should just type number")
 
-        condition_of_login_admin = False
-        for admin in SupperAdmin.list_admin:
-            if admin.admin_code == input_admin_code:
-                condition_of_login_admin = True
-                break
+        with open("admin_datas.json", "r") as admins_file:
+            load_data = json.load(admins_file)
 
-        if condition_of_login_admin:
-            print("\n", admin.first_name, admin.last_name, "welcome to your admin panel\n")
+        for admin in load_data["admins"]:
+            if admin["admin_code"] == input_admin_code:
+                print(admin["first_name"], admin["last_name"], "welcome to your admin panel")
+                return True
 
-        else:
-            print("Admin code not found")
-        return condition_of_login_admin
+        return False
 
     @staticmethod
-    @representing
     # This method is one of actions that super admin can do
     # This method is clear and append a new admin to list_admin
     def add_admin():
-        print("Enter first name of admin {number_admin}".format(number_admin=len(SupperAdmin.list_admin) + 1))
+        with open("admin_datas.json", "r") as admins_file:
+            load_data = json.load(admins_file)
+
+        print(f"Enter first name of admin {len(load_data['admins']) + 1}")
         first_name_of_admin = input(": ")
 
         print("Enter last name of {first_name_admin}".format(first_name_admin=first_name_of_admin))
@@ -48,11 +45,68 @@ class Admin:
               .format(full_name_admin=first_name_of_admin + " " + last_name_of_admin))
 
         try:
-            input_admin_code = int(input(": "))
+            admin_code = int(input(": "))
 
         except ValueError:
             return print("ValueError: Your admin code must be number with out any space like: 3476.")
 
-        admin = Admin(first_name_of_admin, last_name_of_admin, input_admin_code)
-        SupperAdmin.list_admin.append(admin)
+        admin = Admin(first_name_of_admin, last_name_of_admin, admin_code)
+        data = {
+            "first_name": admin.first_name,
+            "last_name": admin.last_name,
+            "admin_code": admin.admin_code
+        }
+
+        with open("admin_datas.json", "w") as admins_file:
+            load_data["admins"].append(data)
+            json.dump(load_data, admins_file)
+
+        print("Add admin was successful")
+
+    @staticmethod
+    # This function is for display each admin information to user choose intended admin
+    def display_admins():
+        with open("admin_datas.json", "r") as admins_file:
+            load_data = json.load(admins_file)
+
+        if len(load_data["admins"]) > 0:
+            for admin in load_data["admins"]:
+                print(load_data["admins"].index(admin)+1, " _ ",
+                      admin["first_name"],
+                      admin["last_name"],
+                      admin["admin_code"])
+
+        else:
+            print("Now we don't have admin")
+
+    @staticmethod
+    # This method remove an admin from list_admin in SuperAdmin model that super admin want
+    def remove_admin():
+        with open("admin_datas.json", "r") as admins_file:
+            load_data = json.load(admins_file)
+
+        print("Enter number of admin that you want to remove")
+        Admin.display_admins()
+
+        # This try except is our type safe part of this function
+        try:
+            number_admin = int(input(": "))
+
+        except ValueError:
+            return print("ValueError: You should type number not letters or something else.")
+
+        condition_remove = False
+        for admin in load_data["admins"]:
+            if load_data["admins"].index(admin)+1 == number_admin:
+                load_data["admins"].remove(admin)
+                condition_remove = True
+
+        with open("admin_datas.json", "w") as admins_file:
+            json.dump(load_data, admins_file)
+
+        if condition_remove:
+            print("Remove admin was successful")
+
+        else:
+            print("Admin not found")
 
