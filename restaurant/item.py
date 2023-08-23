@@ -67,7 +67,7 @@ class Item:
         category = load_data["categories"][number_category-1]
         if len(category["list_items"]) > 0:
             for item in category["list_items"]:
-                print(category["list_items"].index(item)+1, item["name"], "price:", item["price"])
+                print(category["list_items"].index(item)+1, " -- ", item["name"], "price:", item["price"])
 
         else:
             print(f"Now we don't have any item in {category['name']}")
