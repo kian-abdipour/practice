@@ -1,6 +1,5 @@
 from super_admin import SupperAdmin
 from admin import Admin
-from menu import Menu
 from customer import Customer
 from item import Item
 from category import Category
@@ -49,25 +48,18 @@ def manage_admin_methods():
         progress = True
         while progress:
             print("Enter one of this number \n1 -- add item\n2 -- remove item\n3 -- menu"
-                  "\n4 -- confirmation orders\n5 -- display account that have orders\n6 -- add category")
+                  "\n4 -- confirmation orders\n5 -- display account that have orders\n"
+                  "6 -- add category\n7 -- remove category")
             input_action_of_admin = input(": ")
 
             if input_action_of_admin == "1":
                 Item.add_item()
 
             elif input_action_of_admin == "2":
-                if len(Menu.list_categories) > 0:
-                    item.remove_item()
-
-                else:
-                    print("You don't have any food, first you should add food to menu")
+                Item.remove_item()
 
             elif input_action_of_admin == "3":
-                if len(Menu.list_categories) > 0:
-                    Menu.display_menu()
-
-                else:
-                    print("You don't have any category, first you should add category to menu")
+                item.display_items()
 
             elif input_action_of_admin == "4":
                 if len(list_orders) > 0:
@@ -81,6 +73,9 @@ def manage_admin_methods():
 
             elif input_action_of_admin == "6":
                 category.add_category()
+
+            elif input_action_of_admin == "7":
+                category.remove_categories()
 
             else:
                 print("number not found")

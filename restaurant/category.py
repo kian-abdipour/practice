@@ -1,6 +1,4 @@
 import json
-from menu import Menu
-from decorators import representing
 
 
 class Category:
@@ -34,8 +32,41 @@ class Category:
 
         if len(load_data["categories"]) > 0:
             for category in load_data["categories"]:
-                print(load_data["categories"].index(category)+1, category["name"])
+                print(load_data["categories"].index(category)+1, " -- ",  category["name"])
+            return True
 
         else:
-            print("Now we don't have category")
+            return False
 
+    @staticmethod
+    def remove_categories():
+        with open("category_datas.json", "r") as category_file:
+            load_data = json.load(category_file)
+
+        if Category.display_categories():
+            pass
+
+        else:
+            return print("Now we don't have category")
+
+        try:
+            print("Enter number of category to remove")
+            number_category = int(input(": "))
+
+        except ValueError:
+            return print("ValueError: You should type just number")
+
+        condition_remove = False
+        for category in load_data["categories"]:
+            if load_data["categories"].index(category)+1 == number_category:
+                load_data["categories"].remove(category)
+                condition_remove = True
+
+        if condition_remove:
+            print("Remove item was successful")
+
+        else:
+            return print("Number not found")
+
+        with open("category_datas.json", "w") as category_file:
+            json.dump(load_data, category_file)

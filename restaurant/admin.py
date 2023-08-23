@@ -75,9 +75,10 @@ class Admin:
                       admin["first_name"],
                       admin["last_name"],
                       admin["admin_code"])
+            return True
 
         else:
-            print("Now we don't have admin")
+            return False
 
     @staticmethod
     # This method remove an admin from list_admin in SuperAdmin model that super admin want
@@ -85,11 +86,15 @@ class Admin:
         with open("admin_datas.json", "r") as admins_file:
             load_data = json.load(admins_file)
 
-        print("Enter number of admin that you want to remove")
-        Admin.display_admins()
+        if Admin.display_admins():
+            pass
+
+        else:
+            return print("Now we dont have admin")
 
         # This try except is our type safe part of this function
         try:
+            print("Enter number of admin that you want to remove")
             number_admin = int(input(": "))
 
         except ValueError:
