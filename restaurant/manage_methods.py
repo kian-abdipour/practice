@@ -4,7 +4,6 @@ from customer import Customer
 from item import Item
 from category import Category
 from order import Order
-from order import list_orders
 
 super_admin = SupperAdmin("Kian", "Abdipour")  # This set default because it's name of owner's program
 admin = Admin()
@@ -62,11 +61,7 @@ def manage_admin_methods():
                 item.display_items()
 
             elif input_action_of_admin == "4":
-                if len(list_orders) > 0:
-                    order.confirmation_the_orders()
-
-                else:
-                    print("Now we don't have any orders")
+                order.confirmation_the_orders()
 
             elif input_action_of_admin == "5":
                 order.display_orders_and_receipt_for_admin()

@@ -2,8 +2,6 @@ import json
 from item import Item
 from customer import Customer
 
-list_orders = []
-
 
 class Order:
     def __init__(self, username_that_is_order=None, item=None):
@@ -37,6 +35,8 @@ class Order:
         with open("order_datas.json", "w") as order_file:
             json.dump(load_data_order, order_file)
 
+        return print("Order was successful")
+
     @staticmethod
     # This method display order of account that is login and show the total fee of order
     def display_orders_and_receipt_for_customer():
@@ -60,7 +60,10 @@ class Order:
     def display_orders_and_receipt_for_admin():
         with open("order_datas.json", "r") as order_file:
             load_data = json.load(order_file)
-            
+
+        if len(load_data["orders"]) == 0:
+            return print("Now we don't have any order")
+
         for order in load_data["orders"]:
             print(order["username_that_is_order"], " -- ", order["item"]["name"], "price: ", order["item"]["price"])
 
@@ -70,23 +73,28 @@ class Order:
     def confirmation_the_orders():
         progress = True
         while progress:
+            with open("order_datas.json") as order_file:
+                data_load = json.load(order_file)
+
             Order.display_orders_and_receipt_for_admin()
-            username_for_confirmation = input(": ")
-            condition_of_confirmation = False
-            for order in list_orders:
-                if order.username_that_is_order.username == username_for_confirmation:
-                    list_orders.remove(order)
-                    condition_of_confirmation = True
+            print("Enter a username to confirm his orders")
+            username_to_confirmation = input(": ")
 
-            else:
-                print("Please enter username of user that you want to confirm his orders")
+            condition_confirm = False
+            for order in list(data_load["orders"]):
+                if order["username_that_is_order"] == username_to_confirmation:
+                    data_load["orders"].remove(order)
+                    condition_confirm = True
 
-            if condition_of_confirmation:
+            if condition_confirm:
                 print("Confirmation was successful")
 
             else:
                 print("Username not found")
 
-            if username_for_confirmation == "q":
+            with open("order_datas.json", "w") as order_file:
+                json.dump(data_load, order_file)
+
+            if username_to_confirmation == "q":
                 progress = False
 
