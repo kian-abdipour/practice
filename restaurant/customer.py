@@ -9,7 +9,9 @@ class Customer:
         self.password = password
 
     @staticmethod
-    # This method get the user's username and password then append to list_information_login_customer
+    # This method get the username and password then append in it to load_data that is
+    # Pasts information of customers in customer_datas.json file then
+    # Again dump new version of load_datas.json to customer.json
     def signup_customer():
         with open("customer_datas.json", "r") as customer_file:
             load_data = json.load(customer_file)
@@ -32,8 +34,8 @@ class Customer:
             print("You successfully create a relax account now do login")
 
     @staticmethod
-    # This method check that we have this username pass or not if we don't have customer can't see the next
-    # Page
+    # This method get a username and password then load customer_datas then
+    # Check that we have this information or not
     def login_customer():
         with open("customer_datas.json", "r") as customer_file:
             load_data = json.load(customer_file)

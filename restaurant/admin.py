@@ -8,7 +8,8 @@ class Admin:
         self.admin_code = admin_code
 
     @staticmethod
-    # This method is for login admin with a code that super admin set
+    # This method is for login admin with a code that super admin set and load a data
+    # That is in admin_datas.json then check admin codes that we have in load_data
     def admin_login():
         # Make type safe
         try:
@@ -30,7 +31,9 @@ class Admin:
 
     @staticmethod
     # This method is one of actions that super admin can do
-    # This method is clear and append a new admin to list_admin
+    # This method load a data that is in admin_datas.json
+    # Then get the information of admin for adding and append it to load_date and dump a new version of load_data to
+    # admin_datas.json
     def add_admin():
         with open("admin_datas.json", "r") as admins_file:
             load_data = json.load(admins_file)
@@ -64,7 +67,7 @@ class Admin:
         print("Add admin was successful")
 
     @staticmethod
-    # This function is for display each admin information to user choose intended admin
+    # This method load a data that is in admin_datas.json and print each element of it that is dictionary
     def display_admins():
         with open("admin_datas.json", "r") as admins_file:
             load_data = json.load(admins_file)
@@ -81,7 +84,8 @@ class Admin:
             return False
 
     @staticmethod
-    # This method remove an admin from list_admin in SuperAdmin model that super admin want
+    # This method first display Admins with display_admins method that is in Admin then
+    # From loaded data remove specified admin and dump a new version of load_data to admin_datas.json
     def remove_admin():
         with open("admin_datas.json", "r") as admins_file:
             load_data = json.load(admins_file)

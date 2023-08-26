@@ -7,6 +7,8 @@ class Category:
         self.list_items = []
 
     @staticmethod
+    # This method load datas that is in category_datas.json and append new data to
+    # Loaded data and again dumps new version of load_data to category_datas.json
     def add_category():
         with open("category_datas.json", "r") as category_file:
             load_data = json.load(category_file)
@@ -26,6 +28,8 @@ class Category:
         print("Add category was successful")
 
     @staticmethod
+    # This method load a data that is in category_datas.json and print elements of each dictionary
+    # That is in load_data
     def display_categories():
         with open("category_datas.json", "r") as category_file:
             load_data = json.load(category_file)
@@ -39,6 +43,8 @@ class Category:
             return False
 
     @staticmethod
+    # This method load a data that is in category_datas.json then call display_categories And
+    # Select a specific element that is in load_datas to remove it
     def remove_categories():
         with open("category_datas.json", "r") as category_file:
             load_data = json.load(category_file)
@@ -70,3 +76,4 @@ class Category:
 
         with open("category_datas.json", "w") as category_file:
             json.dump(load_data, category_file)
+

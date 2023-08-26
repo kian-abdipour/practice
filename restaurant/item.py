@@ -7,9 +7,10 @@ class Item:
         self.name = name
         self.price = price
 
-    # This method append food to list_food in menu class
-    # With name food append a price of food by integer type
     @staticmethod
+    # This method first load data that is in category_datas.json and call display_categories
+    # Then get information of a new item and append it to load_data and dump a new version of load_data to
+    # category_datas.json
     def add_item():
         with open("category_datas.json", "r") as category_file:
             load_data = json.load(category_file)
@@ -48,6 +49,7 @@ class Item:
         print("Add item was successful")
 
     @staticmethod
+    # This method load a data that is in category_datas.json then print each element of load_data
     def display_items():
         with open("category_datas.json", "r") as category_file:
             load_data = json.load(category_file)
@@ -75,7 +77,8 @@ class Item:
         return number_category
 
     @staticmethod
-    # This method remove the food that user want
+    # This method load a data that is in category_datas.json then call display_items
+    # And remove a specified item that is in load_data and dump anew version of load_data to item_datas.json
     def remove_item():
         with open("category_datas.json", "r") as category_file:
             load_data = json.load(category_file)

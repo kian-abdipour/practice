@@ -9,8 +9,8 @@ class Order:
         self.item = item
 
     @staticmethod
-    # This method first display menu then get the number of food that customer want to order
-    # Then add this food to list_customer that are in list_information_login_customer
+    # This method first display categories and items with display_categories and display_items
+    # Then select a specific element that is in category_datas.json and dump it to order_datas.json
     def order_item():
         with open("order_datas.json", "r") as order_file:
             load_data_order = json.load(order_file)
@@ -38,7 +38,8 @@ class Order:
         return print("Order was successful")
 
     @staticmethod
-    # This method display order of account that is login and show the total fee of order
+    # This method load data that is in order_datas.json then check if this username that is login
+    # Hase order if it hase display it and plus a price of item with total at the end show the total
     def display_orders_and_receipt_for_customer():
         with open("order_datas.json", "r") as order_file:
             load_data = json.load(order_file)
@@ -54,9 +55,8 @@ class Order:
         print("total:", total)
 
     @staticmethod
-    # This method is like last one but the difference is that
-    # Last one display just one orders that is for customer is login now but this method
-    # Display all orders that we have in list_orders for admin
+    # This method work like last one but the difference is that:
+    # This one show all orders that is in order_datas.json but last one just show the specified order
     def display_orders_and_receipt_for_admin():
         with open("order_datas.json", "r") as order_file:
             load_data = json.load(order_file)
@@ -68,9 +68,9 @@ class Order:
             print(order["username_that_is_order"], " -- ", order["item"]["name"], "price: ", order["item"]["price"])
 
     @staticmethod
-    # This first display the orders that are in list_orders
-    # Then set the order that admin want and remove if from list_orders
-    def confirmation_the_orders():
+    # This method first display all orders that is in order_datas.json
+    # Then get a username from admin and remove all orders with the username that admin say
+    def confirmation_orders():
         progress = True
         while progress:
             with open("order_datas.json") as order_file:
