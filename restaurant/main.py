@@ -12,18 +12,18 @@ def manage_tabs():
     progress = True
     while progress:
         print("Please choose your role \n1 -- customer\n2 -- admin\n3 -- super admin")
-        input_number_role = input(": ")
+        number_role = input(": ")
 
-        if input_number_role == "1":
+        if number_role == "1":
             manage_customer_methods()
 
-        elif input_number_role == "2":
+        elif number_role == "2":
             manage_admin_methods()
 
-        elif input_number_role == "3":
+        elif number_role == "3":
             manage_super_admin_methods()
 
-        if input_number_role == "q":
+        if number_role == "q":
             progress = False
 
 

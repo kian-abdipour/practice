@@ -1,20 +1,18 @@
 from decorators import representing
 
 
-list_information_signup_customer = []  # All data that we have about customer is in this variable as list
-
-
 class Customer:
+    information_customers = []
     username_login_customer_for_now = None
 
     def __init__(self, username=None, password=None):
         self.username = username
         self.password = password
 
-    @staticmethod
+    @classmethod
     @representing
     # This method get the user's username and password then append to list_information_login_customer
-    def signup_customer():
+    def signup_customer(cls):
         print("Enter your username")
         username = input(": ")
 
@@ -22,7 +20,7 @@ class Customer:
         password = input(": ")
 
         customer = Customer(username, password)
-        list_information_signup_customer.append(customer)
+        cls.information_customers.append(customer)
 
     @classmethod
     @representing
@@ -33,12 +31,12 @@ class Customer:
         login_username = input(": ")
 
         print("Please enter password of your relax account")
-        signup_password = input(": ")
+        login_password = input(": ")
 
         cls.username_login_customer_for_now = login_username
         condition_of_login = False
-        for customer in list_information_signup_customer:
-            if customer.username == login_username and customer.password == signup_password:
+        for customer in cls.information_customers:
+            if customer.username == login_username and customer.password == login_password:
                 condition_of_login = True
 
         if condition_of_login:

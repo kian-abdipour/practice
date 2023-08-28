@@ -1,4 +1,4 @@
-from menu import Menu
+from category import Category
 from decorators import representing
 
 
@@ -12,10 +12,10 @@ class Item:
     @staticmethod
     @representing
     def add_item():
-        Menu.display_categories()
+        Category.display_categories()
         try:
             print("Enter number of category that you want")
-            index_category_of_item = int(input(": "))
+            number_category_of_item = int(input(": "))
 
         except ValueError:
             return print("You should type just number")
@@ -30,17 +30,17 @@ class Item:
         except ValueError:
             return print("ValueError: You should type just number")
 
-        for category in Menu.list_categories:
-            if index_category_of_item - 1 == Menu.list_categories.index(category):
+        for category in Category.categories:
+            if number_category_of_item - 1 == Category.categories.index(category):
                 item = Item(name_of_item, price_of_item)
-                category.list_items.append(item)
+                category.items.append(item)
                 print("Add item was successful ")
 
     @staticmethod
     @representing
     # This method remove the food that user want
     def remove_item():
-        Menu.display_categories()
+        Category.display_categories()
 
         try:
             print("Enter number of category that food is in it")
@@ -49,8 +49,8 @@ class Item:
         except ValueError:
             return print("You must enter just number")
 
-        for item in Menu.list_categories[number_category].list_items:
-            print(Menu.list_categories[number_category].list_items.index(item) + 1, " -- ", item.name)
+        for item in Category.categories[number_category].items:
+            print(Category.categories[number_category].items.index(item) + 1, " -- ", item.name)
 
         try:
             print("Enter number of item that you want to remove")
@@ -60,9 +60,9 @@ class Item:
             return print("You must type just number")
 
         condition_of_remove_item = False
-        for item in Menu.list_categories[number_category].list_items:
-            if Menu.list_categories[number_category].list_items.index(item) == number_item:
-                Menu.list_categories[number_category].list_items.remove(item)
+        for item in Category.categories[number_category].items:
+            if Category.categories[number_category].items.index(item) == number_item:
+                Category.categories[number_category].items.remove(item)
                 condition_of_remove_item = True
 
         if condition_of_remove_item:
