@@ -6,9 +6,9 @@ from decorators import representing
 class Order:
     orders = []
 
-    def __init__(self, customer_that_is_order=None):
-        self.customer_that_is_order = customer_that_is_order
-        self.items = []
+    def __init__(self, username_that_is_order=None, item=None):
+        self.username_that_is_order = username_that_is_order
+        self.item = item
 
     @classmethod
     @representing
@@ -39,42 +39,21 @@ class Order:
         except ValueError:
             return print("ValueError: Number not found")
 
-        condition_of_select_item = False
         for category in Category.categories:
             if Category.categories.index(category) == number_category:
                 for item in category.items:
                     if category.items.index(item) == number_item:
-                        selected_item = item
-                        condition_of_select_item = True
-
-        if condition_of_select_item:
-            for customer_element in Customer.information_customers:
-                if Customer.username_login_customer_for_now == customer_element.username:
-                    order = Order(customer_element)
-                    order.items.append(selected_item)
-
-            condition_of_order = False
-            for order_2 in cls.orders:
-                if order_2.customer_that_is_order.username == Customer.username_login_customer_for_now:
-                    order_2.items.append(selected_item)
-                    print("Record item was successful")
-                    condition_of_order = True
-
-            if not condition_of_order:
-                cls.orders.append(order)
-
-        else:
-            print("Number not found")
+                        order = Order(Customer.username_that_is_login, item)
+                        cls.orders.append(order)
 
     @classmethod
     # This method display order of account that is login and show the total fee of order
     def display_orders_and_receipt_for_customer(cls):
         total = 0
         for order in cls.orders:
-            if order.customer_that_is_order.username == Customer.username_login_customer_for_now:
-                for item in order.items:
-                    print(order.customer_that_is_order.username, " -- ", item.name, "Price: ", item.price)
-                    total += item.price
+            if order.username_that_is_order == Customer.username_that_is_login:
+                print(order.username_that_is_order, " -- ", order.item.name, "Price: ", order.item.price)
+                total += order.item.price
 
         print("Total: ", total)
 
@@ -83,15 +62,9 @@ class Order:
     # Last one display just one orders that is for customer is login now but this method
     # Display all orders that we have in list_orders for admin
     def display_orders_and_receipt_for_admin(cls):
-        total = 0
         if len(cls.orders) > 0:
             for order in cls.orders:
-                for item in order.items:
-                    print(order.customer_that_is_order.username, " -- ", item.name, "Price:",  item.price)
-                    total += item.price
-
-                print(order.customer_that_is_order.username, " -- total: ", total)
-                total = 0
+                print(order.username_that_is_order, " -- ", order.item.name, "Price:",  order.item.price)
 
         else:
             print("Now we don't have any order")
@@ -102,17 +75,15 @@ class Order:
     # Then set the order that admin want and remove if from list_orders
     def confirmation_the_orders(cls):
         progress = True
+        print("Please enter username of user that you want to confirm his orders")
         while progress:
             Order.display_orders_and_receipt_for_admin()
             username_for_confirmation = input(": ")
             condition_of_confirmation = False
             for order in cls.orders:
-                if order.customer_that_is_order.username == username_for_confirmation:
-                    cls.orders.remove(order)
-                    condition_of_confirmation = True
-
-            else:
-                print("Please enter username of user that you want to confirm his orders")
+                for repeat in cls.orders:
+                    if order.username_that_is_order == username_for_confirmation:
+                        cls.orders.remove(order)
 
             if condition_of_confirmation:
                 print("Confirmation was successful")
@@ -122,5 +93,4 @@ class Order:
 
             if username_for_confirmation == "q":
                 progress = False
-
 

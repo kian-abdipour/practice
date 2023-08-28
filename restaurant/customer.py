@@ -3,7 +3,7 @@ from decorators import representing
 
 class Customer:
     information_customers = []
-    username_login_customer_for_now = None
+    username_that_is_login = None
 
     def __init__(self, username=None, password=None):
         self.username = username
@@ -33,7 +33,7 @@ class Customer:
         print("Please enter password of your relax account")
         login_password = input(": ")
 
-        cls.username_login_customer_for_now = login_username
+        cls.username_that_is_login = login_username
         condition_of_login = False
         for customer in cls.information_customers:
             if customer.username == login_username and customer.password == login_password:
