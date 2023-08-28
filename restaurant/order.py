@@ -81,9 +81,8 @@ class Order:
             username_for_confirmation = input(": ")
             condition_of_confirmation = False
             for order in cls.orders:
-                for repeat in cls.orders:
-                    if order.username_that_is_order == username_for_confirmation:
-                        cls.orders.remove(order)
+                if order.username_that_is_order == username_for_confirmation:
+                    cls.orders.remove(order)
 
             if condition_of_confirmation:
                 print("Confirmation was successful")
