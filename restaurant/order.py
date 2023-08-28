@@ -1,6 +1,7 @@
 from category import Category
 from customer import Customer
 from decorators import representing
+import copy
 
 
 class Order:
@@ -45,6 +46,7 @@ class Order:
                     if category.items.index(item) == number_item:
                         order = Order(Customer.username_that_is_login, item)
                         cls.orders.append(order)
+                        print("Order was successful")
 
     @classmethod
     # This method display order of account that is login and show the total fee of order
@@ -74,15 +76,17 @@ class Order:
     # This first display the orders that are in list_orders
     # Then set the order that admin want and remove if from list_orders
     def confirmation_the_orders(cls):
+        deepcopy_orders = copy.deepcopy(cls.orders)
         progress = True
         print("Please enter username of user that you want to confirm his orders")
         while progress:
             Order.display_orders_and_receipt_for_admin()
             username_for_confirmation = input(": ")
             condition_of_confirmation = False
-            for order in cls.orders:
-                if order.username_that_is_order == username_for_confirmation:
-                    cls.orders.remove(order)
+            for repeat in deepcopy_orders:
+                for order in cls.orders:
+                    if order.username_that_is_order == username_for_confirmation:
+                        cls.orders.remove(order)
 
             if condition_of_confirmation:
                 print("Confirmation was successful")
