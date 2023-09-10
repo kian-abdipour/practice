@@ -49,12 +49,12 @@ class Admin:
               .format(full_name_admin=first_name_of_admin + " " + last_name_of_admin))
 
         try:
-            input_admin_code = int(input(": "))
+            admin_code = int(input(": "))
 
         except ValueError:
             return print("ValueError: Your admin code must be number with out any space like: 3476.")
 
-        admin = Admin(first_name_of_admin, last_name_of_admin, input_admin_code)
+        admin = Admin(first_name_of_admin, last_name_of_admin, admin_code)
         cls.admins.append(admin)
 
     @classmethod

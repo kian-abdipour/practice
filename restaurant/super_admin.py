@@ -5,7 +5,7 @@ class SupperAdmin:
     def __init__(self, first_name, last_name):
         self.first_name = first_name
         self.last_name = last_name
-    super_admin_code = "1386"
+    super_admin_code = 1386
 
     # This function is for login super admin, and we have just one super admin in this program
     # If condition of login will be true user can continue ass super admin

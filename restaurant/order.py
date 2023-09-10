@@ -87,6 +87,7 @@ class Order:
                 for order in cls.orders:
                     if order.username_that_is_order == username_for_confirmation:
                         cls.orders.remove(order)
+                        condition_of_confirmation = True
 
             if condition_of_confirmation:
                 print("Confirmation was successful")
