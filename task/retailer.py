@@ -30,8 +30,3 @@ class Retailer:
     def __str__(self):
         return f"{self.retailer_id}, {self.retailer_name}"
 
-
-a = Retailer()
-a.generate_retailer_id("")
-print(a.retailer_id)
-

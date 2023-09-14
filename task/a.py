@@ -1,4 +1,33 @@
-22927521, ULTnkYQ QN, Clayton Rd Clayton, VIC3170, (10.9, 14.5), ['PX101073, jEJPRJ qNTOlvhmWpw, 17, 212, FWD', 'QZ278951, KnifVWGlnEvsudbG, 11, 155, AWD', 'HP701271, hqVm QRxZJMhhB, 19, 213, AWD', 'GN448578, GiblDmqvZLrPmLQJAmsW, 5, 176, RWD']
-77903872, asTgslrLl , Clayton Rd Clayton, VIC3170, (8.4, 16.9), ['UX761456, WSTzkGuigTuKgXzVNG, 14, 210, FWD', 'GD356859,  OGrenAEllf tJH, 6, 230, FWD', 'KJ072312, DCjFoPDbGF, 9, 230, AWD', 'HL768616, ixqrtEbaAIYEaFm, 11, 181, FWD']
-36675258, eiTyElGZTv, Clayton Rd Mount Waverley, VIC3168, (11.9, 12.3), ['WP270984,  lQjZrcnIs ZIurLWL, 17, 267, AWD', 'KN682204, MtASuDiLqLR, 9, 278, FWD', 'MF007567, nWVcEVCvINzKbu  RqYR, 10, 189, RWD']
+progress = True
+while progress:
+    with open("stock.txt", "r") as stock_file:
+        read_file = stock_file.readlines()
+
+    retailer_lines = []
+    for line in read_file:
+        retailer_information = line[0: line.index("[") - 2].split(",")
+        car_lines = line[line.index("[") + 2: -2].split("', '")
+        for car_line in car_lines:
+            car_lines[car_lines.index(car_line)] = car_line.split(", ")
+        retailer_information.append(car_lines)
+        retailer_lines.append(retailer_information)
+
+    retailers = []
+    for line in retailer_lines:
+        str_business_hours = line[4] + line[5]
+        business_hours = tuple(((str_business_hours.replace(" (", "")).replace(")", "")).split(" "))
+        if "'" in business_hours[0] and "'" in business_hours[1]:
+            list_business_hours = list(business_hours)
+            list_business_hours[0] = business_hours[0].replace("'", "")
+            list_business_hours[1] = business_hours[1].replace("'", "")
+            business_hours = tuple(list_business_hours)
+
+        car_retailer = CarRetailer(int(line[0]), line[1], line[2] + ", " + line[3], business_hours)
+        for car_line in line[6]:
+            if len(car_line) >= 5:
+                if "'" in car_line[5]:
+                    car_line[5] = car_line[5].replace("'", "")
+                car = Car(car_line[0], car_line[1], int(car_line[2]), int(car_line[3]), int(car_line[4]), car_line[5])
+                car_retailer.car_retailer_stock.append(car)
+        retailers.append(car_retailer)
 
