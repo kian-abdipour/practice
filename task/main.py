@@ -6,39 +6,40 @@ import datetime
 
 
 def generate_test_data():
-    with open("stock.txt", "a+") as file:
+    with open("stock.txt", "r") as file:
         read_file = file.readlines()
 
-    name_retailers = ["ULTnkYQ QN", "asTgslrLl", "eiTyElGZTv"]
-    car_retailer_addresses = ["Clayton Rd Clayton, VIC3100", "Clayton Rd Clayton, VIC3170", "Clayton Rd Mount Waverley, VIC3168"]
-    car_retailer_business_hours = [(10.9, 14.5), (5.4, 16.9), (11.9, 12.3)]
-    for name_retailer in name_retailers:
-        car_a = Car("PX101073", "jEJPRJ qNTOlvhmWpw", 17, 212, 2210, "FWD")
-        car_b = Car("QZ278951", "KnifVWGlnEvsudbG", 11, 155, 1751, "AWD")
-        car_c = Car("HP701271", "hqVm QRxZJMhhB", 19, 213, 1180, "AWD")
-        car_d = Car("GN448578", "GiblDmqvZLrPmLQJAmsW", 5, 176, 2450, "RWD")
-        car_e = Car("UX761456", "WSTzkGuigTuKgXzVNG", 14, 210, 2150, "FWD")
-        car_f = Car("GD356859", "OGrenAEllf tJH", 6, 230, 1899, "FWD")
-        cars = [car_a, car_b, car_c, car_d, car_e, car_f]
+    if len(read_file) == 0:
+        name_retailers = ["Exclusive Cars", "King Motor", "Racy Motors"]
+        car_retailer_addresses = ["Clayton Rd Clayton, VIC3100", "Clayton Rd Clayton, VIC3170", "Clayton Rd Mount Waverley, VIC3168"]
+        car_retailer_business_hours = [(10, 18), (6.5, 12), (14, 17.5)]
+        for name_retailer in name_retailers:
+            car_a = Car("PX101073", "BMW z4", 2, 205, 2470, "FWD")
+            car_b = Car("QZ278951", "BMW X8", 5, 190, 1930, "RWD")
+            car_c = Car("HP701271", "Mercedes-Benz G-Class", 5, 410, 2113, "AWD")
+            car_d = Car("GN448578", "toyota supra mk5", 2, 335, 1420, "RWD")
+            car_e = Car("UX761456", "Rolls-Royce Phantom", 5, 536, 2745, "AWD")
+            car_f = Car("GD356859", "Honda Civic", 4, 180, 1268, "FWD")
+            cars = [car_a, car_b, car_c, car_d, car_e, car_f]
 
-        retailer = Retailer(-1, name_retailer)
-        retailer.generate_retailer_id(read_file)
+            retailer = Retailer(-1, name_retailer)
+            retailer.generate_retailer_id(read_file)
 
-        address = car_retailer_addresses[name_retailers.index(name_retailer)]
-        business_hours = car_retailer_business_hours[name_retailers.index(name_retailer)]
-        car_retailer = CarRetailer(retailer.retailer_id, retailer.retailer_name, address, business_hours)
-        while len(car_retailer.car_retailer_stock) != 4:
-            car = random.choice(cars)
-            is_duplicated_car = False
-            for item_car in car_retailer.car_retailer_stock:
-                if car.car_code in item_car:
-                    is_duplicated_car = True
+            address = car_retailer_addresses[name_retailers.index(name_retailer)]
+            business_hours = car_retailer_business_hours[name_retailers.index(name_retailer)]
+            car_retailer = CarRetailer(retailer.retailer_id, retailer.retailer_name, address, business_hours)
+            while len(car_retailer.car_retailer_stock) != 4:
+                car = random.choice(cars)
+                is_duplicated_car = False
+                for item_car in car_retailer.car_retailer_stock:
+                    if car.car_code in item_car:
+                        is_duplicated_car = True
 
-            if not is_duplicated_car:
-                car_retailer.car_retailer_stock.append(str(car))
+                if not is_duplicated_car:
+                    car_retailer.car_retailer_stock.append(str(car))
 
-        with open("stock.txt", "a") as file:
-            file.write(str(car_retailer)+"\n")
+            with open("stock.txt", "a") as file:
+                file.write(str(car_retailer)+"\n")
 
 
 def main():
@@ -155,11 +156,11 @@ def main_menu():
             if condition_form_ides:
                 condition_order = False
                 for retailer in list_retailers:
-                    if retailer.retailer_id == int(information_car[1]):
+                    if retailer.retailer_id == number_retailer_id:
                         if retailer.is_operating(retailer.car_retailer_business_hours):
                             order = retailer.create_order(information_car[0])
 
-                            with open("order.txt", "a+") as file_order:
+                            with open("order.txt", "a") as file_order:
                                 file_order.write(str(order) + "\n")
 
                             for retailer_item in list_retailers:
