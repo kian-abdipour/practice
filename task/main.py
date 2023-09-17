@@ -145,12 +145,12 @@ def main_menu():
 
         elif user_operation == "c":
             print("Please enter a car_id and retailer_id like:BM123456 12345678")
-            information_car = input(": ").split(" ")
+            information_car = input(": ")
             # <<< regular expression >>> #
-            condition_form_ides = re.search('^[A-Za-z]{2}[0-9]{6}\s[0-9]{8}$', "MG123456 12345678")
+            condition_form_ides = re.search('^[A-Za-z]{2}[0-9]{6}\s[0-9]{8}$', information_car)
 
             if condition_form_ides:
-                number_retailer_id = int(information_car[1])
+                number_retailer_id = int(information_car.split(" ")[1])
                 condition_order = False
                 for retailer in list_retailers:
                     if retailer.retailer_id == number_retailer_id:
@@ -187,7 +187,7 @@ def main_menu():
                     print("Order was fail: retailer or car not found")
             else:
                 print("Please enter car_id and retailer_id like this:BM123456 12345678\n"
-                      "Attention: len car_id should be 8 and len retailer id should be 8")
+                      "Attention: len car_id should be 8 and len retailer id should be 8 too")
 
         elif user_operation == "d":
             proceed = False
