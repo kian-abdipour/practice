@@ -181,6 +181,7 @@ def main_menu():
 
                 else:
                     print("Order was fail: retailer or car not found")
+
             else:
                 print("Please enter car_id and retailer_id like this:BM123456 12345678\n"
                       "Attention: len car_id should be 8 and len retailer id should be 8 too")
