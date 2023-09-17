@@ -151,7 +151,7 @@ def main_menu():
                 for retailer in list_retailers:
                     if retailer.retailer_id == number_retailer_id:
                         if retailer.is_operating(retailer.car_retailer_business_hours):
-                            order = retailer.create_order(information_car[0])
+                            order = retailer.create_order(information_car.split(" ")[0])
 
                             with open("order.txt", "a+") as file_order:
                                 file_order.write(str(order) + "\n")
