@@ -1,4 +1,5 @@
 from retailer import Retailer
+from car import Car
 from order import Order
 from datetime import datetime
 import random
@@ -15,11 +16,8 @@ class CarRetailer(Retailer):
         super().__init__(retailer_id, retailer_name)
 
     def load_current_stock(self, path):
-        with open("stock.txt", "r") as stock_file:
-            read_file = stock_file.readlines()
-
         retailers_information = []
-        for line in read_file:
+        for line in path:
             retailer_information = line.split(", [")
             retailer_information[0] = retailer_information[0].split(", ")
             retailer_information[1] = retailer_information[1].replace("']\n", "")
@@ -37,13 +35,15 @@ class CarRetailer(Retailer):
             business_hours = (float(business_hours[0]), float(business_hours[1]))
 
             car_retailer = CarRetailer(int(line[0][0]), line[0][1], line[0][2] + ", " + line[0][3], business_hours)
-            list_car_code = []
+            list_car = []
             for car_line in line[1]:
                 if car_line != ["is not available"]:
-                    list_car_code.append(car_line[0])
+                    car = Car(car_line[0], car_line[1], int(car_line[2]), int(car_line[3]), int(car_line[4]),
+                              car_line[5])
+                    list_car.append(car)
 
             if car_retailer.retailer_id == self.retailer_id:
-                self.car_retailer_stock = list_car_code
+                self.car_retailer_stock = list_car
 
     @staticmethod
     def is_operating(cur_hour):

@@ -1,5 +1,4 @@
 import re
-
 from car_retailer import CarRetailer
 from car import Car
 from retailer import Retailer
@@ -71,10 +70,7 @@ def main():
         business_hours = (float(business_hours[0]), float(business_hours[1]))
 
         car_retailer = CarRetailer(int(line[0][0]), line[0][1], line[0][2] + ", " + line[0][3], business_hours)
-        for car_line in line[1]:
-            if car_line != ["is not available"]:
-                car = Car(car_line[0], car_line[1], int(car_line[2]), int(car_line[3]), int(car_line[4]), car_line[5])
-                car_retailer.car_retailer_stock.append(car)
+        car_retailer.load_current_stock(read_file)
         retailers.append(car_retailer)
 
     return retailers
