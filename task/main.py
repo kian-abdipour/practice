@@ -90,6 +90,7 @@ def main_menu():
         if user_operation == "a":
             condition_form_code_post = True
             try:
+                # <<< regular expression >>> #
                 print("Enter your code post")
                 user_code_post = int(input(": "))
 
@@ -106,8 +107,10 @@ def main_menu():
                       "Address:", list_retailers[list_distance.index(min(list_distance))].car_retailer_address)
 
         elif user_operation == "b":
-            print("i) Recommend a car\nii) Get all cars in stock\n"
-                  "iii) Get cars in stock by car types\niv) Get probationary licence permitted cars in stock")
+            print("i) Recommend a car"
+                  "\nii) Get all cars in stock"
+                  "\niii) Get cars in stock by car types"
+                  "\niv) Get probationary licence permitted cars in stock")
             operation_user_part_b = input(": ")
 
             if operation_user_part_b == "i":
@@ -141,6 +144,7 @@ def main_menu():
 
         elif user_operation == "c":
             print("Please enter a car_id and retailer_id like:BM123456 12345678")
+            # <<< Regular expression >>> #
             information_car = input(": ").split(" ")
 
             condition_form_ides = True
