@@ -6,10 +6,13 @@ import datetime
 
 
 def generate_test_data():
-    with open("stock.txt", "r") as file:
+    with open("stock.txt", "a+") as file:
         read_file = file.readlines()
 
-    if len(read_file) == 0:
+    with open("stock.txt", "r") as check_file:
+        number_line = len(check_file.readlines())
+
+    if number_line == 0:
         name_retailers = ["Exclusive Cars", "King Motor", "Racy Motors"]
         car_retailer_addresses = ["Clayton Rd Clayton, VIC3100", "Clayton Rd Clayton, VIC3170", "Clayton Rd Mount Waverley, VIC3168"]
         car_retailer_business_hours = [(10, 18), (6.5, 12), (14, 17.5)]
@@ -38,7 +41,7 @@ def generate_test_data():
                 if not is_duplicated_car:
                     car_retailer.car_retailer_stock.append(str(car))
 
-            with open("stock.txt", "a") as file:
+            with open("stock.txt", "a+") as file:
                 file.write(str(car_retailer)+"\n")
 
 
@@ -137,7 +140,7 @@ def main_menu():
                 print("Operation not found")
 
         elif user_operation == "c":
-            print("Please enter a retailer_id and car_id like:BM123456 12345678")
+            print("Please enter a car_id and retailer_id like:BM123456 12345678")
             information_car = input(": ").split(" ")
 
             condition_form_ides = True
@@ -160,7 +163,7 @@ def main_menu():
                         if retailer.is_operating(retailer.car_retailer_business_hours):
                             order = retailer.create_order(information_car[0])
 
-                            with open("order.txt", "a") as file_order:
+                            with open("order.txt", "a+") as file_order:
                                 file_order.write(str(order) + "\n")
 
                             for retailer_item in list_retailers:

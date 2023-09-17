@@ -15,7 +15,35 @@ class CarRetailer(Retailer):
         super().__init__(retailer_id, retailer_name)
 
     def load_current_stock(self, path):
-        pass
+        with open("stock.txt", "r") as stock_file:
+            read_file = stock_file.readlines()
+
+        retailers_information = []
+        for line in read_file:
+            retailer_information = line.split(", [")
+            retailer_information[0] = retailer_information[0].split(", ")
+            retailer_information[1] = retailer_information[1].replace("']\n", "")
+            retailer_information[1] = retailer_information[1].split("'")
+            retailer_information[1].remove('')
+            while ', ' in retailer_information[1]:
+                retailer_information[1].remove(', ')
+            for car_line in retailer_information[1]:
+                retailer_information[1][retailer_information[1].index(car_line)] = car_line.split(", ")
+            retailers_information.append(retailer_information)
+
+        for line in retailers_information:
+            str_business_hours = line[0][4].replace("(", "") + " " + line[0][5].replace(")", "")
+            business_hours = tuple(str_business_hours.split(" "))
+            business_hours = (float(business_hours[0]), float(business_hours[1]))
+
+            car_retailer = CarRetailer(int(line[0][0]), line[0][1], line[0][2] + ", " + line[0][3], business_hours)
+            list_car_code = []
+            for car_line in line[1]:
+                if car_line != ["is not available"]:
+                    list_car_code.append(car_line[0])
+
+            if car_retailer.retailer_id == self.retailer_id:
+                self.car_retailer_stock = list_car_code
 
     @staticmethod
     def is_operating(cur_hour):
