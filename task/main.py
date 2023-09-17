@@ -1,3 +1,5 @@
+import re
+
 from car_retailer import CarRetailer
 from car import Car
 from retailer import Retailer
@@ -88,23 +90,22 @@ def main_menu():
         user_operation = input(": ")
 
         if user_operation == "a":
-            condition_form_code_post = True
-            try:
-                # <<< regular expression >>> #
-                print("Enter your code post")
-                user_code_post = int(input(": "))
-
-            except ValueError:
-                condition_form_code_post = False
-                print("postcode should be a number without space")
+            print("Enter your code post")
+            user_postcode = input(": ")
+            # <<< regular expression >>> #
+            condition_form_code_post = re.search("^\\d{4}$", user_postcode)
 
             if condition_form_code_post:
+                user_postcode = int(user_postcode)
                 list_distance = []
                 for car_retailer in list_retailers:
-                    list_distance.append(car_retailer.get_post_code_distance(user_code_post))
+                    list_distance.append(car_retailer.get_post_code_distance(user_postcode))
 
                 print("Name:", list_retailers[list_distance.index(min(list_distance))].retailer_name,
                       "Address:", list_retailers[list_distance.index(min(list_distance))].car_retailer_address)
+
+            else:
+                print("postcode should be a 4 number without space")
 
         elif user_operation == "b":
             print("i) Recommend a car"
@@ -144,23 +145,12 @@ def main_menu():
 
         elif user_operation == "c":
             print("Please enter a car_id and retailer_id like:BM123456 12345678")
-            # <<< Regular expression >>> #
             information_car = input(": ").split(" ")
-
-            condition_form_ides = True
-            if len(information_car) == 2:
-                try:
-                    number_retailer_id = int(information_car[1])
-
-                except ValueError:
-                    condition_form_ides = False
-                    print("Please enter information ides like this:BM123456 12345678")
-
-            else:
-                condition_form_ides = False
-                print("Please enter information ides like this:BM123456 12345678")
+            # <<< regular expression >>> #
+            condition_form_ides = re.search('^[A-Za-z]{2}[0-9]{6}\s[0-9]{8}$', "MG123456 12345678")
 
             if condition_form_ides:
+                number_retailer_id = int(information_car[1])
                 condition_order = False
                 for retailer in list_retailers:
                     if retailer.retailer_id == number_retailer_id:
@@ -195,6 +185,9 @@ def main_menu():
 
                 else:
                     print("Order was fail: retailer or car not found")
+            else:
+                print("Please enter car_id and retailer_id like this:BM123456 12345678\n"
+                      "Attention: len car_id should be 8 and len retailer id should be 8")
 
         elif user_operation == "d":
             proceed = False
