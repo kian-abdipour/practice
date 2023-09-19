@@ -114,6 +114,14 @@ class CarRetailer(Retailer):
 
         return car_retailer_stock_by_type
 
+    def get_stock_by_licence_type(self, licence_type):
+        authorized_cars = []
+        for car in self.car_retailer_stock:
+            if car.probationary_licence_prohibited_vehicle():
+                authorized_cars.append(car)
+
+        return authorized_cars
+
     def __str__(self):
         return (f"{self.retailer_id}, "
                 f"{self.retailer_name}, "

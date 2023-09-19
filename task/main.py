@@ -78,7 +78,7 @@ def main():
 
 def main_menu():
     generate_test_data()
-    print("! Welcome to our car purchase advis system !")
+    print("! Welcome to our car purchase advise system !")
     proceed = True
     while proceed:
         list_retailers = main()
@@ -131,10 +131,9 @@ def main_menu():
 
             elif operation_user_part_b == "iv":
                 for retailer in list_retailers:
-                    for car in retailer.car_retailer_stock:
-                        if car.probationary_licence_prohibited_vehicle():
-                            print(f"Retailer name: {retailer.retailer_name}, retailer id: {retailer.retailer_id}"
-                                  f" >>> car name: {car.car_name}, car code: {car.car_code}")
+                    for authorized_car in retailer.get_stock_by_licence_type("Full P"):
+                        print(f"Retailer name: {retailer.retailer_name}, retailer id: {retailer.retailer_id}"
+                              f" >>> car name: {authorized_car.car_name}, car code: {authorized_car.car_code}")
 
             else:
                 print("Operation not found")
