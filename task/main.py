@@ -130,8 +130,11 @@ def main_menu():
                               " >>> ", car.car_name, ", code:", car.car_code, ", type:", car.car_type)
 
             elif operation_user_part_b == "iv":
+                print("Please choose your licence type\na) Full licence\nb) Lerner licence\nc) probationary licence")
+                license_type = input(": ")
+
                 for retailer in list_retailers:
-                    for authorized_car in retailer.get_stock_by_licence_type("Full P"):
+                    for authorized_car in retailer.get_stock_by_licence_type(license_type):
                         print(f"Retailer name: {retailer.retailer_name}, retailer id: {retailer.retailer_id}"
                               f" >>> car name: {authorized_car.car_name}, car code: {authorized_car.car_code}")
 

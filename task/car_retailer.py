@@ -116,9 +116,18 @@ class CarRetailer(Retailer):
 
     def get_stock_by_licence_type(self, licence_type):
         authorized_cars = []
-        for car in self.car_retailer_stock:
-            if car.probationary_licence_prohibited_vehicle():
+
+        if licence_type == "a" or licence_type == "b":
+            for car in self.get_all_stock():
                 authorized_cars.append(car)
+
+        elif licence_type == "c":
+            for car in self.car_retailer_stock:
+                if car.probationary_licence_prohibited_vehicle():
+                    authorized_cars.append(car)
+
+        else:
+            return print("Operation not found")
 
         return authorized_cars
 
