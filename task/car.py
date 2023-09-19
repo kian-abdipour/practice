@@ -34,4 +34,3 @@ class Car:
                 f"{self.car_capacity}, {self.car_horsepower}, "
                 f"{self.car_weight}, {self.car_type}")
 
-
