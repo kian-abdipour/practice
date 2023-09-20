@@ -10,13 +10,9 @@ class Retailer:
     # First append random numbers to characters then make it back to a string and change its type to int because we need
     # integer
     def generate_retailer_id(self, list_retailer):
-        characters = []
-        while len(characters) != 8:
-            characters.append(str(random.randint(0, 9)))
-
         str_retailer_id = ""
-        for character in characters:
-            str_retailer_id += character
+        while len(str_retailer_id) != 8:
+            str_retailer_id += str(random.randint(1, 9))
 
         is_duplicated = False
         for retailer in list_retailer:
