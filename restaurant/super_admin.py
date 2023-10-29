@@ -1,10 +1,7 @@
-from admin import Admin
 import sqlalchemy as sa
 from sqlalchemy import *
-from sqlalchemy.ext.declarative import *
 from sqlalchemy.orm import relationship
-
-Base = declarative_base()
+from base import Base
 
 
 class SuperAdmin(Base):

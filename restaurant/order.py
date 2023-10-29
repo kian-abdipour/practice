@@ -1,8 +1,6 @@
 import sqlalchemy as sa
 from sqlalchemy import *
-from sqlalchemy.ext.declarative import declarative_base
-
-Base = declarative_base()
+from base import Base
 
 
 class Order(Base):

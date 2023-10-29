@@ -1,9 +1,8 @@
 import sqlalchemy as sa
 from sqlalchemy import *
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
+from base import Base
 
-Base = declarative_base()
 
 
 class Customer(Base):
