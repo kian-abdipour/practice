@@ -9,5 +9,5 @@ class SuperAdmin(Base):
     superadmin_id = Column('superadmin_id', sa.Integer, primary_key=True, nullable=False, unique=True)
     first_name = Column('first_name', sa.VARCHAR(30))
     last_name = Column('last_name', sa.VARCHAR(30))
-    admin = relationship('Admin')
+    admins = relationship('Admin')
 

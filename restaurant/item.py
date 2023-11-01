@@ -10,5 +10,5 @@ class Item(Base):
     name = Column('name', sa.VARCHAR(40))
     price = Column('price', sa.INTEGER)
     category_id = Column('category_id', sa.INTEGER, sa.ForeignKey('categories.category_id'))
-    order = relationship('orders.order_id')
+    orders = relationship('orders.order_id')
 

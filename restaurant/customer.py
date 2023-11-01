@@ -9,5 +9,5 @@ class Customer(Base):
     customer_id = Column('customer_id', sa.INTEGER, primary_key=True, nullable=False, unique=True)
     username = Column('username', sa.VARCHAR(40))
     password = Column('password', sa.VARCHAR(40))
-    order = relationship('orders.order_id')
+    orders = relationship('orders.order_id')
 
