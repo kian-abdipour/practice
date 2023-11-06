@@ -1,14 +1,13 @@
-import sqlalchemy as sa
-from sqlalchemy import *
+from sqlalchemy import Column, Integer, VARCHAR, ForeignKey
 from sqlalchemy.orm import relationship
 from base import Base
 
 
 class Item(Base):
-    __tablename__ = 'items'
-    item_id = Column('item', sa.INTEGER, primary_key=True, nullable=False, unique=True)
-    name = Column('name', sa.VARCHAR(40))
-    price = Column('price', sa.INTEGER)
-    category_id = Column('category_id', sa.INTEGER, sa.ForeignKey('categories.category_id'))
-    orders = relationship('orders.order_id')
+    __tablename__ = 'item'
+    item_id = Column('item_id', Integer, primary_key=True, nullable=False, unique=True)
+    name = Column('name', VARCHAR(40))
+    price = Column('price', Integer)
+    category_id = Column("category_id", Integer, ForeignKey('category.category_id'))
+    customer = relationship('Order', back_populates="customer")
 
