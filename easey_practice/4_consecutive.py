@@ -1,13 +1,11 @@
-list_integer = []
-list_consecutive = []
-
-
 # In here first we separate our integer and append it to list_integer then append the consecutive number to
 # list_consecutive and if we have 4 or more number in consecutive print our list none-repetitive.
 def make_list_integer():
     print("If it's finish type q")
     while_manager = True
     while while_manager:
+        list_integer = []
+        list_consecutive = []
         print('Please type something.')
         input_character = input(": ")
         my_string = input_character + "A"
