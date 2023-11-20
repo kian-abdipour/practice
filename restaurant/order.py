@@ -7,7 +7,6 @@ class Order(Base):
     __tablename__ = 'order'
     id = Column(Integer, primary_key=True)
     desk_number = Column(Integer, nullable=False)
-    condition = Column(Boolean, nullable=False)
     date = Column(DateTime, nullable=False)
     time = Column(DateTime, nullable=False)
     description = Column(Unicode)
