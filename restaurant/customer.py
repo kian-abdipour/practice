@@ -7,6 +7,7 @@ class Customer(Base):
     __tablename__ = 'customer'
     id = Column(Integer, primary_key=True)
     username = Column(Unicode(40))
-    password = Column(Unicode(40))
+    password = Column(Unicode(8))
+
     orders = relationship('Order')
 

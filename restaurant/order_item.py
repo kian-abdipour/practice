@@ -8,7 +8,8 @@ class OrderItem(Base):
     id = Column(Integer, primary_key=True)
     order_id = Column(Integer, ForeignKey('order.id'))
     item_id = Column(Integer, ForeignKey('item.id'))
+    quantity = Column(Integer, nullable=False)
+
     orders = relationship('Order')
     items = relationship('Item')
-
 

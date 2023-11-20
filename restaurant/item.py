@@ -8,6 +8,8 @@ class Item(Base):
     id = Column(Integer, primary_key=True)
     name = Column(Unicode(40))
     price = Column(Integer)
+    description = Column(Unicode)
     category_id = Column(Integer, ForeignKey('category.id'))
+
     orders = relationship('OrderItem')
 
