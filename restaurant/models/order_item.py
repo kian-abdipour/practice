@@ -5,7 +5,7 @@ from datetime import datetime
 
 
 class OrderItem(Base):
-    __tablename__ = 'orderitem'
+    __tablename__ = 'order_item'
     id = Column(Integer, primary_key=True)
     order_id = Column(Integer, ForeignKey('order.id'))
     item_id = Column(Integer, ForeignKey('item.id'))
