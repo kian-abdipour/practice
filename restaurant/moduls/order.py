@@ -1,5 +1,5 @@
 from sqlalchemy import Unicode, Column, Integer, ForeignKey, DateTime
-from base import Base
+from restaurant.moduls.base import Base
 from sqlalchemy.orm import Relationship
 from datetime import datetime
 

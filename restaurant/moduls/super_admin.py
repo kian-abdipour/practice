@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, Unicode, DateTime
 from sqlalchemy.orm import relationship
-from base import Base
+from restaurant.moduls.base import Base
 from datetime import datetime
 
 

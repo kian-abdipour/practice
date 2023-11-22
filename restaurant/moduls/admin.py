@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, Unicode, ForeignKey, DateTime
-from base import Base
+from restaurant.moduls.base import Base
 from datetime import datetime
 
 

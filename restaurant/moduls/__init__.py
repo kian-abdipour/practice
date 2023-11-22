@@ -1,5 +1,4 @@
 from restaurant.moduls.admin import Admin
-from restaurant.moduls.base import Base
 from restaurant.moduls.category import Category
 from restaurant.moduls.customer import Customer
 from restaurant.moduls.item import Item
