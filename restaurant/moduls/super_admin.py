@@ -9,6 +9,7 @@ class SuperAdmin(Base):
     id = Column(Integer, primary_key=True)
     first_name = Column(Unicode(30), nullable=False)
     last_name = Column(Unicode(30), nullable=False)
+    password = Column(Unicode(8), nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
 
     admins = relationship('Admin')
