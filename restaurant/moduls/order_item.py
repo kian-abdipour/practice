@@ -7,11 +7,11 @@ from datetime import datetime
 class OrderItem(Base):
     __tablename__ = 'order_item'
     id = Column(Integer, primary_key=True)
-    order_id = Column(Integer, ForeignKey('order.id'))
-    item_id = Column(Integer, ForeignKey('item.id'))
-    quantity = Column(Integer, nullable=False)
-    receipt = Column(Integer, nullable=False, default=0)
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    order_id = Column(ForeignKey('order.id'))
+    item_id = Column(ForeignKey('item.id'))
+    quantity = Column(Integer, default=1)
+    total_amount = Column(Integer, default=0)
 
     orders = relationship('Order')
     items = relationship('Item')

@@ -5,4 +5,5 @@ from restaurant.moduls.item import Item
 from restaurant.moduls.order import Order
 from restaurant.moduls.order_item import OrderItem
 from restaurant.moduls.super_admin import SuperAdmin
+from restaurant.moduls.payment import Payment
 

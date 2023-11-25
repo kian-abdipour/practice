@@ -7,9 +7,11 @@ from datetime import datetime
 class Customer(Base):
     __tablename__ = 'customer'
     id = Column(Integer, primary_key=True)
-    username = Column(Unicode(40), nullable=False)
-    password = Column(Unicode(8), nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    username = Column(Unicode(40))
+    password = Column(Unicode(8))
+    phone_number = Column(Unicode(15))
 
     orders = relationship('Order')
+    payments = relationship('Payment')
 

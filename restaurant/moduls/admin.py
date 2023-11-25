@@ -6,9 +6,9 @@ from datetime import datetime
 class Admin(Base):
     __tablename__ = 'admin'
     id = Column(Integer, primary_key=True)
-    first_name = Column(Unicode(30), nullable=False)
-    last_name = Column(Unicode(30), nullable=False)
-    password = Column(Unicode(8), nullable=False)
-    superadmin_id = Column(Integer, ForeignKey('super_admin.id'))
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    first_name = Column(Unicode(30))
+    last_name = Column(Unicode(30))
+    password = Column(Unicode(8))
+    superadmin_id = Column(ForeignKey('super_admin.id'))
 

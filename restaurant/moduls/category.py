@@ -7,9 +7,8 @@ from datetime import datetime
 class Category(Base):
     __tablename__ = 'category'
     id = Column(Integer, primary_key=True)
-    name = Column(Unicode(30), nullable=False)
-    country = Column(Unicode(20), nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    name = Column(Unicode(30))
 
     items = relationship('Item')
 
