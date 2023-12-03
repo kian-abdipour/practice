@@ -9,8 +9,9 @@ class Order(Base):
     id = Column(Integer, primary_key=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     state = Column(Unicode)
+    delivery_type = Column(Unicode)
     desk_number = Column(Integer, nullable=True)
-    unit_amount = Column(Integer, default=0)
+    address = Column(Unicode(80), nullable=True)
     description = Column(Unicode, nullable=True)
     customer_id = Column(ForeignKey('customer.id'))
 

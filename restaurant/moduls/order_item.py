@@ -9,6 +9,7 @@ class OrderItem(Base):
     id = Column(Integer, primary_key=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     quantity = Column(Integer, default=1)
+    unit_amount = Column(Integer)
     total_amount = Column(Integer, default=0)
     order_id = Column(ForeignKey('order.id'))
     item_id = Column(ForeignKey('item.id'))

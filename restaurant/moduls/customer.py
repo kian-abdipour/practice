@@ -11,6 +11,7 @@ class Customer(Base):
     username = Column(Unicode(40))
     password = Column(Unicode(8))
     phone_number = Column(Unicode(15))
+    address = Column(Unicode(80))
 
     orders = relationship('Order')
     payments = relationship('Payment')
