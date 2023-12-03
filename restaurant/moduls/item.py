@@ -9,6 +9,7 @@ class Item(Base):
     id = Column(Integer, primary_key=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     name = Column(Unicode(40))
+    country = Column(Unicode(30), nullable=True)
     price = Column(Integer)
     stock = Column(Integer, default=0)
     description = Column(Unicode, nullable=True)

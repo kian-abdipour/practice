@@ -9,7 +9,6 @@ class Category(Base):
     id = Column(Integer, primary_key=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     name = Column(Unicode(30))
-    country = Column(Unicode(30), nullable=True)
 
     items = relationship('Item')
 

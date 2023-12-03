@@ -8,7 +8,7 @@ class Payment(Base):
     id = Column(Integer, primary_key=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     state = Column(Boolean)
-    amount = Column(Integer)
     type = Column(Unicode)
+    amount = Column(Integer)
     order_id = Column(ForeignKey('order.id'))
 

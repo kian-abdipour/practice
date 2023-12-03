@@ -11,8 +11,8 @@ class Order(Base):
     state = Column(Unicode)
     delivery_type = Column(Unicode)
     desk_number = Column(Integer, nullable=True)
-    address = Column(Unicode(80), nullable=True)
     description = Column(Unicode, nullable=True)
+    address_id = Column(ForeignKey('address.id'))
     customer_id = Column(ForeignKey('customer.id'))
 
     items = relationship('OrderItem')

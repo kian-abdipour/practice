@@ -10,9 +10,9 @@ class Customer(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
     username = Column(Unicode(40))
     password = Column(Unicode(8))
-    phone_number = Column(Unicode(15))
-    address = Column(Unicode(80))
+    phone_number = Column(Unicode(11))
 
     orders = relationship('Order')
     payments = relationship('Payment')
+    addresses = relationship('Address')
 
