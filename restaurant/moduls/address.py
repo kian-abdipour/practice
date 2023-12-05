@@ -1,13 +1,14 @@
-from sqlalchemy import Column, Unicode, ForeignKey, DateTime
+from sqlalchemy import Column, Unicode, ForeignKey, Integer
 from restaurant.moduls.base import Base
-from datetime import datetime
 from sqlalchemy.orm import relationship
+from restaurant.moduls.mixing_modul import Moment
 
 
-class Address(Base):
+class Address(Base, Moment):
     __tablename__ = 'address'
-    created_at = Column(DateTime, default=datetime.utcnow)
+    id = Column(Integer, primary_key=True)
     address = Column(Unicode(150))
     customer_id = Column(ForeignKey('customer.id'))
 
     orders = relationship('Order')
+

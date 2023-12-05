@@ -1,13 +1,12 @@
-from sqlalchemy import Column, Integer, Unicode, ForeignKey, DateTime
+from sqlalchemy import Column, Integer, Unicode, ForeignKey
 from sqlalchemy.orm import relationship
 from restaurant.moduls.base import Base
-from datetime import datetime
+from restaurant.moduls.mixing_modul import Moment
 
 
-class Item(Base):
+class Item(Base, Moment):
     __tablename__ = 'item'
     id = Column(Integer, primary_key=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
     name = Column(Unicode(40))
     country = Column(Unicode(30), nullable=True)
     price = Column(Integer)
@@ -16,4 +15,5 @@ class Item(Base):
     category_id = Column(ForeignKey('category.id'))
 
     orders = relationship('OrderItem')
+    categories = relationship('CategoryItem')
 

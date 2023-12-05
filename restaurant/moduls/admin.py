@@ -1,12 +1,11 @@
-from sqlalchemy import Column, Integer, Unicode, ForeignKey, DateTime
+from sqlalchemy import Column, Integer, Unicode, ForeignKey
 from restaurant.moduls.base import Base
-from datetime import datetime
+from restaurant.moduls.mixing_modul import Moment
 
 
-class Admin(Base):
+class Admin(Base, Moment):
     __tablename__ = 'admin'
     id = Column(Integer, primary_key=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
     first_name = Column(Unicode(30))
     last_name = Column(Unicode(30))
     password = Column(Unicode(8))
