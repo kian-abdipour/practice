@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, Unicode, ForeignKey
-from restaurant.moduls.base import Base
-from restaurant.moduls.mixing_modul import Moment
+#from restaurant.moduls.base import Base
+from restaurant.moduls.mixing_modul import Moment, Base
 
 
 class Admin(Base, Moment):
