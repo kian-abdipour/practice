@@ -1,9 +1,9 @@
 from sqlalchemy import Column, Integer, Unicode, ForeignKey
-#from restaurant.moduls.base import Base
-from restaurant.moduls.mixing_modul import Moment, Base
+from restaurant.modul.base import Base
+from restaurant.modul.mixin import DateTimeMixin
 
 
-class Payment(Base, Moment):
+class Payment(DateTimeMixin, Base):
     __tablename__ = 'payment'
     id = Column(Integer, primary_key=True)
     state = Column(Unicode)

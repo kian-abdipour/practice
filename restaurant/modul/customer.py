@@ -1,10 +1,10 @@
 from sqlalchemy import Column, Integer, Unicode
 from sqlalchemy.orm import relationship
-#from restaurant.moduls.base import Base
-from restaurant.moduls.mixing_modul import Moment, Base
+from restaurant.modul.base import Base
+from restaurant.modul.mixin import DateTimeMixin
 
 
-class Customer(Base, Moment):
+class Customer(DateTimeMixin, Base):
     __tablename__ = 'customer'
     id = Column(Integer, primary_key=True)
     username = Column(Unicode(40))

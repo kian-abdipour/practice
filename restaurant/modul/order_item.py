@@ -1,10 +1,10 @@
 from sqlalchemy import Column, Integer, ForeignKey
-#from restaurant.moduls.base import Base
+from restaurant.modul.base import Base
 from sqlalchemy.orm import relationship
-from restaurant.moduls.mixing_modul import Moment, Base
+from restaurant.modul.mixin import DateTimeMixin
 
 
-class OrderItem(Base, Moment):
+class OrderItem(Base, DateTimeMixin):
     __tablename__ = 'order_item'
     id = Column(Integer, primary_key=True)
     quantity = Column(Integer, default=1)

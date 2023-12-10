@@ -1,10 +1,10 @@
 from sqlalchemy import Column, Integer, Unicode
 from sqlalchemy.orm import relationship
-#from restaurant.moduls.base import Base
-from restaurant.moduls.mixing_modul import Moment, Base
+from restaurant.modul.base import Base
+from restaurant.modul.mixin import DateTimeMixin
 
 
-class Category(Base, Moment):
+class Category(DateTimeMixin, Base):
     __tablename__ = 'category'
     id = Column(Integer, primary_key=True)
     name = Column(Unicode(30))

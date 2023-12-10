@@ -1,10 +1,10 @@
 from sqlalchemy import Column, Unicode, ForeignKey, Integer
-#from restaurant.moduls.base import Base
+from restaurant.modul.base import Base
 from sqlalchemy.orm import relationship
-from restaurant.moduls.mixing_modul import Moment, Base
+from restaurant.modul.mixin import DateTimeMixin
 
 
-class Address(Base, Moment):
+class Address(DateTimeMixin, Base):
     __tablename__ = 'address'
     id = Column(Integer, primary_key=True)
     address = Column(Unicode(150))

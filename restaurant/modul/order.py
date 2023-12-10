@@ -1,10 +1,10 @@
 from sqlalchemy import Unicode, Column, Integer, ForeignKey
-#from restaurant.moduls.base import Base
+from restaurant.modul.base import Base
 from sqlalchemy.orm import relationship
-from restaurant.moduls.mixing_modul import Moment, Base
+from restaurant.modul.mixin import DateTimeMixin
 
 
-class Order(Base, Moment):
+class Order(DateTimeMixin, Base):
     __tablename__ = 'order'
     id = Column(Integer, primary_key=True)
     state = Column(Unicode)
