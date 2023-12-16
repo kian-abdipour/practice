@@ -13,6 +13,6 @@ class OrderItem(Base, DateTimeMixin):
     order_id = Column(ForeignKey('order.id'))
     item_id = Column(ForeignKey('item.id'))
 
-    orders = relationship('Order')
-    items = relationship('Item')
+    orders = relationship('Order', overlaps='items')
+    items = relationship('Item', overlaps='orders')
 

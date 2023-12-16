@@ -10,4 +10,5 @@ class Payment(DateTimeMixin, Base):
     type = Column(Unicode)
     amount = Column(Integer)
     order_id = Column(ForeignKey('order.id'))
+    customer_id = Column(ForeignKey('customer.id'))
 

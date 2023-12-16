@@ -10,6 +10,6 @@ class CategoryItem(DateTimeMixin, Base):
     category_id = Column(ForeignKey('category.id'))
     item_id = Column(ForeignKey('item.id'))
 
-    categories = relationship('Category')
-    items = relationship('Item')
+    categories = relationship('Category', overlaps='items')
+    items = relationship('Item', overlaps='categories')
 

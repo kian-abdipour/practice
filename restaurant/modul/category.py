@@ -9,5 +9,5 @@ class Category(DateTimeMixin, Base):
     id = Column(Integer, primary_key=True)
     name = Column(Unicode(30))
 
-    items = relationship('OrderItem')
+    items = relationship('CategoryItem')
 
