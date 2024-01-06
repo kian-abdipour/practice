@@ -14,6 +14,6 @@ class Order(DateTimeMixin, Base):
     address_id = Column(ForeignKey('address.id'))
     customer_id = Column(ForeignKey('customer.id'))
 
-    items = relationship('OrderItem')
-    payments = relationship('Payment')
+    items = relationship('OrderItem', cascade='all, delete')
+    payments = relationship('Payment', cascade='all, delete')
 

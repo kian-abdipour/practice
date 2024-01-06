@@ -14,6 +14,6 @@ class Item(DateTimeMixin, Base):
     description = Column(Unicode, nullable=True)
     category_id = Column(ForeignKey('category.id'))
 
-    orders = relationship('OrderItem')
-    categories = relationship('CategoryItem')
+    orders = relationship('OrderItem', cascade='all, delete')
+    categories = relationship('CategoryItem', cascade='all, delete')
 

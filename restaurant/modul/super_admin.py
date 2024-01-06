@@ -9,7 +9,8 @@ class SuperAdmin(DateTimeMixin, Base):
     id = Column(Integer, primary_key=True)
     first_name = Column(Unicode(30))
     last_name = Column(Unicode(30))
+    username = Column(Unicode(16))
     password = Column(Unicode(8))
 
-    admins = relationship('Admin')
+    admins = relationship('Admin', cascade='all, delete')
 

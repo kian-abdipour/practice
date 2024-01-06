@@ -11,7 +11,7 @@ class Customer(DateTimeMixin, Base):
     password = Column(Unicode(8))
     phone_number = Column(Unicode(11), unique=True)
 
-    orders = relationship('Order')
-    payments = relationship('Payment')
-    addresses = relationship('Address')
+    orders = relationship('Order', cascade='all, delete')
+    payments = relationship('Payment', cascade='all, delete')
+    addresses = relationship('Address', cascade='all, delete')
 

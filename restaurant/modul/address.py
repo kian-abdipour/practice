@@ -10,5 +10,5 @@ class Address(DateTimeMixin, Base):
     address = Column(Unicode(150))
     customer_id = Column(ForeignKey('customer.id'))
 
-    orders = relationship('Order')
+    orders = relationship('Order', cascade='all, delete')
 
