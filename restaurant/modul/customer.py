@@ -7,9 +7,9 @@ from restaurant.modul.mixin import DateTimeMixin
 class Customer(DateTimeMixin, Base):
     __tablename__ = 'customer'
     id = Column(Integer, primary_key=True)
-    username = Column(Unicode(40))
-    password = Column(Unicode(8))
-    phone_number = Column(Unicode(11), unique=True)
+    username = Column(Unicode(20), unique=True, nullable=False)
+    password = Column(Unicode(8), nullable=False)
+    phone_number = Column(Unicode(11), unique=True, nullable=False)
 
     orders = relationship('Order', cascade='all, delete')
     payments = relationship('Payment', cascade='all, delete')

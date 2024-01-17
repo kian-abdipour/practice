@@ -7,8 +7,8 @@ from restaurant.modul.mixin import DateTimeMixin
 class Order(DateTimeMixin, Base):
     __tablename__ = 'order'
     id = Column(Integer, primary_key=True)
-    state = Column(Unicode)
-    delivery_type = Column(Unicode)
+    state = Column(Unicode, nullable=False)
+    delivery_type = Column(Unicode, nullable=False)
     desk_number = Column(Integer, nullable=True)
     description = Column(Unicode, nullable=True)
     address_id = Column(ForeignKey('address.id'))

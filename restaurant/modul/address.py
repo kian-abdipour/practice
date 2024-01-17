@@ -7,7 +7,7 @@ from restaurant.modul.mixin import DateTimeMixin
 class Address(DateTimeMixin, Base):
     __tablename__ = 'address'
     id = Column(Integer, primary_key=True)
-    address = Column(Unicode(150))
+    address = Column(Unicode(150), nullable=False)
     customer_id = Column(ForeignKey('customer.id'))
 
     orders = relationship('Order', cascade='all, delete')

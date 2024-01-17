@@ -7,7 +7,7 @@ from restaurant.modul.mixin import DateTimeMixin
 class Category(DateTimeMixin, Base):
     __tablename__ = 'category'
     id = Column(Integer, primary_key=True)
-    name = Column(Unicode(30))
+    name = Column(Unicode(30), nullable=False)
 
     items = relationship('CategoryItem', cascade='all, delete')
 
