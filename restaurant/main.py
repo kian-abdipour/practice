@@ -4,7 +4,24 @@ from manage_role_operation import manage_super_admin_operation
 
 
 def main():
-    manage_super_admin_operation()
+    proceed = True
+    while proceed:
+        print('Choose your role \n1.customer\n2.admin\n3.super admin\n4.exit')
+        # Make type dafing
+        try:
+            operation = int(input(': '))
+
+        except ValueError:
+            return print('Waring: You should type just number')
+
+        if operation == 3:
+            manage_super_admin_operation()
+
+        elif operation == 4:
+            proceed = False
+
+        else:
+            print('Number not found')
 
 
 if __name__ == '__main__':
