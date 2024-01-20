@@ -114,3 +114,4 @@ class SuperAdmin(DateTimeMixin, Base):
             print(f'Login was successful,{username} welcome to your super admin account')
             return True, result
 
+
