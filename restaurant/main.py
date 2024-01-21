@@ -7,14 +7,18 @@ def main():
     proceed = True
     while proceed:
         print('Choose your role \n1.customer\n2.admin\n3.super admin\n4.exit')
-        # Make type dafing
+        # Make type safing
         try:
             operation = int(input(': '))
 
         except ValueError:
-            return print('Waring: You should type just number')
+            print('Waring: You should type just number')
+            operation = None
 
-        if operation == 3:
+        if operation == 2:
+            Admin.login()
+
+        elif operation == 3:
             manage_super_admin_operation()
 
         elif operation == 4:

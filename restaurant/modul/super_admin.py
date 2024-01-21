@@ -114,4 +114,55 @@ class SuperAdmin(DateTimeMixin, Base):
             print(f'Login was successful,{username} welcome to your super admin account')
             return True, result
 
+    @staticmethod
+    def show_super_admin():
+        proceed = True
+        while proceed:
+            print('Enter a number\n1.All\n2.Search\n3.back')
+            try:
+                operation = int(input(': '))
+
+            except ValueError:
+                print('ValueError: You should type just number try again')
+                operation = None
+
+            if operation == 1:
+                with Session() as session:
+                    result = session.query(SuperAdmin).all()
+
+                if len(result) > 0:
+                    for super_admin in result:
+                        print(f'first name: {super_admin.first_name}, last name: {super_admin.last_name},'
+                              f' username: {super_admin.username}, password: {super_admin.password}')
+
+                else:
+                    print('Now we don\'t have any super admin')
+
+            elif operation == 2:
+                print('Enter username of super admin that you want to see')
+                username = input(': ')
+
+                try:
+                    if len(username) > 16:
+                        error = LengthError(massage='LengthError: Len of username is out of 16!, try again')
+                        raise error
+
+                except LengthError:
+                    error.show_massage()
+
+                with Session() as session:
+                    result = session.query(SuperAdmin).filter(SuperAdmin.username == username).one_or_none()
+
+                if result is not None:
+                    print(f'first name: {result.first_name}, last name: {result.last_name},'
+                          f' username: {result.username}, password: {result.password}')
+
+                else:
+                    print('This username not found')
+
+            elif operation == 3:
+                proceed = False
+
+            else:
+                print('Number not found')
 
