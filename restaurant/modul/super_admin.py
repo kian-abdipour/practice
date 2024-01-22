@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, Unicode
-from sqlalchemy.orm import relationship, query
+from sqlalchemy.orm import relationship
 from restaurant.modul.base import Base
 from restaurant.modul.mixin import DateTimeMixin
 from restaurant.database_package import Session
@@ -132,7 +132,7 @@ class SuperAdmin(DateTimeMixin, Base):
 
                 if len(result) > 0:
                     for super_admin in result:
-                        print(f'first name: {super_admin.first_name}, last name: {super_admin.last_name},'
+                        print(f'id: {super_admin.id}, first name: {super_admin.first_name}, last name: {super_admin.last_name},'
                               f' username: {super_admin.username}, password: {super_admin.password}')
 
                 else:
@@ -154,7 +154,7 @@ class SuperAdmin(DateTimeMixin, Base):
                     result = session.query(SuperAdmin).filter(SuperAdmin.username == username).one_or_none()
 
                 if result is not None:
-                    print(f'first name: {result.first_name}, last name: {result.last_name},'
+                    print(f'id: {result.id}, first name: {result.first_name}, last name: {result.last_name},'
                           f' username: {result.username}, password: {result.password}')
 
                 else:

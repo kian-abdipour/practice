@@ -15,7 +15,7 @@ class Admin(DateTimeMixin, Base):
     superadmin_id = Column(ForeignKey('super_admin.id'))
 
     @staticmethod
-    def add():
+    def add(super_admin_id):
         try:
             print('Enter admin first name')
             first_name = input(': ')
@@ -46,9 +46,10 @@ class Admin(DateTimeMixin, Base):
             return False
 
         # Adding process
-        super_admin = Admin(first_name=first_name, last_name=last_name, username=username, password=password)
+        admin = Admin(first_name=first_name, last_name=last_name, username=username,
+                      password=password, superadmin_id=super_admin_id)
         with Session() as session:
-            session.add(super_admin)
+            session.add(admin)
 
             session.commit()
 
@@ -128,9 +129,10 @@ class Admin(DateTimeMixin, Base):
                     result = session.query(Admin).all()
 
                 if len(result) > 0:
-                    for super_admin in result:
-                        print(f'first name: {super_admin.first_name}, last name: {super_admin.last_name},'
-                              f' username: {super_admin.username}, password: {super_admin.password}')
+                    for admin in result:
+                        print(f'id: {admin.id}, first name: {admin.first_name}, last name: {admin.last_name},'
+                              f' username: {admin.username}, password: {admin.password},'
+                              f' super_admin_id: {admin.superadmin_id}')
 
                 else:
                     print('Now we don\'t have any admin')
@@ -151,8 +153,9 @@ class Admin(DateTimeMixin, Base):
                     result = session.query(Admin).filter(Admin.username == username).one_or_none()
 
                 if result is not None:
-                    print(f'first name: {result.first_name}, last name: {result.last_name},'
-                          f' username: {result.username}, password: {result.password}')
+                    print(f'id: {result.id}, first name: {result.first_name}, last name: {result.last_name},'
+                          f' username: {result.username}, password: {result.password},'
+                          f' super_admin_id: {result.superadmin_id}')
 
                 else:
                     print('This username not found')

@@ -5,8 +5,8 @@ from restaurant.modul import SuperAdmin, Admin
 
 
 def manage_super_admin_operation():
-    condition_login = SuperAdmin.login()
-    if condition_login[0] and condition_login[1].username == 'kian_abdipour':
+    login = SuperAdmin.login()
+    if login[0] and login[1].username == 'kian_abdipour':
         proceed = True
         while proceed:
             print('Enter a number\n1.Add admin\n2.Delete admin'
@@ -21,7 +21,7 @@ def manage_super_admin_operation():
                 operation = None
 
             if operation == 1:
-                if Admin.add():
+                if Admin.add(login[1].id):
                     print('Successfully added to admins')
 
                 else:
@@ -56,13 +56,14 @@ def manage_super_admin_operation():
 
             elif operation == 7:
                 proceed = False
+                return None
 
             else:
                 print('Number not found')
 
-    proceed_for_other_super_admin = True
-    while proceed_for_other_super_admin:
-        if condition_login[0]:
+    if login[0]:  # Check this line againe to undrestand what was the bug for
+        proceed_for_other_super_admin = True  # Check this line againe to undrestand what was the bug for
+        while proceed_for_other_super_admin:  # Check this line againe to undrestand what was the bug for
             print('Enter a number\n1.add admin\n2.delete admin\n3.show admin\n4.logout')
             try:
                 operation = int(input(': '))
@@ -72,7 +73,7 @@ def manage_super_admin_operation():
                 operation = None
 
             if operation == 1:
-                if Admin.add():
+                if Admin.add(login[1].id):
                     print('Successfully added to admins')
 
                 else:
@@ -90,6 +91,7 @@ def manage_super_admin_operation():
 
             elif operation == 4:
                 proceed_for_other_super_admin = False
+                return None
 
             else:
                 print('Number not found')
