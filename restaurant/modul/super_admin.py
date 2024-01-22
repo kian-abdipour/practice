@@ -132,7 +132,8 @@ class SuperAdmin(DateTimeMixin, Base):
 
                 if len(result) > 0:
                     for super_admin in result:
-                        print(f'id: {super_admin.id}, first name: {super_admin.first_name}, last name: {super_admin.last_name},'
+                        print(f'id: {super_admin.id}, created at: {super_admin.created_at}'
+                              f' first name: {super_admin.first_name}, last name: {super_admin.last_name},'
                               f' username: {super_admin.username}, password: {super_admin.password}')
 
                 else:
@@ -154,7 +155,8 @@ class SuperAdmin(DateTimeMixin, Base):
                     result = session.query(SuperAdmin).filter(SuperAdmin.username == username).one_or_none()
 
                 if result is not None:
-                    print(f'id: {result.id}, first name: {result.first_name}, last name: {result.last_name},'
+                    print(f'id: {result.id}, created at: {result.created_at}'
+                          f' first name: {result.first_name}, last name: {result.last_name},'
                           f' username: {result.username}, password: {result.password}')
 
                 else:

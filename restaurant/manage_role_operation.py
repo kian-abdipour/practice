@@ -1,4 +1,4 @@
-from restaurant.modul import SuperAdmin, Admin
+from restaurant.modul import SuperAdmin, Admin, Category
 
 # In this program just super admin with username <<<kian_abdipour>>> can add or delete super admins and
 # Other super admins can just add or delete admins
@@ -98,7 +98,29 @@ def manage_super_admin_operation():
 
 
 def manage_admin_operation():
-    pass
+    login = Admin.login()
+    if login[0]:
+        proceed = True
+        while proceed:
+            print('Enter a number \n1.Add category\n2.Delete category\n3.Show category')
+            try:
+                operation = int(input(': '))
+
+            except ValueError:
+                print('ValueError: You should type just number!')
+                operation = None
+
+            if operation == 1:
+                Category.add()
+
+            elif operation == 2:
+                Category.delete()
+
+            elif operation == 3:
+                Category.show_category()
+
+            elif operation == 4:
+                proceed = False
 
 
 def manage_customer_operation():

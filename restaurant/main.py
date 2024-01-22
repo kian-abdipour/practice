@@ -1,6 +1,6 @@
 from restaurant.modul import (SuperAdmin, Admin, Customer, Category, Item,
                               Order, OrderItem, Payment, Address, category_item)
-from manage_role_operation import manage_super_admin_operation
+from manage_role_operation import manage_super_admin_operation, manage_admin_operation
 
 
 def main():
@@ -16,7 +16,7 @@ def main():
             operation = None
 
         if operation == 2:
-            Admin.login()
+            manage_admin_operation()
 
         elif operation == 3:
             manage_super_admin_operation()
