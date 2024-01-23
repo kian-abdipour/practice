@@ -64,27 +64,13 @@ class Category(DateTimeMixin, Base):
 
     @staticmethod
     def show_category():
-        proceed = True
-        while proceed:
-            print('Enter a number \n1.All\n2.Back')
-            try:
-                operation = int(input(': '))
+        with Session() as session:
+            result = session.query(Category).all()
 
-            except ValueError:
-                print('ValueError: You should type just number!')
-                operation = None
+        if len(result) > 0:
+            for category in result:
+                print(f'id: {category.id}, name: {category.name}')
 
-            if operation == 1:
-                with Session() as session:
-                    result = session.query(Category).all()
-
-                if len(result) > 0:
-                    for category in result:
-                        print(f'id: {category.id}, name: {category.name}')
-
-            elif operation == 2:
-                proceed = False
-
-            else:
-                print('Number not found')
+        else:
+            print('Now we don\'t have any category')
 
