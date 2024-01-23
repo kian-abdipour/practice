@@ -50,13 +50,23 @@ class Category(DateTimeMixin, Base):
             error.show_massage()
 
         with Session() as session:
-            session.query(Category).filter(Category.name == name).delete()
+            result = session.query(Category).filter(Category.name == name).delete()
+
+            session.commit()
+
+        if result == 1:
+            print('Category successfully deleted')
+            return True
+
+        else:
+            print('Category not found')
+            return False
 
     @staticmethod
     def show_category():
-        print('Enter a number \n1.All\n2.Back')
         proceed = True
         while proceed:
+            print('Enter a number \n1.All\n2.Back')
             try:
                 operation = int(input(': '))
 
@@ -74,4 +84,7 @@ class Category(DateTimeMixin, Base):
 
             elif operation == 2:
                 proceed = False
+
+            else:
+                print('Number not found')
 

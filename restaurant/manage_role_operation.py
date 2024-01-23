@@ -102,7 +102,7 @@ def manage_admin_operation():
     if login[0]:
         proceed = True
         while proceed:
-            print('Enter a number \n1.Add category\n2.Delete category\n3.Show category')
+            print('Enter a number \n1.Add category\n2.Delete category\n3.Show category\n4.Back')
             try:
                 operation = int(input(': '))
 
