@@ -35,6 +35,12 @@ class Admin(DateTimeMixin, Base):
                 error = LengthError(massage='LengthError: Len of username is out of 16!, try again')
                 raise error
 
+            with Session() as session:
+                result = session.query(Admin).filter(Admin.username == username).one_or_none()
+
+            if result is not None:
+                return print('This username already exist try again')
+
             print('Enter admin password maximum len 8 characters')
             password = input(': ')
             if len(password) > 8:

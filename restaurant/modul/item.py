@@ -3,7 +3,6 @@ from sqlalchemy.orm import relationship
 from restaurant.modul.base import Base
 from restaurant.modul.mixin import DateTimeMixin
 from restaurant.modul.custom_exception import LengthError
-from restaurant.modul import Category
 from restaurant.database_package import Session
 
 
@@ -15,7 +14,6 @@ class Item(DateTimeMixin, Base):
     price = Column(Integer, nullable=False)
     stock = Column(Integer, default=0, nullable=False)
     description = Column(Unicode)
-    category_id = Column(ForeignKey('category.id'))
 
     orders = relationship('OrderItem', cascade='all, delete')
     categories = relationship('CategoryItem', cascade='all, delete')
@@ -28,6 +26,12 @@ class Item(DateTimeMixin, Base):
             if len(name) > 40:
                 error = LengthError(massage='LengthError: Len of name is out of 40')
                 raise error
+
+            with Session() as session:
+                result = session.query(Item).filter(Item.name == name).one_or_none()
+
+            if result is not None:
+                return print('Waring: This item name already exist try again')
 
             print('Enter country of Item')
             country = input(': ')
@@ -57,33 +61,14 @@ class Item(DateTimeMixin, Base):
         if description == 'No' or description == 'no' or description == '':
             description = None
 
-        print('Enter name of categories of this item one enter a category name and another one again enter and'
-              ' if it\'s finish type q')
-        Category.show_category()
-        proceed = True
-        while proceed:
-            name_of_category = input(': ')
-            try:
-                if len(name_of_category) > 40:
-                    error = LengthError(massage='LengthError: Len of Name is out of 30!, try again')
-                    raise error
+        item = Item(name=name, country=country, price=price, stock=stock, description=description)
+        with Session() as session:
+            session.add(item)
 
-            except LengthError:
-                error.show_massage()
+            session.commit()
 
-            with Session() as session:
-                category = session.query(Category).filter(Category.name == name_of_category).one_or_none()
+            result = session.query(Item).filter(Item.name == name).one()
+            print('Item successfully added')
 
-            if category is not None:
-                category_id = category.id
-                item = Item(name=name, country=country, price=price, stock=stock, description=description,
-                            category_id=category_id)
-
-                with Session() as session:
-                    session.add(item)
-
-                    session.commit()
-
-            else:
-                print('Category not found try again')
+        return result.id
 

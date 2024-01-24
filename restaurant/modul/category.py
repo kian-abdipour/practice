@@ -27,13 +27,20 @@ class Category(DateTimeMixin, Base):
         except LengthError:
             error.show_massage()
 
-        category = Category(name=name)
         with Session() as session:
-            session.add(category)
+            result = session.query(Category).filter(Category.name == name).one_or_none()
 
-            session.commit()
+        if result is None:
+            category = Category(name=name)
+            with Session() as session:
+                session.add(category)
 
-        print('Category successfully added')
+                session.commit()
+
+            print('Category successfully added')
+
+        else:
+            print('Waring: This category name already exist try again')
 
     @staticmethod
     def delete():
