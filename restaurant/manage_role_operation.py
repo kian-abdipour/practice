@@ -102,7 +102,11 @@ def manage_admin_operation():
     if login[0]:
         proceed = True
         while proceed:
-            print('Enter a number \n1.Add category\n2.Delete category\n3.Show category\n4.Add item\n5.Back')
+            print('Enter a number \n1.Add category\n'
+                  '2.Delete category\n3.Show category\n'
+                  '4.Add item\n5.Show item\n6.Add item to category\n'
+                  '7.delete item from category\n8.Back')
+
             try:
                 operation = int(input(': '))
 
@@ -122,6 +126,41 @@ def manage_admin_operation():
             elif operation == 4:
                 if CategoryItem.match_row(Item.add()) is not True:
                     print('Your item it\'s not in any category')
+
+            elif operation == 5:
+                print('Enter a number \n1.Show all\n2.Search')
+                try:
+                    operation_show = int(input(': '))
+
+                except ValueError:
+                    print('ValueError: You should type just number!')
+                    operation_show = None
+
+                if operation_show == 1:
+                    Item.show_all()
+
+                elif operation_show == 2:
+                    Item.search()
+
+                else:
+                    print('Waring: Number not found')
+
+            elif operation == 6:
+                item_id = Item.search()
+                if type(item_id) == int:  # Ask question
+                    CategoryItem.match_row(item_id)
+
+                else:
+                    pass
+
+            elif operation == 7:
+                pass
+
+            elif operation == 8:
+                proceed = False
+
+            else:
+                print('Waring: Operation not found!, try again')
 
 
 def manage_customer_operation():

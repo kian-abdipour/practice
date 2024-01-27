@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, Unicode, ForeignKey
+from sqlalchemy import Column, Integer, Unicode
 from sqlalchemy.orm import relationship
 from restaurant.modul.base import Base
 from restaurant.modul.mixin import DateTimeMixin
@@ -71,4 +71,35 @@ class Item(DateTimeMixin, Base):
             print('Item successfully added')
 
         return result.id
+
+    @staticmethod
+    def show_all():
+        with Session() as session:
+            result = session.query(Item).all()
+
+        if len(result) > 0:
+            for item in result:
+                print(f'id: {item.id}, name: {item.name},'
+                      f' country: {item.country}, price: {item.price},'
+                      f' stock: {item.stock}, description: {item.description}')
+
+        else:
+            print('Waring: Now we don\'t have any item!')
+
+    @staticmethod
+    def search():
+        print('Enter name of item')
+        name = input(': ')
+
+        with Session() as session:
+            result = session.query(Item).filter(Item.name == name).one_or_none()
+
+        if result is not None:
+            print(f'id: {result.id}, name: {result.name},'
+                  f'  country: {result.country}, price: {result.price},'
+                  f' stock: {result.stock}, description: {result.description}')
+            return result.id
+
+        else:
+            print('Waring: Item not found!, try again')
 
