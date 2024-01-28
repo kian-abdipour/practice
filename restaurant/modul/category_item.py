@@ -2,7 +2,7 @@ from sqlalchemy import Column, Integer, ForeignKey
 from restaurant.modul.base import Base
 from sqlalchemy.orm import relationship
 from restaurant.modul.mixin import DateTimeMixin
-from restaurant.modul import Category
+from restaurant.modul import Category, Item
 from restaurant.modul.custom_exception import LengthError
 from restaurant.database_package import Session
 
@@ -20,7 +20,7 @@ class CategoryItem(DateTimeMixin, Base):
     def match_row(item_id):
         print('Enter name of categories of this item one enter a category name and another one again enter and'
               ' if it\'s finish type q')
-        Category.show_category()
+        Category.show_all()
         proceed = True
         while proceed:
             name_of_category = input(': ')
@@ -54,4 +54,33 @@ class CategoryItem(DateTimeMixin, Base):
                 proceed = False
 
         return condition_mathing_row
+
+    @staticmethod
+    def delete(category_id, item_id):
+        with Session() as session:
+            result = session.query(CategoryItem).filter(CategoryItem.category_id == category_id,
+                                                        CategoryItem.item_id == item_id).delete()
+
+            session.commit()
+
+        if result == 1:
+            print('Item successfully deleted from category')
+
+        else:
+            print('Waring: Deleting operation was fail')
+
+    @staticmethod
+    def show_item_side(category_id):
+        with Session() as session:
+            results = session.query(Item).join(CategoryItem).filter(CategoryItem.category_id == category_id).all()
+            # Ask question about >>> CategoryItem.item_id == CategoryItem.item_id
+
+        if len(results) > 0:
+            for result in results:
+                print(f'id: {result.id}, name: {result.name},'
+                      f' country: {result.country}, price: {result.price},'
+                      f' stock: {result.stock}, description: {result.description}')
+
+        else:
+            print('Now this category doesn\'t have any item')
 

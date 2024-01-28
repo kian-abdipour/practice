@@ -103,7 +103,7 @@ def manage_admin_operation():
         proceed = True
         while proceed:
             print('Enter a number \n1.Add category\n'
-                  '2.Delete category\n3.Show category\n'
+                  '2.Delete category\n3.Show all category\n'
                   '4.Add item\n5.Show item\n6.Add item to category\n'
                   '7.delete item from category\n8.Back')
 
@@ -121,7 +121,7 @@ def manage_admin_operation():
                 Category.delete()
 
             elif operation == 3:
-                Category.show_category()
+                Category.show_all()
 
             elif operation == 4:
                 if CategoryItem.match_row(Item.add()) is not True:
@@ -147,14 +147,19 @@ def manage_admin_operation():
 
             elif operation == 6:
                 item_id = Item.search()
-                if type(item_id) == int:  # Ask question
+                if item_id is not False:  # Ask question
                     CategoryItem.match_row(item_id)
 
                 else:
                     pass
 
             elif operation == 7:
-                pass
+                category_id = Category.search()
+                if category_id is not False:
+                    CategoryItem.show_item_side(category_id)
+                    item_id = Item.search()
+                    if item_id is not False:
+                        CategoryItem.delete(category_id, item_id)
 
             elif operation == 8:
                 proceed = False

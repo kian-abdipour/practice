@@ -96,10 +96,11 @@ class Item(DateTimeMixin, Base):
 
         if result is not None:
             print(f'id: {result.id}, name: {result.name},'
-                  f'  country: {result.country}, price: {result.price},'
+                  f' country: {result.country}, price: {result.price},'
                   f' stock: {result.stock}, description: {result.description}')
             return result.id
 
         else:
             print('Waring: Item not found!, try again')
+            return False
 

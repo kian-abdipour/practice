@@ -70,7 +70,7 @@ class Category(DateTimeMixin, Base):
             return False
 
     @staticmethod
-    def show_category():
+    def show_all():
         with Session() as session:
             result = session.query(Category).all()
 
@@ -80,4 +80,31 @@ class Category(DateTimeMixin, Base):
 
         else:
             print('Now we don\'t have any category')
+
+    @staticmethod
+    def search():
+        Category.show_all()
+
+        print('Enter name of category that item is in')
+        name = input(': ')
+
+        # Make type safing
+        try:
+            if len(name) > 40:
+                error = LengthError(massage='LengthError: Len of Name is out of 30!, try again')
+                raise error
+
+        except LengthError:
+            error.show_massage()
+
+        with Session() as session:
+            result = session.query(Category).filter(Category.name == name).one_or_none()
+
+        if result is not None:
+            print(f'id: {result.id}, name: {result.name}')
+            return result.id
+
+        else:
+            print('Waring: Category not found')
+            return False
 
