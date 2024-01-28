@@ -171,4 +171,3 @@ def manage_admin_operation():
 def manage_customer_operation():
     pass
 
-
