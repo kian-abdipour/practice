@@ -24,7 +24,7 @@ class Customer(DateTimeMixin, Base):
             print('Enter your username at least 20 character')
             username = input(': ')
             if len(username) > 20:
-                error = LengthError(massage='LengthError: Len of username is out of range!, try again')
+                error = LengthError(massage='LengthError: Len of username is out of 20!, try again')
                 raise error
 
             with Session() as session:
@@ -37,7 +37,7 @@ class Customer(DateTimeMixin, Base):
             print('Enter your password at least 8 character')
             password = input(': ')
             if len(password) > 8:
-                error = LengthError(massage='LengthError: Len of username is out of range!, try again')
+                error = LengthError(massage='LengthError: Len of username is out of 8!, try again')
                 raise error
 
             print('Enter your phone number at least 11 and start with 09')
@@ -69,4 +69,36 @@ class Customer(DateTimeMixin, Base):
 
         print(f'Signup was successful, {username} welcome to your account')
         return True
+
+    @staticmethod
+    def login():
+        # Make type safing
+        try:
+            print('Enter your username at least 20 character')
+            username = input(': ')
+            if len(username) > 20:
+                error = LengthError(massage='LengthError: Len of username is out of 20!, try again')
+                raise error
+
+            print('Enter your password at least 8 character')
+            password = input(': ')
+            if len(password) > 8:
+                error = LengthError(massage='LengthError: Len of password is out of 8!, try again')
+                raise error
+
+        except LengthError:
+            error.show_massage()
+            return False
+
+        with Session() as session:
+            result = session.query(Customer).filter(Customer.username == username,
+                                                    Customer.password == password).one_or_none()
+
+        if result is not None:
+            print(f'Login was successful, welcome to your account {username}')
+            return True
+
+        else:
+            print('Username or password not found try again')
+            return False
 

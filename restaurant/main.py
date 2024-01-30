@@ -6,7 +6,7 @@ from manage_role_operation import manage_super_admin_operation, manage_admin_ope
 def main():
     proceed = True
     while proceed:
-        print('Choose your role \n1.Customer\n2.Admin\n3.Super admin\n5.Exit')
+        print('Choose your role \n1.Customer\n2.Admin\n3.Super admin\n4.Exit')
         # Make type safing
         try:
             operation = int(input(': '))
@@ -31,7 +31,8 @@ def main():
 
                     if operation_admin is not None:
                         if operation_admin == 1:
-                            pass
+                            if Customer.login():
+                                manage_customer_operation()
 
                         elif operation_admin == 2:
                             if Customer.signup():
