@@ -20,46 +20,47 @@ def manage_super_admin_operation():
                 print('ValueError: You should type just number!')
                 operation = None
 
-            if operation == 1:
-                if Admin.add(login[1].id):
-                    print('Successfully added to admins')
+            if operation is not None:
+
+                if operation == 1:
+                    if Admin.add(login[1].id):
+                        print('Successfully added to admins')
+
+                    else:
+                        print('Adding operation was field')
+
+                elif operation == 2:
+                    if Admin.delete():
+                        print('Successfully deleted from admins')
+
+                    else:
+                        print('Deleting operation was field')
+
+                elif operation == 3:
+                    if SuperAdmin.add():
+                        print('Successfully added to super admins')
+
+                    else:
+                        print('Adding operation was field')
+
+                elif operation == 4:
+                    if SuperAdmin.delete():
+                        print('Successfully deleted from super admins')
+
+                    else:
+                        print('Deleting operation was field')
+
+                elif operation == 5:
+                    SuperAdmin.show_super_admin()
+
+                elif operation == 6:
+                    Admin.show_admin()
+
+                elif operation == 7:
+                    return
 
                 else:
-                    print('Adding operation was field')
-
-            elif operation == 2:
-                if Admin.delete():
-                    print('Successfully deleted from admins')
-
-                else:
-                    print('Deleting operation was field')
-
-            elif operation == 3:
-                if SuperAdmin.add():
-                    print('Successfully added to super admins')
-
-                else:
-                    print('Adding operation was field')
-
-            elif operation == 4:
-                if SuperAdmin.delete():
-                    print('Successfully deleted from super admins')
-
-                else:
-                    print('Deleting operation was field')
-
-            elif operation == 5:
-                SuperAdmin.show_super_admin()
-
-            elif operation == 6:
-                Admin.show_admin()
-
-            elif operation == 7:
-                proceed = False
-                return None
-
-            else:
-                print('Number not found')
+                    print('Number not found')
 
     if login[0]:  # Check this line againe to undrestand what was the bug for
         proceed_for_other_super_admin = True  # Check this line againe to undrestand what was the bug for
@@ -72,29 +73,29 @@ def manage_super_admin_operation():
                 print('ValueError: You should type just number!')
                 operation = None
 
-            if operation == 1:
-                if Admin.add(login[1].id):
-                    print('Successfully added to admins')
+            if operation is not None:
+                if operation == 1:
+                    if Admin.add(login[1].id):
+                        print('Successfully added to admins')
+
+                    else:
+                        print('Adding operation was field')
+
+                elif operation == 2:
+                    if Admin.delete():
+                        print('Successfully deleted from admins')
+
+                    else:
+                        print('Deleting operation was field')
+
+                elif operation == 3:
+                    Admin.show_admin()
+
+                elif operation == 4:
+                    proceed_for_other_super_admin = False
 
                 else:
-                    print('Adding operation was field')
-
-            elif operation == 2:
-                if Admin.delete():
-                    print('Successfully deleted from admins')
-
-                else:
-                    print('Deleting operation was field')
-
-            elif operation == 3:
-                Admin.show_admin()
-
-            elif operation == 4:
-                proceed_for_other_super_admin = False
-                return None
-
-            else:
-                print('Number not found')
+                    print('Number not found')
 
 
 def manage_admin_operation():
@@ -103,9 +104,9 @@ def manage_admin_operation():
         proceed = True
         while proceed:
             print('Enter a number \n1.Add category\n'
-                  '2.Delete category\n3.Show all category\n'
+                  '2.Delete category\n3.Show category\n'
                   '4.Add item\n5.Show item\n6.Add item to category\n'
-                  '7.delete item from category\n8.Back')
+                  '7.delete item from category\n8.logout')
 
             try:
                 operation = int(input(': '))
@@ -114,60 +115,79 @@ def manage_admin_operation():
                 print('ValueError: You should type just number!')
                 operation = None
 
-            if operation == 1:
-                Category.add()
+            if operation is not None:
+                if operation == 1:
+                    Category.add()
 
-            elif operation == 2:
-                Category.delete()
+                elif operation == 2:
+                    Category.delete()
 
-            elif operation == 3:
-                Category.show_all()
+                elif operation == 3:
+                    print('Enter a number \n1.Show all\n2.Search')
 
-            elif operation == 4:
-                if CategoryItem.match_row(Item.add()) is not True:
-                    print('Your item it\'s not in any category')
+                    try:
+                        operation_show = int(input(': '))
 
-            elif operation == 5:
-                print('Enter a number \n1.Show all\n2.Search')
-                try:
-                    operation_show = int(input(': '))
+                    except ValueError:
+                        print('ValueError: You should type just number!')
+                        operation_show = None
 
-                except ValueError:
-                    print('ValueError: You should type just number!')
-                    operation_show = None
+                    if operation_show == 1:
+                        Category.show_all()
 
-                if operation_show == 1:
-                    Item.show_all()
+                    elif operation_show == 2:
+                        category_id = Category.search()
+                        if category_id is not False:
+                            CategoryItem.show_item_side(category_id)
 
-                elif operation_show == 2:
-                    Item.search()
+                    else:
+                        print('Waring: Number not found')
 
-                else:
-                    print('Waring: Number not found')
+                elif operation == 4:
+                    if CategoryItem.match_row(Item.add()) is not True:
+                        print('Your item it\'s not in any category')
 
-            elif operation == 6:
-                item_id = Item.search()
-                if item_id is not False:  # Ask question
-                    CategoryItem.match_row(item_id)
+                elif operation == 5:
+                    print('Enter a number \n1.Show all\n2.Search\n3.Show item by category')
+                    try:
+                        operation_show = int(input(': '))
 
-                else:
-                    pass
+                    except ValueError:
+                        print('ValueError: You should type just number!')
+                        operation_show = None
 
-            elif operation == 7:
-                category_id = Category.search()
-                if category_id is not False:
-                    CategoryItem.show_item_side(category_id)
+                    if operation_show == 1:
+                        Item.show_all()
+
+                    elif operation_show == 2:
+                        Item.search()
+
+                    else:
+                        print('Waring: Number not found')
+
+                elif operation == 6:
                     item_id = Item.search()
-                    if item_id is not False:
-                        CategoryItem.delete(category_id, item_id)
+                    if item_id is not False:  # Ask question
+                        CategoryItem.match_row(item_id)
 
-            elif operation == 8:
-                proceed = False
+                    else:
+                        pass
 
-            else:
-                print('Waring: Operation not found!, try again')
+                elif operation == 7:
+                    category_id = Category.search()
+                    if category_id is not False:
+                        CategoryItem.show_item_side(category_id)
+                        item_id = Item.search()
+                        if item_id is not False:
+                            CategoryItem.delete(category_id, item_id)
+
+                elif operation == 8:
+                    proceed = False
+
+                else:
+                    print('Waring: Operation not found!, try again')
 
 
 def manage_customer_operation():
-    pass
+    print('kiaaaaaaaaaaaaaaaaaaaaaaaaaannnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn')
 

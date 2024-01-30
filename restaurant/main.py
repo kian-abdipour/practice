@@ -1,12 +1,12 @@
 from restaurant.modul import (SuperAdmin, Admin, Customer, Category, Item,
                               Order, OrderItem, Payment, Address, category_item)
-from manage_role_operation import manage_super_admin_operation, manage_admin_operation
+from manage_role_operation import manage_super_admin_operation, manage_admin_operation, manage_customer_operation
 
 
 def main():
     proceed = True
     while proceed:
-        print('Choose your role \n1.customer\n2.admin\n3.super admin\n4.exit')
+        print('Choose your role \n1.Customer\n2.Admin\n3.Super admin\n5.Exit')
         # Make type safing
         try:
             operation = int(input(': '))
@@ -15,17 +15,45 @@ def main():
             print('Waring: You should type just number')
             operation = None
 
-        if operation == 2:
-            manage_admin_operation()
+        if operation is not None:
 
-        elif operation == 3:
-            manage_super_admin_operation()
+            if operation == 1:
+                proceed_admin = True
+                while proceed_admin:
 
-        elif operation == 4:
-            proceed = False
+                    print('Enter a number \n1.Login\n2.Signup\n3.Back')
+                    try:
+                        operation_admin = int(input(': '))
 
-        else:
-            print('Number not found')
+                    except ValueError:
+                        print('ValueError: You should type just number')
+                        operation_admin = None
+
+                    if operation_admin is not None:
+                        if operation_admin == 1:
+                            pass
+
+                        elif operation_admin == 2:
+                            if Customer.signup():
+                                manage_customer_operation()
+
+                        elif operation_admin == 3:
+                            proceed_admin = False
+
+                        else:
+                            print('Number not found')
+
+            elif operation == 2:
+                manage_admin_operation()
+
+            elif operation == 3:
+                manage_super_admin_operation()
+
+            elif operation == 4:
+                proceed = False
+
+            else:
+                print('Number not found')
 
 
 if __name__ == '__main__':
