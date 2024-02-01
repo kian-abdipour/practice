@@ -136,10 +136,10 @@ class Admin(DateTimeMixin, Base):
 
                 if len(result) > 0:
                     for admin in result:
-                        print(f'id: {result.id}, created at: {result.created_at}'
-                              f' first name: {result.first_name}, last name: {result.last_name},'
-                              f' username: {result.username}, password: {result.password},'
-                              f' super_admin_id: {result.superadmin_id}')
+                        print(f'id: {admin.id}, created at: {admin.created_at}'
+                              f' first name: {admin.first_name}, last name: {admin.last_name},'
+                              f' username: {admin.username}, password: {admin.password},'
+                              f' super_admin_id: {admin.superadmin_id}')
 
                 else:
                     print('Now we don\'t have any admin')
