@@ -34,23 +34,29 @@ class CategoryItem(DateTimeMixin, Base):
                 error.show_massage()
 
             with Session() as session:
-                result = session.query(Category).filter(Category.name == name_of_category).one_or_none()
+                category = session.query(Category).filter(Category.name == name_of_category).one_or_none()
 
-            if result is not None:
-                category_id = result.id
+            if category is not None:
+                category_id = category.id
                 category_item = CategoryItem(category_id=category_id, item_id=item_id)
                 with Session() as session:
+                    result = session.query(CategoryItem).filter(CategoryItem.category_id == category_id,
+                                                                CategoryItem.item_id == item_id).all()
+
+                    if len(result) > 0:
+                        return print('This item already is in this category')
+
                     session.add(category_item)
 
                     session.commit()
 
                 condition_mathing_row = True
-                print(f'Item successfully added to {result.name}')
+                print(f'Item successfully added to {category.name}')
 
             else:
                 print('Category not found')
 
-            if name_of_category == 'Q' or name_of_category == 'q':
+            if name_of_category == 'Q' or name_of_category == 'q':  # Ask question
                 proceed = False
 
         return condition_mathing_row
