@@ -31,12 +31,16 @@ def main():
 
                     if operation_admin is not None:
                         if operation_admin == 1:
-                            if Customer.login():
-                                manage_customer_operation()
+
+                            result_login = Customer.login()
+                            if result_login[0]:
+                                manage_customer_operation(result_login[1])
 
                         elif operation_admin == 2:
-                            if Customer.signup():
-                                manage_customer_operation()
+
+                            result_signup = Customer.signup()
+                            if result_signup[0]:
+                                manage_customer_operation(result_signup[1])
 
                         elif operation_admin == 3:
                             proceed_admin = False

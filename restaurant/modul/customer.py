@@ -32,7 +32,7 @@ class Customer(DateTimeMixin, Base):
 
             if result is not None:
                 print('Waring: This username has been taken before!, please choose another')
-                return False
+                return False, None
 
             print('Enter your password at least 8 character')
             password = input(': ')
@@ -41,25 +41,25 @@ class Customer(DateTimeMixin, Base):
                 raise error
 
             print('Enter your phone number at least 11 and start with 09')
-            phone_number = input('')
+            phone_number = input(': ')
             if len(phone_number) != 11:
                 error = LengthError(massage='LengthError: Len of phone number must be 11, try again')
                 raise error
 
             elif phone_number[0] + phone_number[1] != '09':
                 print('Waring: The phone number should start with 09 try again')
-                return False
+                return False, None
 
             with Session() as session:
                 result = session.query(Customer).filter(Customer.phone_number == phone_number).one_or_none()
 
             if result is not None:
                 print('Waring: This phone number already has an account!')
-                return False
+                return False, None
 
         except LengthError:
             error.show_massage()
-            return False
+            return False, None
 
         customer = Customer(username=username, password=password, phone_number=phone_number)
         with Session() as session:
@@ -68,7 +68,11 @@ class Customer(DateTimeMixin, Base):
             session.commit()
 
         print(f'Signup was successful, {username} welcome to your account')
-        return True
+
+        with Session() as session:
+            result = session.query(Customer).filter(Customer.username == username).one()
+
+        return True, result.id
 
     @staticmethod
     def login():
@@ -88,7 +92,7 @@ class Customer(DateTimeMixin, Base):
 
         except LengthError:
             error.show_massage()
-            return False
+            return False, None
 
         with Session() as session:
             result = session.query(Customer).filter(Customer.username == username,
@@ -96,9 +100,9 @@ class Customer(DateTimeMixin, Base):
 
         if result is not None:
             print(f'Login was successful, welcome to your account {username}')
-            return True
+            return True, result.id
 
         else:
             print('Username or password not found try again')
-            return False
+            return False, None
 

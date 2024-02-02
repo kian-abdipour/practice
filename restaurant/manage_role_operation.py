@@ -1,4 +1,4 @@
-from restaurant.modul import SuperAdmin, Admin, Category, Item, CategoryItem
+from restaurant.modul import SuperAdmin, Admin, Category, Item, CategoryItem, Address
 
 # In this program just super admin with username <<<kian_abdipour>>> can add or delete super admins and
 # Other super admins can just add or delete admins
@@ -188,10 +188,10 @@ def manage_admin_operation():
                     print('Waring: Operation not found!, try again')
 
 
-def manage_customer_operation():
+def manage_customer_operation(customer_id):
     proceed = True
     while proceed:
-        print('Enter a number \n1.Order\n2.Show order')
+        print('Enter a number \n1.Order\n2.Show order\n3.Manage address\n4.Logout')
         try:
             operation = int(input(''))
 
@@ -202,4 +202,29 @@ def manage_customer_operation():
         if operation is not None:
             if operation == 1:
                 pass
+
+            elif operation == 2:
+                pass
+
+            elif operation == 3:
+                print('Enter a number \n1.Show Your addresses\n2.Add address\n3.Delete address')
+                try:
+                    operation_address = int(input(': '))
+
+                except ValueError:
+                    print('ValueError: You should type just number')
+                    operation_address = None
+
+                if operation_address is not None:
+                    if operation_address == 1:
+                        pass
+
+                    elif operation_address == 2:
+                        Address.add(customer_id)
+
+            elif operation == 4:
+                proceed = False
+
+            else:
+                print('Waring: Number not found')
 
