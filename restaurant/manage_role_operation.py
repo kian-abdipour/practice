@@ -189,5 +189,17 @@ def manage_admin_operation():
 
 
 def manage_customer_operation():
-    print('kiaaaaaaaaaaaaaaaaaaaaaaaaaannnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn')
+    proceed = True
+    while proceed:
+        print('Enter a number \n1.Order\n2.Show order')
+        try:
+            operation = int(input(''))
+
+        except ValueError:
+            print('ValueError: You should type just number')
+            operation = None
+
+        if operation is not None:
+            if operation == 1:
+                pass
 

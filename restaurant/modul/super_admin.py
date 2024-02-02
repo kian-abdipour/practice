@@ -40,8 +40,8 @@ class SuperAdmin(DateTimeMixin, Base):
 
             print('Enter super admin password maximum len 8 characters')
             password = input(': ')
-            if len(password) > 8:
-                error = LengthError(massage='LengthError: Len of password is out of 8!, try again')
+            if len(password) != 8:
+                error = LengthError(massage='LengthError: Len of password should be (8), try again')
                 raise error
 
         except LengthError:
@@ -94,8 +94,8 @@ class SuperAdmin(DateTimeMixin, Base):
 
             print('Enter your password')
             password = input(': ')
-            if len(password) > 8:
-                error = LengthError(massage='LengthError: Len of password is out of 8!, try again')
+            if len(password) != 8:
+                error = LengthError(massage='LengthError: Len of password should be (8), try again')
                 raise error
 
         except LengthError:
