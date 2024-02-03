@@ -36,3 +36,29 @@ class Address(DateTimeMixin, Base):
         print('Your address successfully added')
         return True
 
+    @staticmethod
+    def show_all(customer_id):
+        with Session() as session:
+            result = session.query(Address).filter(Address.customer_id == customer_id).all()
+
+        if len(result) > 0:
+            for address in result:
+                print(f'id: {address.id}, address: {address.address}')
+
+        else:
+            print('Now you don\' have any address')
+
+    @staticmethod
+    def delete(address_id, customer_id):
+        with Session() as session:
+            result = session.query(Address).filter(Address.id == address_id,
+                                                   Address.customer_id == customer_id).delete()
+
+            session.commit()
+
+        if result == 1:
+            print('Address successfully deleted')
+
+        else:
+            print('Waring: Address id not found, try again')
+

@@ -193,7 +193,7 @@ def manage_customer_operation(customer_id):
     while proceed:
         print('Enter a number \n1.Order\n2.Show order\n3.Manage address\n4.Logout')
         try:
-            operation = int(input(''))
+            operation = int(input(': '))
 
         except ValueError:
             print('ValueError: You should type just number')
@@ -217,10 +217,22 @@ def manage_customer_operation(customer_id):
 
                 if operation_address is not None:
                     if operation_address == 1:
-                        pass
+                        Address.show_all(customer_id)
 
                     elif operation_address == 2:
                         Address.add(customer_id)
+
+                    elif operation_address == 3:
+                        print('Enter id of address that you want to delete')
+                        Address.show_all(customer_id)
+                        try:
+                            address_id = int(input(': '))
+
+                        except ValueError:
+                            print('ValueError: You should type just number')
+                            address_id = None
+
+                        Address.delete(address_id, customer_id)
 
             elif operation == 4:
                 proceed = False
