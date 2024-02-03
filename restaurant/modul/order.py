@@ -1,7 +1,7 @@
 from sqlalchemy import Unicode, Column, Integer, ForeignKey
 from restaurant.modul.base import Base
 from sqlalchemy.orm import relationship
-from restaurant.modul.mixin import DateTimeMixin
+from restaurant.modul.mixin import DateTimeMixin, State, DeliveryType
 
 
 class Order(DateTimeMixin, Base):
@@ -17,3 +17,34 @@ class Order(DateTimeMixin, Base):
     items = relationship('OrderItem', cascade='all, delete')
     payments = relationship('Payment', cascade='all, delete')
 
+    @staticmethod
+    def add(customer_id, address_id):
+        state = State.waiting_to_select_item
+
+        try:
+            print(f'Enter a number'
+                  f'\n1.{DeliveryType.bike_delivery}'
+                  f'\n2.{DeliveryType.eat_in_restaurant}'
+                  f'\n3.{DeliveryType.eat_out}')
+            number_delivery_type = int(input(': '))
+            delivery_types = [DeliveryType.bike_delivery, DeliveryType.eat_in_restaurant, DeliveryType.eat_out]
+            delivery_type = delivery_types[number_delivery_type - 1]
+
+        except ValueError:
+            return print('ValueError: You should type just number')
+
+        except IndexError:
+            return print('IndexError: Number not found')
+
+        if delivery_type == DeliveryType.eat_in_restaurant:
+            desk_number = input('')
+
+        else:
+            desk_number = None
+
+        print('If you want description enter it else type No')
+        description = input('')
+        if description == '' or description == 'no' or description == 'No':
+            description = None
+
+        
