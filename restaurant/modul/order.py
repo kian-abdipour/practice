@@ -47,4 +47,3 @@ class Order(DateTimeMixin, Base):
         if description == '' or description == 'no' or description == 'No':
             description = None
 
-        

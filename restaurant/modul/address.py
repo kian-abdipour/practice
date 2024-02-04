@@ -62,3 +62,16 @@ class Address(DateTimeMixin, Base):
         else:
             print('Waring: Address id not found, try again')
 
+    @staticmethod
+    def search(address_id, customer_id):
+        with Session() as session:
+            result = session.query(Address).filter(Address.id == address_id,
+                                                   Address.customer_id == customer_id).one_or_none()
+
+        if result is not None:
+            return result.id
+
+        else:
+            print('Waring: Address id not found, try again')
+            return False
+

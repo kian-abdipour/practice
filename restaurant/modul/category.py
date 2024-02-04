@@ -85,7 +85,7 @@ class Category(DateTimeMixin, Base):
     def search():
         Category.show_all()
 
-        print('Enter name of category that item is in')
+        print('Enter name of category')
         name = input(': ')
 
         # Make type safing

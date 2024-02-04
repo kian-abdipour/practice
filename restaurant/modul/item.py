@@ -98,9 +98,15 @@ class Item(DateTimeMixin, Base):
             print(f'id: {result.id}, name: {result.name},'
                   f' country: {result.country}, price: {result.price},'
                   f' stock: {result.stock}, description: {result.description}')
-            return result.id
+            return result
 
         else:
             print('Waring: Item not found!, try again')
             return False
+
+    @staticmethod
+    def get_list_of_item(list_item_id):
+        for item_id in list_item_id:
+            with Session() as session:
+                result = session.query(Item).filter(Item.id == item_id).one()
 

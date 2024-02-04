@@ -166,7 +166,7 @@ def manage_admin_operation():
                         print('Waring: Number not found')
 
                 elif operation == 6:
-                    item_id = Item.search()
+                    item_id = Item.search().id
                     if item_id is not False:  # Ask question
                         CategoryItem.match_row(item_id)
 
@@ -177,7 +177,7 @@ def manage_admin_operation():
                     category_id = Category.search()
                     if category_id is not False:
                         CategoryItem.show_item_side(category_id)
-                        item_id = Item.search()
+                        item_id = Item.search().id
                         if item_id is not False:
                             CategoryItem.delete(category_id, item_id)
 
@@ -201,7 +201,36 @@ def manage_customer_operation(customer_id):
 
         if operation is not None:
             if operation == 1:
-                pass
+                print('Enter id of your address')
+                Address.show_all(customer_id)
+                try:
+                    address_id_user = int(input(': '))
+
+                except ValueError:
+                    print('ValueError: You should type just number')
+                    address_id_user = None
+
+                address_id_order = Address.search(address_id_user, customer_id)
+                if address_id_order is not False:
+                    list_item_to_order = []  # This is a list of all item that customer chose to order them
+                    proceed_order = True
+                    while proceed_order:
+                        category_id = Category.search()
+                        print('If it\'s finish type q')
+                        if category_id is not False:
+                            CategoryItem.show_item_side(category_id)
+                            item = Item.search()
+                            if item.stock > 0:
+                                list_item_to_order.append(item)
+                                print('Item successfully added')
+
+                            else:
+                                print(f'Sorry, but now we don\'t have {item.name}')
+
+                        elif category_id == 'q':
+                            proceed_order = False
+                            if len(list_item_to_order) > 0:
+
 
             elif operation == 2:
                 pass
@@ -226,13 +255,13 @@ def manage_customer_operation(customer_id):
                         print('Enter id of address that you want to delete')
                         Address.show_all(customer_id)
                         try:
-                            address_id = int(input(': '))
+                            address_id_user = int(input(': '))
 
                         except ValueError:
                             print('ValueError: You should type just number')
-                            address_id = None
+                            address_id_user = None
 
-                        Address.delete(address_id, customer_id)
+                        Address.delete(address_id_user, customer_id)
 
             elif operation == 4:
                 proceed = False
