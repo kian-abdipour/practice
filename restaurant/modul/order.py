@@ -2,6 +2,7 @@ from sqlalchemy import Unicode, Column, Integer, ForeignKey
 from restaurant.modul.base import Base
 from sqlalchemy.orm import relationship
 from restaurant.modul.mixin import DateTimeMixin, State, DeliveryType
+from restaurant.database_package import Session
 
 
 class Order(DateTimeMixin, Base):
@@ -19,7 +20,7 @@ class Order(DateTimeMixin, Base):
 
     @staticmethod
     def add(customer_id, address_id):
-        state = State.waiting_to_select_item
+        state = State.waiting_to_confirmation
 
         try:
             print(f'Enter a number'
@@ -46,4 +47,14 @@ class Order(DateTimeMixin, Base):
         description = input('')
         if description == '' or description == 'no' or description == 'No':
             description = None
+
+        order = Order(state=state, delivery_type=delivery_type,
+                      desk_number=desk_number, description=description,
+                      address_id=address_id, customer_id=customer_id)
+        with Session() as session:
+            session.add(order)
+
+            session.commit()
+
+        print('Your orders successfully added please wait until admin to confirm it')
 

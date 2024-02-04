@@ -230,7 +230,7 @@ def manage_customer_operation(customer_id):
                         elif category_id == 'q':
                             proceed_order = False
                             if len(list_item_to_order) > 0:
-
+                                Order.add()
 
             elif operation == 2:
                 pass
