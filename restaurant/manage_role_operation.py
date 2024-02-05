@@ -1,4 +1,4 @@
-from restaurant.modul import SuperAdmin, Admin, Category, Item, CategoryItem, Address
+from restaurant.modul import SuperAdmin, Admin, Category, Item, CategoryItem, Address, Order, OrderItem, Payment
 
 # In this program just super admin with username <<<kian_abdipour>>> can add or delete super admins and
 # Other super admins can just add or delete admins
@@ -136,16 +136,17 @@ def manage_admin_operation():
                         Category.show_all()
 
                     elif operation_show == 2:
-                        category_id = Category.search()
-                        if category_id is not False:
-                            CategoryItem.show_item_side(category_id)
+                        category = Category.search()
+                        if category[0] is not False:
+                            CategoryItem.show_item_side(category[0].id)
 
                     else:
                         print('Waring: Number not found')
 
                 elif operation == 4:
                     if CategoryItem.match_row(Item.add()) is not True:
-                        print('Your item it\'s not in any category')
+                        pass
+#                        print('Your item it\'s not in any category')
 
                 elif operation == 5:
                     print('Enter a number \n1.Show all\n2.Search\n3.Show item by category')
@@ -174,12 +175,12 @@ def manage_admin_operation():
                         pass
 
                 elif operation == 7:
-                    category_id = Category.search()
-                    if category_id is not False:
-                        CategoryItem.show_item_side(category_id)
+                    category = Category.search()
+                    if category[0] is not False:
+                        CategoryItem.show_item_side(category[0].id)
                         item_id = Item.search().id
                         if item_id is not False:
-                            CategoryItem.delete(category_id, item_id)
+                            CategoryItem.delete(category[0].id, item_id)
 
                 elif operation == 8:
                     proceed = False
@@ -215,22 +216,47 @@ def manage_customer_operation(customer_id):
                     list_item_to_order = []  # This is a list of all item that customer chose to order them
                     proceed_order = True
                     while proceed_order:
-                        category_id = Category.search()
-                        print('If it\'s finish type q')
-                        if category_id is not False:
-                            CategoryItem.show_item_side(category_id)
-                            item = Item.search()
-                            if item.stock > 0:
-                                list_item_to_order.append(item)
-                                print('Item successfully added')
+                        print('If it\'s finish type q to go to payment part if you selected item, else go back')
+                        category = Category.search()
+                        if category[0] is not False:
+                            print('Items in this category:')
 
-                            else:
-                                print(f'Sorry, but now we don\'t have {item.name}')
+                            if CategoryItem.show_item_side(category[0].id):
+                                item = Item.search()
+                                if item is not False:
+                                    if item.stock > 0:
+                                        list_item_to_order.append(item)
+                                        print('Item successfully added')
 
-                        elif category_id == 'q':
+                                    else:
+                                        print(f'Sorry, but now we don\'t have {item.name}')
+
+                        elif category[1] == 'q':
                             proceed_order = False
                             if len(list_item_to_order) > 0:
-                                Order.add()
+                                order = Order.add(address_id_order, customer_id)
+
+                                proceed_payment = True
+                                while proceed_payment:
+                                    if Payment.add(list_item_to_order, order.id, customer_id) is False:
+                                        print('If you want to pay again type yes, else type no')
+                                        operation_pay_again = input(': ')
+                                        if operation_pay_again == 'Yes' or operation_pay_again == 'yes':
+                                            Payment.add(list_item_to_order, order.id, customer_id)
+                                            proceed_payment = False
+
+                                        elif operation_pay_again == 'No' or operation_pay_again == 'No':
+                                            proceed_payment = False
+
+                                        else:
+                                            print('Waring: You should just type yes for pay again,'
+                                                  ' and no for go back')
+
+                                    else:
+                                        proceed_payment = False
+
+                            else:
+                                print('You does not select any item to be order')
 
             elif operation == 2:
                 pass

@@ -38,13 +38,14 @@ class Order(DateTimeMixin, Base):
             return print('IndexError: Number not found')
 
         if delivery_type == DeliveryType.eat_in_restaurant:
-            desk_number = input('')
+            print('Enter your desk number')
+            desk_number = input(': ')
 
         else:
             desk_number = None
 
         print('If you want description enter it else type No')
-        description = input('')
+        description = input(': ')
         if description == '' or description == 'no' or description == 'No':
             description = None
 
@@ -56,5 +57,8 @@ class Order(DateTimeMixin, Base):
 
             session.commit()
 
+            order = session.query(Order).filter(Order.id == order.id).one()
+
         print('Your orders successfully added please wait until admin to confirm it')
+        return order
 

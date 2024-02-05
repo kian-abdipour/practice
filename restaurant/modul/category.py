@@ -102,9 +102,9 @@ class Category(DateTimeMixin, Base):
 
         if result is not None:
             print(f'id: {result.id}, name: {result.name}')
-            return result.id
+            return result, name
 
         else:
             print('Waring: Category not found')
-            return False
+            return False, name
 

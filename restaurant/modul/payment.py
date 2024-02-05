@@ -25,8 +25,8 @@ class Payment(DateTimeMixin, Base):
         print(f'Your total amount is {amount} if you want to pay type yes, else type no')
         proceed = True
         while proceed:
-            operation_pay = input('')
-            if operation_pay == 'yes' or operation_pay == 'no':
+            operation_pay = input(': ')
+            if operation_pay == 'yes' or operation_pay == 'Yes':
                 print('Pay was successful')
                 state = State.successful
                 proceed = False
@@ -45,5 +45,11 @@ class Payment(DateTimeMixin, Base):
             session.add(payment)
 
             session.commit()
+
+        if state == State.failed:  # Ask question about why payment.state raise a sqlalchemy Error ?
+            return False
+
+        elif state == State.successful:
+            return True
 
             

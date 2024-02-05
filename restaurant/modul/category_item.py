@@ -86,7 +86,8 @@ class CategoryItem(DateTimeMixin, Base):
                 print(f'id: {result.id}, name: {result.name},'
                       f' country: {result.country}, price: {result.price},'
                       f' stock: {result.stock}, description: {result.description}')
+            return True
 
         else:
             print('Now this category doesn\'t have any item')
-
+            return False
