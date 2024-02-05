@@ -23,7 +23,7 @@ class Order(DateTimeMixin, Base):
         state = State.waiting_to_confirmation
 
         try:
-            print(f'Enter a number'
+            print(f'Enter a number if your are at home you should choose bike delivery,'
                   f'\n1.{DeliveryType.bike_delivery}'
                   f'\n2.{DeliveryType.eat_in_restaurant}'
                   f'\n3.{DeliveryType.eat_out}')
@@ -59,6 +59,6 @@ class Order(DateTimeMixin, Base):
 
             order = session.query(Order).filter(Order.id == order.id).one()
 
-        print('Your orders successfully added please wait until admin to confirm it')
+        print('Your orders successfully added please do pay and wait until admin to confirm it')
         return order
 

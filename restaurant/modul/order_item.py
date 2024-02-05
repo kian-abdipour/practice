@@ -2,6 +2,8 @@ from sqlalchemy import Column, Integer, ForeignKey
 from restaurant.modul.base import Base
 from sqlalchemy.orm import relationship
 from restaurant.modul.mixin import DateTimeMixin
+from restaurant.database_package import Session
+from copy import deepcopy
 
 
 class OrderItem(Base, DateTimeMixin):
@@ -15,4 +17,30 @@ class OrderItem(Base, DateTimeMixin):
 
     orders = relationship('Order', overlaps='items', cascade='all, delete')
     items = relationship('Item', overlaps='orders', cascade='all, delete')
+
+    @staticmethod
+    def add(order_id, list_item):
+        list_item_copy = deepcopy(list_item)
+        list_item_id = []
+        for item in list_item:
+            list_item_id.append(item.id)
+
+        for item in list_item:
+            item_id = item.id
+            unit_amount = item.price
+            quantity = list_item_id.count(item_id)
+            total_amount = item.price * quantity
+            while item.id in list_item_id:
+                list_item_copy.pop(list_item_id.index(item_id))
+                list_item_id.remove(item_id)
+
+            order_item = OrderItem(quantity=quantity, unit_amount=unit_amount,
+                                   total_amount=total_amount, order_id=order_id, item_id=item_id)
+            with Session() as session:
+                session.add(order_item)
+
+                session.commit()
+
+            if len(list_item_copy) == 0:
+                return
 

@@ -83,9 +83,8 @@ class Category(DateTimeMixin, Base):
 
     @staticmethod
     def search():
-        Category.show_all()
-
         print('Enter name of category')
+        Category.show_all()
         name = input(': ')
 
         # Make type safing

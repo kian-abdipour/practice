@@ -216,7 +216,7 @@ def manage_customer_operation(customer_id):
                     list_item_to_order = []  # This is a list of all item that customer chose to order them
                     proceed_order = True
                     while proceed_order:
-                        print('If it\'s finish type q to go to payment part if you selected item, else go back')
+                        print('If it\'s finish type q to go to payment part if you selected item, else it will go back')
                         category = Category.search()
                         if category[0] is not False:
                             print('Items in this category:')
@@ -235,10 +235,12 @@ def manage_customer_operation(customer_id):
                             proceed_order = False
                             if len(list_item_to_order) > 0:
                                 order = Order.add(address_id_order, customer_id)
+                                OrderItem.add(order.id, list_item_to_order)
 
                                 proceed_payment = True
                                 while proceed_payment:
                                     if Payment.add(list_item_to_order, order.id, customer_id) is False:
+
                                         print('If you want to pay again type yes, else type no')
                                         operation_pay_again = input(': ')
                                         if operation_pay_again == 'Yes' or operation_pay_again == 'yes':
