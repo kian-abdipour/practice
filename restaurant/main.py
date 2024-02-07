@@ -37,7 +37,6 @@ def main():
                                 manage_customer_operation(result_login[1])
 
                         elif operation_admin == 2:
-
                             result_signup = Customer.signup()
                             if result_signup[0]:
                                 manage_customer_operation(result_signup[1])

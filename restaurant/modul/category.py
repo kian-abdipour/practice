@@ -103,6 +103,9 @@ class Category(DateTimeMixin, Base):
             print(f'id: {result.id}, name: {result.name}')
             return result, name
 
+        elif name == 'q':
+            pass
+
         else:
             print('Waring: Category not found')
             return False, name

@@ -106,7 +106,7 @@ def manage_admin_operation():
             print('Enter a number \n1.Add category\n'
                   '2.Delete category\n3.Show category\n'
                   '4.Add item\n5.Show item\n6.Add item to category\n'
-                  '7.delete item from category\n8.logout')
+                  '7.delete item from category\n8.manage order\n9.logout')
 
             try:
                 operation = int(input(': '))
@@ -183,6 +183,25 @@ def manage_admin_operation():
                             CategoryItem.delete(category[0].id, item_id)
 
                 elif operation == 8:
+                    proceed_confirm_order = True
+                    while proceed_confirm_order:
+                        print('Enter a number \n1.Confirm order\n2.Show all order\n3.Back')
+                        try:
+                            operation_order = int(input(': '))
+
+                        except ValueError:
+                            print('Waring: You should type just number')
+                            operation_order = None
+
+                        if operation_order is not None:
+                            if operation_order == 1:
+                                Order.show_all_waiting_to_confirm()
+                                Order.confirm()
+
+                            elif operation_order == 2:
+                                Order.show_all_waiting_to_confirm()
+
+                elif operation == 9:
                     proceed = False
 
                 else:
@@ -234,7 +253,7 @@ def manage_customer_operation(customer_id):
                         elif category[1] == 'q':
                             proceed_order = False
                             if len(list_item_to_order) > 0:
-                                order = Order.add(address_id_order, customer_id)
+                                order = Order.add(customer_id, address_id_order)
                                 OrderItem.add(order.id, list_item_to_order)
 
                                 proceed_payment = True
@@ -261,7 +280,25 @@ def manage_customer_operation(customer_id):
                                 print('You does not select any item to be order')
 
             elif operation == 2:
-                pass
+                proceed_show_order = True
+                while proceed_show_order:
+                    print('Enter a number \n1.Show your all order\n2.Back')
+                    try:
+                        operation_show_order = int(input(': '))
+
+                    except ValueError:
+                        print('ValueError: You should type just number')
+                        operation_show_order = None
+
+                    if operation_show_order is not None:
+                        if operation_show_order == 1:
+                            Order.show_all_for_customer(customer_id)
+
+                        elif operation_show_order == 2:
+                            proceed_show_order = False
+
+                        else:
+                            print('Waring: Number not found')
 
             elif operation == 3:
                 print('Enter a number \n1.Show Your addresses\n2.Add address\n3.Delete address')
