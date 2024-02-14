@@ -80,33 +80,37 @@ class Category(DateTimeMixin, Base):
 
         else:
             print('Now we don\'t have any category')
+            return False
 
     @staticmethod
     def search():
-        print('Enter name of category')
-        Category.show_all()
-        name = input(': ')
+        if Category.show_all() is not False:
+            print('Enter name of category')
+            name = input(': ')
 
-        # Make type safing
-        try:
-            if len(name) > 40:
-                error = LengthError(massage='LengthError: Len of Name is out of 30!, try again')
-                raise error
+            # Make type safing
+            try:
+                if len(name) > 40:
+                    error = LengthError(massage='LengthError: Len of Name is out of 30!, try again')
+                    raise error
 
-        except LengthError:
-            error.show_massage()
+            except LengthError:
+                error.show_massage()
 
-        with Session() as session:
-            result = session.query(Category).filter(Category.name == name).one_or_none()
+            with Session() as session:
+                result = session.query(Category).filter(Category.name == name).one_or_none()
 
-        if result is not None:
-            print(f'id: {result.id}, name: {result.name}')
-            return result, name
+            if result is not None:
+                print(f'id: {result.id}, name: {result.name}')
+                return result, name
 
-        elif name == 'q':
-            pass
+            elif name == 'q':
+                return False, name
+
+            else:
+                print('Waring: Category not found')
+                return False, name
 
         else:
-            print('Waring: Category not found')
-            return False, name
+            return False, 'q'
 

@@ -44,9 +44,11 @@ class Address(DateTimeMixin, Base):
         if len(result) > 0:
             for address in result:
                 print(f'id: {address.id}, address: {address.address}')
+            return True
 
         else:
-            print('Now you don\' have any address')
+            print('Now you don\' have any address, first add address')
+            return False
 
     @staticmethod
     def delete(address_id, customer_id):

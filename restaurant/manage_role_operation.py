@@ -201,6 +201,9 @@ def manage_admin_operation():
                             elif operation_order == 2:
                                 Order.show_all_waiting_to_confirm()
 
+                            elif operation_order == 3:
+                                proceed_confirm_order = False
+
                 elif operation == 9:
                     proceed = False
 
@@ -222,62 +225,64 @@ def manage_customer_operation(customer_id):
         if operation is not None:
             if operation == 1:
                 print('Enter id of your address')
-                Address.show_all(customer_id)
-                try:
-                    address_id_user = int(input(': '))
+                if Address.show_all(customer_id):
+                    try:
+                        address_id_user = int(input(': '))
 
-                except ValueError:
-                    print('ValueError: You should type just number')
-                    address_id_user = None
+                    except ValueError:
+                        print('ValueError: You should type just number')
+                        address_id_user = None
 
-                address_id_order = Address.search(address_id_user, customer_id)
-                if address_id_order is not False:
-                    list_item_to_order = []  # This is a list of all item that customer chose to order them
-                    proceed_order = True
-                    while proceed_order:
-                        print('If it\'s finish type q to go to payment part if you selected item, else it will go back')
-                        category = Category.search()
-                        if category[0] is not False:
-                            print('Items in this category:')
+                    address_id_order = Address.search(address_id_user, customer_id)
+                    if address_id_order is not False:
+                        list_item_to_order = []  # This is a list of all item that customer chose to order them
+                        proceed_order = True
+                        while proceed_order:
 
-                            if CategoryItem.show_item_side(category[0].id):
-                                item = Item.search()
-                                if item is not False:
-                                    if item.stock > 0:
-                                        list_item_to_order.append(item)
-                                        print('Item successfully added')
+                            print('If it\'s finish type q to go to payment '
+                                  'part if you selected item, else it will go back')
+                            category = Category.search()
+                            if category[0] is not False:
+                                print('Items in this category:')
 
-                                    else:
-                                        print(f'Sorry, but now we don\'t have {item.name}')
-
-                        elif category[1] == 'q':
-                            proceed_order = False
-                            if len(list_item_to_order) > 0:
-                                order = Order.add(customer_id, address_id_order)
-                                OrderItem.add(order.id, list_item_to_order)
-
-                                proceed_payment = True
-                                while proceed_payment:
-                                    if Payment.add(list_item_to_order, order.id, customer_id) is False:
-
-                                        print('If you want to pay again type yes, else type no')
-                                        operation_pay_again = input(': ')
-                                        if operation_pay_again == 'Yes' or operation_pay_again == 'yes':
-                                            Payment.add(list_item_to_order, order.id, customer_id)
-                                            proceed_payment = False
-
-                                        elif operation_pay_again == 'No' or operation_pay_again == 'No':
-                                            proceed_payment = False
+                                if CategoryItem.show_item_side(category[0].id):
+                                    item = Item.search()
+                                    if item is not False:
+                                        if item.stock > 0:
+                                            list_item_to_order.append(item)
+                                            print('Item successfully added')
 
                                         else:
-                                            print('Waring: You should just type yes for pay again,'
-                                                  ' and no for go back')
+                                            print(f'Sorry, but now we don\'t have {item.name}')
 
-                                    else:
-                                        proceed_payment = False
+                            elif category[1] == 'q':
+                                proceed_order = False
+                                if len(list_item_to_order) > 0:
+                                    order = Order.add(customer_id, address_id_order)
+                                    OrderItem.add(order.id, list_item_to_order)
 
-                            else:
-                                print('You does not select any item to be order')
+                                    proceed_payment = True
+                                    while proceed_payment:
+                                        if Payment.add(list_item_to_order, order.id, customer_id) is False:
+
+                                            print('If you want to pay again type yes, else type no')
+                                            operation_pay_again = input(': ')
+                                            if operation_pay_again == 'Yes' or operation_pay_again == 'yes':
+                                                Payment.add(list_item_to_order, order.id, customer_id)
+                                                proceed_payment = False
+
+                                            elif operation_pay_again == 'No' or operation_pay_again == 'No':
+                                                proceed_payment = False
+
+                                            else:
+                                                print('Waring: You should just type yes for pay again,'
+                                                      ' and no for go back')
+
+                                        else:
+                                            proceed_payment = False
+
+                                else:
+                                    print('You does not select any item to be order')
 
             elif operation == 2:
                 proceed_show_order = True
