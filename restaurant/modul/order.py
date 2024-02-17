@@ -40,8 +40,18 @@ class Order(DateTimeMixin, Base):
             return print('IndexError: Number not found')
 
         if delivery_type == DeliveryType.eat_in_restaurant:
-            print('Enter your desk number')
-            desk_number = input(': ')
+            condition_desk_number = True
+            while condition_desk_number:
+                try:
+                    print('Enter your desk number')
+                    desk_number = int(input(': '))
+
+                except ValueError:
+                    print('ValueError: Your desk number must be just number, try again')
+                    desk_number = None
+
+                if desk_number is not None:
+                    condition_desk_number = False
 
         else:
             desk_number = None
@@ -81,7 +91,7 @@ class Order(DateTimeMixin, Base):
     @staticmethod
     def show_all_waiting_to_confirm():
         with Session() as session:
-            result = session.query(Order, Address.address, Payment).filter(Order.state == State.waiting_to_confirmation).join(Address).join(Payment).all()
+            result = session.query(Order, Address.address, Payment).filter(Order.state == State.waiting_to_confirmation).join(Address).join(Payment).all()  # Question where to be cut
 
         if len(result) > 0:
             for row in result:

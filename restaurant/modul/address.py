@@ -47,7 +47,7 @@ class Address(DateTimeMixin, Base):
             return True
 
         else:
-            print('Now you don\' have any address, first add address')
+            print('Now you don\' have any address, first add an address')
             return False
 
     @staticmethod
