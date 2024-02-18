@@ -1,9 +1,10 @@
 from sqlalchemy import Column, Integer, ForeignKey
-from restaurant.modul.base import Base
+from restaurant.model.base import Base
 from sqlalchemy.orm import relationship
-from restaurant.modul.mixin import DateTimeMixin
-from restaurant.database_package import Session
+from restaurant.model.mixin import DateTimeMixin
+from restaurant.database import Session
 from copy import deepcopy
+from restaurant.model import Item
 
 
 class OrderItem(Base, DateTimeMixin):
@@ -18,8 +19,8 @@ class OrderItem(Base, DateTimeMixin):
     orders = relationship('Order', overlaps='items', cascade='all, delete')
     items = relationship('Item', overlaps='orders', cascade='all, delete')
 
-    @staticmethod
-    def add(order_id, list_item):
+    @classmethod
+    def add(cls, order_id, list_item):
         list_item_copy = deepcopy(list_item)
         list_item_id = []
         for item in list_item:
@@ -34,10 +35,11 @@ class OrderItem(Base, DateTimeMixin):
                 list_item_copy.pop(list_item_id.index(item_id))
                 list_item_id.remove(item_id)
 
-            order_item = OrderItem(quantity=quantity, unit_amount=unit_amount,
-                                   total_amount=total_amount, order_id=order_id, item_id=item_id)
+            order_item = cls(quantity=quantity, unit_amount=unit_amount,
+                             total_amount=total_amount, order_id=order_id, item_id=item_id)
             with Session() as session:
                 session.add(order_item)
+                session.query(Item).filter(Item.id == item.id).update({Item.stock: (Item.stock - quantity)})
 
                 session.commit()
 

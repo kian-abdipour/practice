@@ -1,10 +1,10 @@
 from sqlalchemy import Unicode, Column, Integer, ForeignKey
-from restaurant.modul.base import Base
+from restaurant.model.base import Base
 from sqlalchemy.orm import relationship
-from restaurant.modul.mixin import DateTimeMixin, State, DeliveryType
-from restaurant.database_package import Session
-from restaurant.modul.address import Address
-from restaurant.modul.payment import Payment
+from restaurant.model.mixin import DateTimeMixin, State, DeliveryType
+from restaurant.database import Session
+from restaurant.model.address import Address
+from restaurant.model.payment import Payment
 
 
 class Order(DateTimeMixin, Base):
@@ -20,8 +20,8 @@ class Order(DateTimeMixin, Base):
     items = relationship('OrderItem', cascade='all, delete')
     payments = relationship('Payment', cascade='all, delete')
 
-    @staticmethod
-    def add(customer_id, address_id):
+    @classmethod
+    def add(cls, customer_id, address_id):
         state = State.waiting_to_confirmation
 
         try:
@@ -61,7 +61,7 @@ class Order(DateTimeMixin, Base):
         if description == '' or description == 'no' or description == 'No':
             description = None
 
-        order = Order(state=state, delivery_type=delivery_type,
+        order = cls(state=state, delivery_type=delivery_type,
                       desk_number=desk_number, description=description,
                       address_id=address_id, customer_id=customer_id)
         with Session() as session:
@@ -69,15 +69,15 @@ class Order(DateTimeMixin, Base):
 
             session.commit()
 
-            order = session.query(Order).filter(Order.id == order.id).one()
+            order = session.query(cls).filter(cls.id == order.id).one()
 
         print('Your orders successfully added please do pay and wait until admin to confirm it')
         return order
 
-    @staticmethod
-    def show_all_for_customer(customer_id):
+    @classmethod
+    def show_all_for_customer(cls, customer_id):
         with Session() as session:
-            result = session.query(Order, Address.address).filter(Order.customer_id == customer_id).join(Address).all()
+            result = session.query(cls, Address.address).filter(cls.customer_id == customer_id).join(Address).all()
 
         if len(result) > 0:
             for row in result:
@@ -88,10 +88,10 @@ class Order(DateTimeMixin, Base):
         else:
             print('History of your order is empty')
 
-    @staticmethod
-    def show_all_waiting_to_confirm():
+    @classmethod
+    def show_all_waiting_to_confirm(cls):
         with Session() as session:
-            result = session.query(Order, Address.address, Payment).filter(Order.state == State.waiting_to_confirmation).join(Address).join(Payment).all()  # Question where to be cut
+            result = session.query(cls, Address.address, Payment).filter(cls.state == State.waiting_to_confirmation).join(Address).join(Payment).all()  # Question where to be cut
 
         if len(result) > 0:
             for row in result:
@@ -104,8 +104,8 @@ class Order(DateTimeMixin, Base):
         else:
             print('Now we don\'t have any order')
 
-    @staticmethod
-    def confirm():
+    @classmethod
+    def confirm(cls):
         print('Enter id of order that you want to confirm')
         try:
             order_id = int(input(': '))
@@ -116,8 +116,8 @@ class Order(DateTimeMixin, Base):
 
         if order_id is not None:
             with Session() as session:
-                result = session.query(Order).filter(Order.id == order_id).update(
-                    {Order.state: State.confirm_and_finish}
+                result = session.query(cls).filter(cls.id == order_id).update(
+                    {cls.state: State.confirm_and_finish}
                 )
 
                 session.commit()

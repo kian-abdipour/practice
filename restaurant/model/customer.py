@@ -1,9 +1,9 @@
 from sqlalchemy import Column, Integer, Unicode
 from sqlalchemy.orm import relationship
-from restaurant.modul.base import Base
-from restaurant.modul.mixin import DateTimeMixin
-from restaurant.modul.custom_exception import LengthError
-from restaurant.database_package import Session
+from restaurant.model.base import Base
+from restaurant.model.mixin import DateTimeMixin
+from restaurant.custom_exception import LengthError
+from restaurant.database import Session
 
 
 class Customer(DateTimeMixin, Base):
@@ -17,8 +17,8 @@ class Customer(DateTimeMixin, Base):
     payments = relationship('Payment', cascade='all, delete')
     addresses = relationship('Address', cascade='all, delete')
 
-    @staticmethod
-    def signup():
+    @classmethod
+    def signup(cls):
         # Make type safing
         try:
             print('Enter your username at least 20 character')
@@ -28,7 +28,7 @@ class Customer(DateTimeMixin, Base):
                 raise error
 
             with Session() as session:
-                result = session.query(Customer).filter(Customer.username == username).one_or_none()
+                result = session.query(cls).filter(cls.username == username).one_or_none()
 
             if result is not None:
                 print('Waring: This username has been taken before!, please choose another')
@@ -51,7 +51,7 @@ class Customer(DateTimeMixin, Base):
                 return False, None
 
             with Session() as session:
-                result = session.query(Customer).filter(Customer.phone_number == phone_number).one_or_none()
+                result = session.query(cls).filter(cls.phone_number == phone_number).one_or_none()
 
             if result is not None:
                 print('Waring: This phone number already has an account!')
@@ -61,7 +61,7 @@ class Customer(DateTimeMixin, Base):
             error.show_massage()
             return False, None
 
-        customer = Customer(username=username, password=password, phone_number=phone_number)
+        customer = cls(username=username, password=password, phone_number=phone_number)
         with Session() as session:
             session.add(customer)
 
@@ -70,12 +70,12 @@ class Customer(DateTimeMixin, Base):
         print(f'Signup was successful, {username} welcome to your account')
 
         with Session() as session:
-            result = session.query(Customer).filter(Customer.username == username).one()
+            result = session.query(cls).filter(cls.username == username).one()
 
         return True, result.id
 
-    @staticmethod
-    def login():
+    @classmethod
+    def login(cls):
         # Make type safing
         try:
             print('Enter your username at least 20 character')
@@ -95,8 +95,7 @@ class Customer(DateTimeMixin, Base):
             return False, None
 
         with Session() as session:
-            result = session.query(Customer).filter(Customer.username == username,
-                                                    Customer.password == password).one_or_none()
+            result = session.query(cls).filter(cls.username == username, cls.password == password).one_or_none()
 
         if result is not None:
             print(f'Login was successful, welcome to your account {username}')

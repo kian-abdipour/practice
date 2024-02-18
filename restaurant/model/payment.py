@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, Unicode, ForeignKey
-from restaurant.modul.base import Base
-from restaurant.modul.mixin import DateTimeMixin, State, TypePay
-from restaurant.database_package import Session
+from restaurant.model.base import Base
+from restaurant.model.mixin import DateTimeMixin, State, TypePay
+from restaurant.database import Session
 
 
 class Payment(DateTimeMixin, Base):
@@ -13,10 +13,10 @@ class Payment(DateTimeMixin, Base):
     order_id = Column(ForeignKey('order.id'))
     customer_id = Column(ForeignKey('customer.id'))
 
-    @staticmethod
-    def add(list_item, order_id, customer_id):
+    @classmethod
+    def add(cls, list_item, order_id, customer_id):
         state = State.failed
-        type_pay = TypePay.card_by_card
+        type_pay = TypePay.transfer
         amount = 0
         for item in list_item:
             amount += item.price
@@ -39,7 +39,7 @@ class Payment(DateTimeMixin, Base):
             else:
                 print(f'Your total amount is {amount} if you want to pay type yes, else type no')
 
-        payment = Payment(state=state, type=type_pay, amount=amount, order_id=order_id, customer_id=customer_id)
+        payment = cls(state=state, type=type_pay, amount=amount, order_id=order_id, customer_id=customer_id)
 
         with Session() as session:
             session.add(payment)

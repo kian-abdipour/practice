@@ -1,4 +1,4 @@
-from restaurant.modul import SuperAdmin, Admin, Category, Item, CategoryItem, Address, Order, OrderItem, Payment
+from restaurant.model import SuperAdmin, Admin, Category, Item, CategoryItem, Address, Order, OrderItem, Payment
 
 # In this program just super admin with username <<<kian_abdipour>>> can add or delete super admins and
 # Other super admins can just add or delete admins
@@ -235,7 +235,8 @@ def manage_customer_operation(customer_id):
 
                     address_id_order = Address.search(address_id_user, customer_id)
                     if address_id_order is not False:
-                        list_item_to_order = []  # This is a list of all item that customer chose to order them
+                        list_item_to_order = []  # This is a list of all item that customer choose to order them
+                        list_item_id = []  # This is a list of all item id that user choose to order
                         proceed_order = True
                         while proceed_order:
 
@@ -249,11 +250,16 @@ def manage_customer_operation(customer_id):
                                     item = Item.search()
                                     if item is not False:
                                         if item.stock > 0:
-                                            list_item_to_order.append(item)
-                                            print('Item successfully added')
+                                            if list_item_id.count(item.id) < item.stock:
+                                                list_item_to_order.append(item)
+                                                list_item_id.append(item.id)
+                                                print('Item successfully added')
+
+                                            else:
+                                                print(f'Waring: Stock of {item.name} is finished')
 
                                         else:
-                                            print(f'Sorry, but now we don\'t have {item.name}')
+                                            print(f'Now we don\'t have {item.name}')
 
                             elif category[1] == 'q':
                                 proceed_order = False

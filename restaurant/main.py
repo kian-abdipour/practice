@@ -1,4 +1,4 @@
-from restaurant.modul import (SuperAdmin, Admin, Customer, Category, Item,
+from restaurant.model import (SuperAdmin, Admin, Customer, Category, Item,
                               Order, OrderItem, Payment, Address, category_item)
 from manage_role_operation import manage_super_admin_operation, manage_admin_operation, manage_customer_operation
 

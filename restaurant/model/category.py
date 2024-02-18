@@ -1,9 +1,9 @@
 from sqlalchemy import Column, Integer, Unicode
 from sqlalchemy.orm import relationship
-from restaurant.modul.base import Base
-from restaurant.modul.mixin import DateTimeMixin
-from restaurant.database_package import Session
-from restaurant.modul.custom_exception import LengthError
+from restaurant.model.base import Base
+from restaurant.model.mixin import DateTimeMixin
+from restaurant.database import Session
+from restaurant.custom_exception import LengthError
 
 
 class Category(DateTimeMixin, Base):
@@ -13,8 +13,8 @@ class Category(DateTimeMixin, Base):
 
     items = relationship('CategoryItem', cascade='all, delete')
 
-    @staticmethod
-    def add():
+    @classmethod
+    def add(cls):
         print('Enter name of your category')
         name = input(': ')
 
@@ -28,10 +28,10 @@ class Category(DateTimeMixin, Base):
             error.show_massage()
 
         with Session() as session:
-            result = session.query(Category).filter(Category.name == name).one_or_none()
+            result = session.query(cls).filter(cls.name == name).one_or_none()
 
         if result is None:
-            category = Category(name=name)
+            category = cls(name=name)
             with Session() as session:
                 session.add(category)
 
@@ -42,8 +42,8 @@ class Category(DateTimeMixin, Base):
         else:
             print('Waring: This category name already exist try again')
 
-    @staticmethod
-    def delete():
+    @classmethod
+    def delete(cls):
         print('Enter name of category that you want to delete')
         name = input(': ')
 
@@ -57,7 +57,7 @@ class Category(DateTimeMixin, Base):
             error.show_massage()
 
         with Session() as session:
-            result = session.query(Category).filter(Category.name == name).delete()
+            result = session.query(cls).filter(cls.name == name).delete()
 
             session.commit()
 
@@ -69,10 +69,10 @@ class Category(DateTimeMixin, Base):
             print('Category not found')
             return False
 
-    @staticmethod
-    def show_all():
+    @classmethod
+    def show_all(cls):
         with Session() as session:
-            result = session.query(Category).all()
+            result = session.query(cls).all()
 
         if len(result) > 0:
             for category in result:
@@ -82,9 +82,9 @@ class Category(DateTimeMixin, Base):
             print('Now we don\'t have any category')
             return False
 
-    @staticmethod
-    def search():
-        if Category.show_all() is not False:
+    @classmethod
+    def search(cls):
+        if cls.show_all() is not False:
             print('Enter name of category')
             name = input(': ')
 
@@ -98,7 +98,7 @@ class Category(DateTimeMixin, Base):
                 error.show_massage()
 
             with Session() as session:
-                result = session.query(Category).filter(Category.name == name).one_or_none()
+                result = session.query(cls).filter(cls.name == name).one_or_none()
 
             if result is not None:
                 print(f'id: {result.id}, name: {result.name}')

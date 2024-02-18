@@ -1,10 +1,10 @@
 from sqlalchemy import Column, Integer, ForeignKey
-from restaurant.modul.base import Base
+from restaurant.model.base import Base
 from sqlalchemy.orm import relationship
-from restaurant.modul.mixin import DateTimeMixin
-from restaurant.modul import Category, Item
-from restaurant.modul.custom_exception import LengthError
-from restaurant.database_package import Session
+from restaurant.model.mixin import DateTimeMixin
+from restaurant.model import Category, Item
+from restaurant.custom_exception import LengthError
+from restaurant.database import Session
 
 
 class CategoryItem(DateTimeMixin, Base):
@@ -16,8 +16,8 @@ class CategoryItem(DateTimeMixin, Base):
     categories = relationship('Category', overlaps='items', cascade='all, delete')
     items = relationship('Item', overlaps='categories', cascade='all, delete')
 
-    @staticmethod
-    def match_row(item_id):
+    @classmethod
+    def match_row(cls, item_id):
         print('Enter name of categories of this item one enter a category name and another one again enter and'
               ' if it\'s finish type q')
         Category.show_all()
@@ -38,10 +38,9 @@ class CategoryItem(DateTimeMixin, Base):
 
             if category is not None:
                 category_id = category.id
-                category_item = CategoryItem(category_id=category_id, item_id=item_id)
+                category_item = cls(category_id=category_id, item_id=item_id)
                 with Session() as session:
-                    result = session.query(CategoryItem).filter(CategoryItem.category_id == category_id,
-                                                                CategoryItem.item_id == item_id).all()
+                    result = session.query(cls).filter(cls.category_id == category_id, cls.item_id == item_id).all()
 
                     if len(result) > 0:
                         return print('This item already is in this category')
@@ -61,11 +60,10 @@ class CategoryItem(DateTimeMixin, Base):
 
         return condition_mathing_row
 
-    @staticmethod
-    def delete(category_id, item_id):
+    @classmethod
+    def delete(cls, category_id, item_id):
         with Session() as session:
-            result = session.query(CategoryItem).filter(CategoryItem.category_id == category_id,
-                                                        CategoryItem.item_id == item_id).delete()
+            result = session.query(cls).filter(cls.category_id == category_id, cls.item_id == item_id).delete()
 
             session.commit()
 
@@ -75,10 +73,10 @@ class CategoryItem(DateTimeMixin, Base):
         else:
             print('Waring: Deleting operation was fail')
 
-    @staticmethod
-    def show_item_side(category_id):
+    @classmethod
+    def show_item_side(cls, category_id):
         with Session() as session:
-            results = session.query(Item).join(CategoryItem).filter(CategoryItem.category_id == category_id).all()
+            results = session.query(Item).join(cls).filter(cls.category_id == category_id).all()
             # Ask question about >>> CategoryItem.item_id == CategoryItem.item_id
 
         if len(results) > 0:
@@ -91,3 +89,4 @@ class CategoryItem(DateTimeMixin, Base):
         else:
             print('Now this category doesn\'t have any item')
             return False
+

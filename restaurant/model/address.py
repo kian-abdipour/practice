@@ -1,9 +1,9 @@
 from sqlalchemy import Column, Unicode, ForeignKey, Integer
-from restaurant.modul.base import Base
+from restaurant.model.base import Base
 from sqlalchemy.orm import relationship
-from restaurant.modul.mixin import DateTimeMixin
-from restaurant.database_package import Session
-from restaurant.modul.custom_exception import LengthError
+from restaurant.model.mixin import DateTimeMixin
+from restaurant.database import Session
+from restaurant.custom_exception import LengthError
 
 
 class Address(DateTimeMixin, Base):
@@ -14,8 +14,8 @@ class Address(DateTimeMixin, Base):
 
     orders = relationship('Order', cascade='all, delete')
 
-    @staticmethod
-    def add(customer_id):
+    @classmethod
+    def add(cls, customer_id):
         print('Enter your address')
         try:
             text_address = input(': ')
@@ -27,7 +27,7 @@ class Address(DateTimeMixin, Base):
             error.show_massage()
             return False
 
-        address = Address(address=text_address, customer_id=customer_id)
+        address = cls(address=text_address, customer_id=customer_id)
         with Session() as session:
             session.add(address)
 
@@ -36,10 +36,10 @@ class Address(DateTimeMixin, Base):
         print('Your address successfully added')
         return True
 
-    @staticmethod
-    def show_all(customer_id):
+    @classmethod
+    def show_all(cls, customer_id):
         with Session() as session:
-            result = session.query(Address).filter(Address.customer_id == customer_id).all()
+            result = session.query(cls).filter(cls.customer_id == customer_id).all()
 
         if len(result) > 0:
             for address in result:
@@ -50,11 +50,10 @@ class Address(DateTimeMixin, Base):
             print('Now you don\' have any address, first add an address')
             return False
 
-    @staticmethod
-    def delete(address_id, customer_id):
+    @classmethod
+    def delete(cls, address_id, customer_id):
         with Session() as session:
-            result = session.query(Address).filter(Address.id == address_id,
-                                                   Address.customer_id == customer_id).delete()
+            result = session.query(cls).filter(cls.id == address_id, cls.customer_id == customer_id).delete()
 
             session.commit()
 
@@ -64,11 +63,10 @@ class Address(DateTimeMixin, Base):
         else:
             print('Waring: Address id not found, try again')
 
-    @staticmethod
-    def search(address_id, customer_id):
+    @classmethod
+    def search(cls, address_id, customer_id):
         with Session() as session:
-            result = session.query(Address).filter(Address.id == address_id,
-                                                   Address.customer_id == customer_id).one_or_none()
+            result = session.query(cls).filter(cls.id == address_id, cls.customer_id == customer_id).one_or_none()
 
         if result is not None:
             return result.id

@@ -1,9 +1,9 @@
 from sqlalchemy import Column, Integer, Unicode
 from sqlalchemy.orm import relationship
-from restaurant.modul.base import Base
-from restaurant.modul.mixin import DateTimeMixin
-from restaurant.modul.custom_exception import LengthError
-from restaurant.database_package import Session
+from restaurant.model.base import Base
+from restaurant.model.mixin import DateTimeMixin
+from restaurant.custom_exception import LengthError
+from restaurant.database import Session
 
 
 class Item(DateTimeMixin, Base):
@@ -18,8 +18,8 @@ class Item(DateTimeMixin, Base):
     orders = relationship('OrderItem', cascade='all, delete')
     categories = relationship('CategoryItem', cascade='all, delete')
 
-    @staticmethod
-    def add():
+    @classmethod
+    def add(cls):
         try:
             print('Enter name of Item')
             name = input(': ')
@@ -28,7 +28,7 @@ class Item(DateTimeMixin, Base):
                 raise error
 
             with Session() as session:
-                result = session.query(Item).filter(Item.name == name).one_or_none()
+                result = session.query(cls).filter(cls.name == name).one_or_none()
 
             if result is not None:
                 return print('Waring: This item name already exist try again')
@@ -61,21 +61,21 @@ class Item(DateTimeMixin, Base):
         if description == 'No' or description == 'no' or description == '':
             description = None
 
-        item = Item(name=name, country=country, price=price, stock=stock, description=description)
+        item = cls(name=name, country=country, price=price, stock=stock, description=description)
         with Session() as session:
             session.add(item)
 
             session.commit()
 
-            result = session.query(Item).filter(Item.name == name).one()
+            result = session.query(cls).filter(cls.name == name).one()
             print('Item successfully added')
 
         return result.id
 
-    @staticmethod
-    def show_all():
+    @classmethod
+    def show_all(cls):
         with Session() as session:
-            result = session.query(Item).all()
+            result = session.query(cls).all()
 
         if len(result) > 0:
             for item in result:
@@ -86,13 +86,13 @@ class Item(DateTimeMixin, Base):
         else:
             print('Waring: Now we don\'t have any item!')
 
-    @staticmethod
-    def search():
+    @classmethod
+    def search(cls):
         print('Enter name of item')
         name = input(': ')
 
         with Session() as session:
-            result = session.query(Item).filter(Item.name == name).one_or_none()
+            result = session.query(cls).filter(cls.name == name).one_or_none()
 
         if result is not None:
             print(f'id: {result.id}, name: {result.name},'
@@ -104,9 +104,9 @@ class Item(DateTimeMixin, Base):
             print('Waring: Item not found!, try again')
             return False
 
-    @staticmethod
-    def get_list_of_item(list_item_id):
+    @classmethod
+    def get_list_of_item(cls, list_item_id):
         for item_id in list_item_id:
             with Session() as session:
-                result = session.query(Item).filter(Item.id == item_id).one()
+                result = session.query(cls).filter(cls.id == item_id).one()
 

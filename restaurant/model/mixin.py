@@ -7,7 +7,7 @@ class DateTimeMixin:
 
 
 class State:
-    waiting_to_select_item = 'Waiting to select_item'
+    waiting_to_select_item = 'Waiting to select item'
     waiting_to_payment = 'Waiting to payment'
     waiting_to_confirmation = 'Waiting to confirmation'
     confirm_and_finish = 'Successfully confirm and finish'
@@ -24,5 +24,5 @@ class DeliveryType:
 class TypePay:
     online = 'Online'
     cash = 'Cash'
-    card_by_card = 'card_by_card'
+    transfer = 'Transfer'
 
