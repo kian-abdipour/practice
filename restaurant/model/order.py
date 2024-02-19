@@ -62,8 +62,8 @@ class Order(DateTimeMixin, Base):
             description = None
 
         order = cls(state=state, delivery_type=delivery_type,
-                      desk_number=desk_number, description=description,
-                      address_id=address_id, customer_id=customer_id)
+                    desk_number=desk_number, description=description,
+                    address_id=address_id, customer_id=customer_id)
         with Session() as session:
             session.add(order)
 

@@ -1,12 +1,17 @@
 from restaurant.model import SuperAdmin, Admin, Category, Item, CategoryItem, Address, Order, OrderItem, Payment
+from dotenv import load_dotenv
+from os import getenv
 
-# In this program just super admin with username <<<kian_abdipour>>> can add or delete super admins and
+# In this program just super admin with username ----- can add or delete super admins and
 # Other super admins can just add or delete admins
+load_dotenv()
+
+super_admin_username = getenv('super_admin_username')  # This our super_admin username with higher access
 
 
 def manage_super_admin_operation():
     login = SuperAdmin.login()
-    if login[0] and login[1].username == 'kian_abdipour':
+    if login[0] and login[1].username == super_admin_username:
         proceed = True
         while proceed:
             print('Enter a number\n1.Add admin\n2.Delete admin'

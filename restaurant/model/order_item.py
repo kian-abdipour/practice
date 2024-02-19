@@ -23,8 +23,6 @@ class OrderItem(Base, DateTimeMixin):
     def add(cls, order_id, list_item, list_item_id):
         list_item_deep_copy = deepcopy(list_item)
         list_item_id_deep_copy = deepcopy(list_item_id)
-#        for item in list_item:
-#            list_item_id.append(item.id)
 
         for item in list_item:
             item_id = item.id
