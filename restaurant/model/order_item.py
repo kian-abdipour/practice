@@ -20,20 +20,20 @@ class OrderItem(Base, DateTimeMixin):
     items = relationship('Item', overlaps='orders', cascade='all, delete')
 
     @classmethod
-    def add(cls, order_id, list_item):
-        list_item_copy = deepcopy(list_item)
-        list_item_id = []
-        for item in list_item:
-            list_item_id.append(item.id)
+    def add(cls, order_id, list_item, list_item_id):
+        list_item_deep_copy = deepcopy(list_item)
+        list_item_id_deep_copy = deepcopy(list_item_id)
+#        for item in list_item:
+#            list_item_id.append(item.id)
 
         for item in list_item:
             item_id = item.id
             unit_amount = item.price
-            quantity = list_item_id.count(item_id)
+            quantity = list_item_id_deep_copy.count(item_id)
             total_amount = item.price * quantity
-            while item.id in list_item_id:
-                list_item_copy.pop(list_item_id.index(item_id))
-                list_item_id.remove(item_id)
+            while item.id in list_item_id_deep_copy:
+                list_item_deep_copy.pop(list_item_id_deep_copy.index(item_id))
+                list_item_id_deep_copy.remove(item_id)
 
             order_item = cls(quantity=quantity, unit_amount=unit_amount,
                              total_amount=total_amount, order_id=order_id, item_id=item_id)
@@ -43,6 +43,6 @@ class OrderItem(Base, DateTimeMixin):
 
                 session.commit()
 
-            if len(list_item_copy) == 0:
+            if len(list_item_deep_copy) == 0:
                 return
 

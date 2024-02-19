@@ -265,7 +265,7 @@ def manage_customer_operation(customer_id):
                                 proceed_order = False
                                 if len(list_item_to_order) > 0:
                                     order = Order.add(customer_id, address_id_order)
-                                    OrderItem.add(order.id, list_item_to_order)
+                                    OrderItem.add(order.id, list_item_to_order, list_item_id)
 
                                     proceed_payment = True
                                     while proceed_payment:
