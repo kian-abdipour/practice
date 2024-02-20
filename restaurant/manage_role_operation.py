@@ -6,7 +6,7 @@ from os import getenv
 # Other super admins can just add or delete admins
 load_dotenv()
 
-super_admin_username = getenv('super_admin_username')  # This our super_admin username with higher access
+super_admin_username = getenv('SUPER_ADMIN_URL')  # This our super_admin username with higher access
 
 
 def manage_super_admin_operation():

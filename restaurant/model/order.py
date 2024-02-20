@@ -1,7 +1,8 @@
 from sqlalchemy import Unicode, Column, Integer, ForeignKey
 from restaurant.model.base import Base
 from sqlalchemy.orm import relationship
-from restaurant.model.mixin import DateTimeMixin, State, DeliveryType
+from restaurant.model.mixin import DateTimeMixin
+from restaurant.model.helper import State, DeliveryType
 from restaurant.database import Session
 from restaurant.model.address import Address
 from restaurant.model.payment import Payment

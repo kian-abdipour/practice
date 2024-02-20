@@ -1,4 +1,4 @@
 # You need this data and you should add your .env data like this example
-super_admin_username = '......'
-database_url = '......'
+SUPER_ADMIN_USERNAME = '......'
+DATABASE_URL = '......'
 
