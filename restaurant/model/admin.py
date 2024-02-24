@@ -2,8 +2,7 @@ from sqlalchemy import Column, Integer, Unicode, ForeignKey
 from restaurant.model.base import Base
 from restaurant.model.mixin import DateTimeMixin
 from restaurant.custom_exception import LengthError
-from restaurant.database import Session
-from sqlalchemy.orm import relationship
+#from restaurant.database import Session
 
 
 class Admin(DateTimeMixin, Base):
@@ -14,8 +13,6 @@ class Admin(DateTimeMixin, Base):
     username = Column(Unicode(16), unique=True, nullable=False)
     password = Column(Unicode(8), nullable=False)
     superadmin_id = Column(ForeignKey('super_admin.id'))
-
-    discounts = relationship('Discount', cascade='all, delete')
 
     @classmethod
     def add(cls, super_admin_id):

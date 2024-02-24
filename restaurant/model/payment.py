@@ -2,7 +2,7 @@ from sqlalchemy import Column, Integer, Unicode, ForeignKey
 from restaurant.model.base import Base
 from restaurant.model.mixin import DateTimeMixin
 from restaurant.model.helper import State, TypePay
-from restaurant.database import Session
+#from restaurant.database import Session
 
 
 class Payment(DateTimeMixin, Base):
@@ -11,6 +11,7 @@ class Payment(DateTimeMixin, Base):
     state = Column(Unicode, nullable=False)
     type = Column(Unicode, nullable=False)
     amount = Column(Integer, nullable=False)
+    payable_amount = Column()
     order_id = Column(ForeignKey('order.id'))
     customer_id = Column(ForeignKey('customer.id'))
 

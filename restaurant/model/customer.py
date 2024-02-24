@@ -3,7 +3,7 @@ from sqlalchemy.orm import relationship
 from restaurant.model.base import Base
 from restaurant.model.mixin import DateTimeMixin
 from restaurant.custom_exception import LengthError
-from restaurant.database import Session
+#from restaurant.database import Session
 
 
 class Customer(DateTimeMixin, Base):
@@ -16,6 +16,7 @@ class Customer(DateTimeMixin, Base):
     orders = relationship('Order', cascade='all, delete')
     payments = relationship('Payment', cascade='all, delete')
     addresses = relationship('Address', cascade='all, delete')
+    discounts = relationship('Discount', cascade='all, delete')
 
     @classmethod
     def signup(cls):

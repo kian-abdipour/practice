@@ -1,8 +1,8 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from restaurant.model.base import Base
-#from restaurant.model import (super_admin, admin, category, item, category_item,
-#                              customer, order, order_item, payment, super_admin)
+from restaurant.model import (super_admin, admin, category, item, category_item,
+                              customer, order, order_item, payment, super_admin)
 from dotenv import load_dotenv
 from os import getenv
 
@@ -11,5 +11,6 @@ database_url = getenv('DATABASE_URL')
 
 
 engine = create_engine(database_url, echo=False)
-Session = sessionmaker(engine)
+Base.metadata.drop_all(engine)
+#Session = sessionmaker(engine)
 

@@ -2,7 +2,7 @@ from sqlalchemy import Column, Integer, ForeignKey
 from restaurant.model.base import Base
 from sqlalchemy.orm import relationship
 from restaurant.model.mixin import DateTimeMixin
-from restaurant.database import Session
+#from restaurant.database import Session
 from copy import deepcopy
 from restaurant.model import Item
 
