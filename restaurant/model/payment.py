@@ -1,7 +1,8 @@
-from sqlalchemy import Column, Integer, Unicode, ForeignKey
+from sqlalchemy import Column, Integer, Unicode, ForeignKey, Float
 from restaurant.model.base import Base
 from restaurant.model.mixin import DateTimeMixin
 from restaurant.model.helper import State, TypePay
+from sqlalchemy.orm import relationship
 #from restaurant.database import Session
 
 
@@ -10,10 +11,11 @@ class Payment(DateTimeMixin, Base):
     id = Column(Integer, primary_key=True)
     state = Column(Unicode, nullable=False)
     type = Column(Unicode, nullable=False)
-    amount = Column(Integer, nullable=False)
-    payable_amount = Column()
+    amount = Column(Float, nullable=False)
     order_id = Column(ForeignKey('order.id'))
     customer_id = Column(ForeignKey('customer.id'))
+
+    discount_histories = relationship('DiscountHistory', cascade='all, delete')
 
     @classmethod
     def add(cls, list_item, order_id, customer_id):

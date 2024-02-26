@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, Unicode
+from sqlalchemy import Column, Integer, Unicode, Float
 from sqlalchemy.orm import relationship
 from restaurant.model.base import Base
 from restaurant.model.mixin import DateTimeMixin
@@ -11,7 +11,7 @@ class Item(DateTimeMixin, Base):
     id = Column(Integer, primary_key=True)
     name = Column(Unicode(40), nullable=False, unique=True)
     country = Column(Unicode(30))
-    price = Column(Integer, nullable=False)
+    price = Column(Float, nullable=False)
     stock = Column(Integer, default=0, nullable=False)
     description = Column(Unicode)
 

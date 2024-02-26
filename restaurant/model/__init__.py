@@ -8,4 +8,6 @@ from restaurant.model.address import Address
 from restaurant.model.category_item import CategoryItem
 from restaurant.model.super_admin import SuperAdmin
 from restaurant.model.admin import Admin
+from restaurant.model.discount import Discount
+from restaurant.model.discount_history import DiscountHistory
 
