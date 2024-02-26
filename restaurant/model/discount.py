@@ -11,13 +11,11 @@ from restaurant.model.helper import character_for_discount_code
 class Discount(datetime, Base):
     __tablename__ = 'discount'
     id = Column(Integer, primary_key=True)
-    start_date = Column(Date, nullable=False)
+    start_date = Column(Date)
     expire_date = Column(Date)
     title = Column(Unicode(40), nullable=False)
     percent = Column(Float, nullable=False)
     code = Column(String(10), nullable=False)
     description = Column(Unicode)
     usage_limitation = Column(Integer)
-
-    customers = relationship('CustomerDiscount', cascade='all, delete')
 

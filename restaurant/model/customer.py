@@ -16,7 +16,6 @@ class Customer(DateTimeMixin, Base):
     orders = relationship('Order', cascade='all, delete')
     payments = relationship('Payment', cascade='all, delete')
     addresses = relationship('Address', cascade='all, delete')
-    discounts = relationship('Discount', cascade='all, delete')
 
     @classmethod
     def signup(cls):
