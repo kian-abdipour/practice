@@ -2,9 +2,10 @@ from sqlalchemy import Column, Integer, ForeignKey, Float
 from restaurant.model.base import Base
 from sqlalchemy.orm import relationship
 from restaurant.model.mixin import DateTimeMixin
-#from restaurant.database import Session
-from copy import deepcopy
+from restaurant.database import Session
 from restaurant.model import Item
+
+from copy import deepcopy
 
 
 class OrderItem(Base, DateTimeMixin):

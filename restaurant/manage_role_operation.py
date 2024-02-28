@@ -1,5 +1,6 @@
 from restaurant.model import (SuperAdmin, Admin, Category, Item, CategoryItem, Address,
                               Order, OrderItem, Payment, Discount, DiscountHistory)
+
 from dotenv import load_dotenv
 from os import getenv
 
@@ -222,6 +223,12 @@ def manage_admin_operation():
                     if operation_discount is not None:
                         if operation_discount == 1:
                             Discount.add(Discount.generate_code())
+
+                        elif operation_discount == 2:
+                            Discount.delete()
+
+                        else:
+                            print('Number not found')
 
                 elif operation == 10:
                     proceed = False

@@ -2,7 +2,7 @@ from sqlalchemy import Column, Unicode, ForeignKey, Integer
 from restaurant.model.base import Base
 from sqlalchemy.orm import relationship
 from restaurant.model.mixin import DateTimeMixin
-#from restaurant.database import Session
+from restaurant.database import Session
 from restaurant.custom_exception import LengthError
 
 

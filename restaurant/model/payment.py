@@ -3,7 +3,7 @@ from restaurant.model.base import Base
 from restaurant.model.mixin import DateTimeMixin
 from restaurant.model.helper import State, TypePay
 from sqlalchemy.orm import relationship
-#from restaurant.database import Session
+from restaurant.database import Session
 
 
 class Payment(DateTimeMixin, Base):

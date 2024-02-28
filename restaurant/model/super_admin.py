@@ -1,8 +1,9 @@
 from sqlalchemy import Column, Integer, Unicode
 from sqlalchemy.orm import relationship
+
 from restaurant.model.base import Base
 from restaurant.model.mixin import DateTimeMixin
-#from restaurant.database import Session
+from restaurant.database import Session
 from restaurant.custom_exception import LengthError
 
 

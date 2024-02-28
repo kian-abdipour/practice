@@ -1,14 +1,19 @@
-from sqlalchemy import Column, Integer, Unicode, String, Float, Date
-from sqlalchemy.orm import relationship
-from restaurant.model.base import Base
-from restaurant.model.mixin import datetime
-#from restaurant.database import Session
-from restaurant.custom_exception import LengthError
-import random, string, re
-from restaurant.model.helper import character_for_discount_code
+import random
+import re
+import string
 from datetime import date
 
-class Discount(datetime, Base):
+from sqlalchemy import Column, Integer, Unicode, String, Float, Date
+from sqlalchemy.orm import relationship
+
+from restaurant.custom_exception import LengthError
+from restaurant.database import Session
+from restaurant.model.base import Base
+from restaurant.model.helper import character_for_discount_code
+from restaurant.model.mixin import DateTimeMixin
+
+
+class Discount(DateTimeMixin, Base):
     __tablename__ = 'discount'
     id = Column(Integer, primary_key=True)
     start_date = Column(Date)
@@ -106,6 +111,8 @@ class Discount(datetime, Base):
 
             session.commit()
 
+        print(f'Discount successfully Added and it\' code is {code}')
+
     @classmethod
     def generate_code(cls):
         proceed_duplicated_code = False
@@ -128,4 +135,22 @@ class Discount(datetime, Base):
 
             if len(result) == 0:
                 return code
+
+    @classmethod
+    def delete(cls):
+        print('Enter id of your discount that you want to delete')
+        try:
+            id_discount = int(input(': '))
+
+        except ValueError:
+            return print('ValueError: Your id should be just number')
+
+        with Session() as session:
+            result = session.query(cls).filter(cls.id == id_discount).delete
+
+        if result == 1:
+            print('Discount successfully deleted')
+
+        else:
+            print('Waring: Discount id not found')
 
