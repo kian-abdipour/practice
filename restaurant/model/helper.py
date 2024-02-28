@@ -1,5 +1,4 @@
-import random
-import string
+import datetime
 
 
 class State:
@@ -25,17 +24,3 @@ class TypePay:
 
 character_for_discount_code = ['?', '!', '$', '#', '.']
 
-# This process is for making code of our discount
-code = ''
-while len(code) != 3:
-    code = code + random.choice(string.ascii_letters)
-
-while len(code) != 6:
-    code = code + random.choice(string.digits)
-
-code = code + str(ord(random.choice(string.ascii_letters)))
-
-while len(code) != 10:
-    code = code + random.choice(character_for_discount_code)
-
-print(code)

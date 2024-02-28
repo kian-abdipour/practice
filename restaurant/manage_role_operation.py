@@ -1,4 +1,5 @@
-from restaurant.model import SuperAdmin, Admin, Category, Item, CategoryItem, Address, Order, OrderItem, Payment
+from restaurant.model import (SuperAdmin, Admin, Category, Item, CategoryItem, Address,
+                              Order, OrderItem, Payment, Discount, DiscountHistory)
 from dotenv import load_dotenv
 from os import getenv
 
@@ -111,7 +112,7 @@ def manage_admin_operation():
             print('Enter a number \n1.Add category\n'
                   '2.Delete category\n3.Show category\n'
                   '4.Add item\n5.Show item\n6.Add item to category\n'
-                  '7.delete item from category\n8.manage order\n9.logout')
+                  '7.Delete item from category\n8.Manage order\n9.Manage discount\n10.Logout')
 
             try:
                 operation = int(input(': '))
@@ -210,6 +211,19 @@ def manage_admin_operation():
                                 proceed_confirm_order = False
 
                 elif operation == 9:
+                    print('Enter a number \n1.Add discount\n2.Delete discount')
+                    try:
+                        operation_discount = int(input(': '))
+
+                    except ValueError:
+                        print('ValueError: You should type just number')
+                        operation_discount = None
+
+                    if operation_discount is not None:
+                        if operation_discount == 1:
+                            Discount.add(Discount.generate_code())
+
+                elif operation == 10:
                     proceed = False
 
                 else:
