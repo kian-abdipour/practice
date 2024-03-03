@@ -1,9 +1,14 @@
+import datetime
+
 from sqlalchemy import Column, Integer, Unicode, ForeignKey, Float
 from restaurant.model.base import Base
 from restaurant.model.mixin import DateTimeMixin
 from restaurant.model.helper import State, TypePay
 from sqlalchemy.orm import relationship
 from restaurant.database import Session
+from restaurant.model.discount import Discount
+from restaurant.model.discount_history import DiscountHistory
+from copy import deepcopy
 
 
 class Payment(DateTimeMixin, Base):
@@ -26,7 +31,54 @@ class Payment(DateTimeMixin, Base):
             amount += item.price
             print(f'name: {item.name}, price: {item.price}')
 
-        print(f'Your total amount is {amount} if you want to pay type yes, else type no')
+        print(f'Your total amount is {amount} if you have discount code '
+              f'and you want to use it type it\'s code else, type No')
+        discount_code = input(': ')
+        if discount_code != 'no' or discount_code != 'No' or discount_code != '':
+            discount = Discount.search_by_code(discount_code)
+            if discount is not None:
+                # This part is to check we pass the start date of our discount of not
+                condition_start_date = False
+                if discount.start_date is not None:
+                    if discount.start_date < datetime.datetime.utcnow().date():
+                        condition_start_date = True
+
+                else:
+                    condition_start_date = True
+
+                # This part is to check the expire date of our discount
+                condition_expire_date = False
+                if discount.expire_date is not None:
+                    if datetime.datetime.utcnow().date() < discount.expire_date:
+                        condition_expire_date = True
+
+                else:
+                    condition_start_date = True
+
+                if discount.usage_limitation != 0:
+                    if condition_start_date:
+                        if condition_expire_date:
+                            discounted_amount = amount * (discount.percent / 100)
+                            affected_amount = amount - discounted_amount
+                            base_amount = deepcopy(amount)
+                            amount = affected_amount
+
+                        else:
+                            print(f'The expire date of this discount is {discount.expire_date} and we passed it')
+
+                    else:
+                        print(f'This discount can be use after {discount.start_date}')
+
+                else:
+                    print('Usage limitation of this discount is finished')
+
+            else:
+                print('Discount code not found')
+
+        else:
+            discount_code = None
+
+        print(f'Your total amount after discount is {amount} if you want to pay type yes, else type no')
         proceed = True
         while proceed:
             operation_pay = input(': ')
@@ -50,10 +102,14 @@ class Payment(DateTimeMixin, Base):
 
             session.commit()
 
+            result = session.query(cls).filter(cls.created_at == payment.created_at).one()
+
+        if discount_code is not None:
+            if discount is not None:
+                DiscountHistory.add(discount.id, result.id, base_amount, affected_amount)
+
         if state == State.failed:  # Ask question about why payment.state raise a sqlalchemy Error ?
             return False
 
         elif state == State.successful:
             return True
-
-            

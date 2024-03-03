@@ -154,3 +154,22 @@ class Discount(DateTimeMixin, Base):
         else:
             print('Waring: Discount id not found')
 
+    @classmethod
+    def search_by_code(cls, code):
+        with Session() as session:
+            result = session.query(cls).filter(cls.code == code).one_or_none()
+
+        return result
+
+    @classmethod
+    def show_all(cls):
+        with Session() as session:
+            result = session.query(cls).all()
+
+        if len(result) > 0:
+            for discount in result:
+                print(f'id: {discount.id}, title: {discount.title}, code: {discount.code} percent: {discount.percent},'
+                      f' usage_limitation: {discount.usage_limitation}, start_date: {discount.start_date},'
+                      f' expire_date: {discount.expire_date}, created_at: {discount.created_at},'
+                      f' description: {discount.description}, ')
+

@@ -212,7 +212,7 @@ def manage_admin_operation():
                                 proceed_confirm_order = False
 
                 elif operation == 9:
-                    print('Enter a number \n1.Add discount\n2.Delete discount')
+                    print('Enter a number \n1.Add discount\n2.Delete discount\n3.Show all')
                     try:
                         operation_discount = int(input(': '))
 
@@ -226,6 +226,9 @@ def manage_admin_operation():
 
                         elif operation_discount == 2:
                             Discount.delete()
+
+                        elif operation_discount == 3:
+                            Discount.show_all()
 
                         else:
                             print('Number not found')
