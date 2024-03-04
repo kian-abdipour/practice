@@ -149,7 +149,7 @@ def manage_admin_operation():
 
                 elif operation == 2:
                     print('Enter a number \n1.Show all\n2.Search\n4.Add\n5.Delete'
-                          '\n6.Add item to categroy\n7.Delete item from categroy')
+                          '\n6.Add item to categroy\n7.Delete item from categroy\n8.Addition to stock an item')
                     try:
                         operation_manage_item = int(input(': '))
 
@@ -181,6 +181,12 @@ def manage_admin_operation():
                             item_id = Item.search().id
                             if item_id is not False:
                                 CategoryItem.delete(category[0].id, item_id)
+
+                    elif operation_manage_item == 8:
+                        Item.show_all()
+                        item = Item.search()
+                        if item is not False:
+                            Item.addition_to_stock(item)
 
                     else:
                         print('Waring: Number not found')

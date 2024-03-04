@@ -107,8 +107,21 @@ class Item(DateTimeMixin, Base):
             return False
 
     @classmethod
-    def get_list_of_item(cls, list_item_id):
-        for item_id in list_item_id:
-            with Session() as session:
-                result = session.query(cls).filter(cls.id == item_id).one()
+    def addition_to_stock(cls, item):
+        print(f'Enter a number that you want to addition to stock of {item.name}')
+        try:
+            addition_stock = int(input(': '))
+
+        except ValueError:
+            return print('ValueError: You should type just number, try again')
+
+        if addition_stock <= 0:
+            return print('Waring: The number should be bigger than zero')
+
+        with Session() as session:
+            session.query(cls).filter(cls.id == item.id).update({cls.stock: (cls.stock + addition_stock)})
+
+            session.commit()
+
+        print(f'Addition to stock was successful, now the stock of {item.name} is {item.stock + addition_stock}')
 
