@@ -110,10 +110,7 @@ def manage_admin_operation():
     if login[0]:
         proceed = True
         while proceed:
-            print('Enter a number \n1.Add category\n'
-                  '2.Delete category\n3.Show category\n'
-                  '4.Add item\n5.Show item\n6.Add item to category\n'
-                  '7.Delete item from category\n8.Manage order\n9.Manage discount\n10.Logout')
+            print('Enter a number\n1.Manage category\n2.Manage item\n3.Manage order\n4.Manage discount\n5.Logout')
 
             try:
                 operation = int(input(': '))
@@ -124,72 +121,71 @@ def manage_admin_operation():
 
             if operation is not None:
                 if operation == 1:
-                    Category.add()
-
-                elif operation == 2:
-                    Category.delete()
-
-                elif operation == 3:
-                    print('Enter a number \n1.Show all\n2.Search')
+                    print('Enter a number \n1.Show all\n2.Search\n3.Add\n4.Delete')
 
                     try:
-                        operation_show = int(input(': '))
+                        operation_manage_category = int(input(': '))
 
                     except ValueError:
                         print('ValueError: You should type just number!')
-                        operation_show = None
+                        operation_manage_category = None
 
-                    if operation_show == 1:
+                    if operation_manage_category == 1:
                         Category.show_all()
 
-                    elif operation_show == 2:
+                    elif operation_manage_category == 2:
                         category = Category.search()
                         if category[0] is not False:
                             CategoryItem.show_item_side(category[0].id)
 
+                    elif operation_manage_category == 3:
+                        Category.add()
+
+                    elif operation == 4:
+                        Category.delete()
+
                     else:
                         print('Waring: Number not found')
 
-                elif operation == 4:
-                    if CategoryItem.match_row(Item.add()) is not True:
-                        pass
-#                        print('Your item it\'s not in any category')
-
-                elif operation == 5:
-                    print('Enter a number \n1.Show all\n2.Search\n3.Show item by category')
+                elif operation == 2:
+                    print('Enter a number \n1.Show all\n2.Search\n4.Add\n5.Delete'
+                          '\n6.Add item to categroy\n7.Delete item from categroy')
                     try:
-                        operation_show = int(input(': '))
+                        operation_manage_item = int(input(': '))
 
                     except ValueError:
                         print('ValueError: You should type just number!')
-                        operation_show = None
+                        operation_manage_item = None
 
-                    if operation_show == 1:
+                    if operation_manage_item == 1:
                         Item.show_all()
 
-                    elif operation_show == 2:
+                    elif operation_manage_item == 2:
                         Item.search()
+
+                    elif operation_manage_item == 4:
+                        CategoryItem.match_row(Item.add())
+
+                    elif operation_manage_item == 6:
+                        item_id = Item.search().id
+                        if item_id is not False:  # Ask question
+                            CategoryItem.match_row(item_id)
+
+                        else:
+                            pass
+
+                    elif operation_manage_item == 7:
+                        category = Category.search()
+                        if category[0] is not False:
+                            CategoryItem.show_item_side(category[0].id)
+                            item_id = Item.search().id
+                            if item_id is not False:
+                                CategoryItem.delete(category[0].id, item_id)
 
                     else:
                         print('Waring: Number not found')
 
-                elif operation == 6:
-                    item_id = Item.search().id
-                    if item_id is not False:  # Ask question
-                        CategoryItem.match_row(item_id)
-
-                    else:
-                        pass
-
-                elif operation == 7:
-                    category = Category.search()
-                    if category[0] is not False:
-                        CategoryItem.show_item_side(category[0].id)
-                        item_id = Item.search().id
-                        if item_id is not False:
-                            CategoryItem.delete(category[0].id, item_id)
-
-                elif operation == 8:
+                elif operation == 3:
                     proceed_confirm_order = True
                     while proceed_confirm_order:
                         print('Enter a number \n1.Confirm order\n2.Show all order\n3.Back')
@@ -211,7 +207,7 @@ def manage_admin_operation():
                             elif operation_order == 3:
                                 proceed_confirm_order = False
 
-                elif operation == 9:
+                elif operation == 4:
                     print('Enter a number \n1.Add discount\n2.Delete discount\n3.Show all')
                     try:
                         operation_discount = int(input(': '))
@@ -233,7 +229,7 @@ def manage_admin_operation():
                         else:
                             print('Number not found')
 
-                elif operation == 10:
+                elif operation == 5:
                     proceed = False
 
                 else:
