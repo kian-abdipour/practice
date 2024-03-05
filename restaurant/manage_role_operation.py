@@ -302,13 +302,13 @@ def manage_customer_operation(customer_id):
                                     while proceed_payment:
                                         if Payment.add(list_item_to_order, order.id, customer_id) is False:
 
-                                            print('If you want to pay again type yes, else type no')
+                                            print('If you want to pay again type yes, else type No')
                                             operation_pay_again = input(': ')
                                             if operation_pay_again == 'Yes' or operation_pay_again == 'yes':
                                                 Payment.add(list_item_to_order, order.id, customer_id)
                                                 proceed_payment = False
 
-                                            elif operation_pay_again == 'No' or operation_pay_again == 'No':
+                                            elif operation_pay_again == 'No' or operation_pay_again == 'no':
                                                 proceed_payment = False
 
                                             else:

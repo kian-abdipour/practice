@@ -37,9 +37,11 @@ class Payment(DateTimeMixin, Base):
             print(f'Your total amount is {amount} if you have discount code '
                   f'and you want to use it type it\'s code else, type No')
             discount_code = input(': ')
-            if discount_code != 'no' or discount_code != 'No' or discount_code != '':
+            if discount_code != 'no' and discount_code != 'No' and discount_code != '':
                 discount = Discount.search_by_code(discount_code)
                 if discount is not None:
+                    condition_discount_disposable = cls.check_discount_disposable(customer_id, discount.id)
+
                     # This part is to check we pass the start date of our discount of not
                     condition_start_date = False
                     if discount.start_date is not None:
@@ -61,11 +63,15 @@ class Payment(DateTimeMixin, Base):
                     if discount.usage_limitation != 0:
                         if condition_start_date:
                             if condition_expire_date:
-                                discounted_amount = amount * (discount.percent / 100)
-                                affected_amount = amount - discounted_amount
-                                base_amount = deepcopy(amount)
-                                amount = affected_amount
-                                proceed_apply_discount = False
+                                if condition_discount_disposable:
+                                    discounted_amount = amount * (discount.percent / 100)
+                                    affected_amount = amount - discounted_amount
+                                    base_amount = deepcopy(amount)
+                                    amount = affected_amount
+                                    proceed_apply_discount = False
+
+                                else:
+                                    print(f'Waring: You use this discount before')
 
                             else:
                                 print(f'The expire date of this discount is {discount.expire_date} and we passed it')
@@ -110,7 +116,7 @@ class Payment(DateTimeMixin, Base):
             result = session.query(cls).filter(cls.created_at == payment.created_at).one()
 
         if discount_code is not None:
-            if discount is not None and condition_expire_date and condition_start_date:
+            if discount is not None and condition_expire_date and condition_start_date and condition_discount_disposable:
                 DiscountHistory.add(discount.id, result.id, base_amount, affected_amount)
 
         if state == State.failed:  # Ask question about why payment.state raise a sqlalchemy Error ?
@@ -118,4 +124,16 @@ class Payment(DateTimeMixin, Base):
 
         elif state == State.successful:
             return True
+
+    @classmethod
+    def check_discount_disposable(cls, customer_id, discount_id):
+        with Session() as session:
+            result = session.query(DiscountHistory).filter(cls.customer_id == customer_id,
+                                                           DiscountHistory.discount_id == discount_id).one_or_none()
+
+        if result is None:
+            return True
+
+        else:
+            return False
 

@@ -1,5 +1,5 @@
 from restaurant.model import (SuperAdmin, Admin, Customer, Category, Item,
-                              Order, OrderItem, Payment, Address, category_item)
+                              Order, OrderItem, Payment, Address, category_item, Discount, DiscountHistory)
 from manage_role_operation import manage_super_admin_operation, manage_admin_operation, manage_customer_operation
 
 
