@@ -31,7 +31,7 @@ class Payment(DateTimeMixin, Base):
             amount += item.price
             print(f'name: {item.name}, price: {item.price}')
 
-        # Process of add discount
+        # Process of apply discount
         proceed_apply_discount = True
         while proceed_apply_discount:
             print(f'Your total amount is {amount} if you have discount code '
@@ -51,7 +51,7 @@ class Payment(DateTimeMixin, Base):
                     else:
                         condition_start_date = True
 
-                    # This part is to check the expire date of our discount
+                    # This part is to check the expiry date of our discount
                     condition_expire_date = False
                     if discount.expire_date is not None:
                         if datetime.datetime.utcnow().date() < discount.expire_date:
@@ -89,6 +89,7 @@ class Payment(DateTimeMixin, Base):
                 discount_code = None
                 proceed_apply_discount = False
 
+        # Process of payment after apply discount
         print(f'Your total amount after discount is {amount} if you want to pay type yes, else type no')
         proceed = True
         while proceed:
