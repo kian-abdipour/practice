@@ -129,8 +129,7 @@ class Payment(DateTimeMixin, Base):
     @classmethod
     def check_discount_disposable(cls, customer_id, discount_id):
         with Session() as session:
-            result = session.query(DiscountHistory).filter(cls.customer_id == customer_id,
-                                                           DiscountHistory.discount_id == discount_id).one_or_none()
+            result = session.query(DiscountHistory).join(cls).filter(cls.customer_id == customer_id, DiscountHistory.discount_id == discount_id).one_or_none()
 
         if result is None:
             return True

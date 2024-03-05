@@ -111,7 +111,7 @@ class Discount(DateTimeMixin, Base):
 
             session.commit()
 
-        print(f'Discount successfully Added and it\' code is {code}')
+        print(f'Discount successfully Added and it\'s code is {code}')
 
     @classmethod
     def generate_code(cls):
