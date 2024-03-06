@@ -40,7 +40,11 @@ class Payment(DateTimeMixin, Base):
             if discount_code != 'no' and discount_code != 'No' and discount_code != '':
                 discount = Discount.search_by_code(discount_code)
                 if discount is not None:
-                    condition_discount_disposable = cls.check_discount_disposable(customer_id, discount.id)
+                    if discount.disposable is True:
+                        condition_discount_disposable = cls.check_discount_disposable(customer_id, discount.id)
+
+                    else:
+                        condition_discount_disposable = True
 
                     # This part is to check we pass the start date of our discount or not
                     condition_start_date = False

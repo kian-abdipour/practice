@@ -1,8 +1,9 @@
 from sqlalchemy import Column, ForeignKey, Integer, Float
-from sqlalchemy.orm import relationship, column_property
+from sqlalchemy.orm import column_property
 from restaurant.model.mixin import DateTimeMixin
-from restaurant.database import Base, Session
+from restaurant.database import Session
 from restaurant.model.discount import Discount
+from restaurant.model.base import Base
 
 
 class DiscountHistory(DateTimeMixin, Base):

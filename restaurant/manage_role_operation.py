@@ -167,8 +167,9 @@ def manage_admin_operation():
                         CategoryItem.match_row(Item.add())
 
                     elif operation_manage_item == 6:
-                        item_id = Item.search().id
-                        if item_id is not False:  # Ask question
+                        item = Item.search()
+                        if item is not False:
+                            item_id = item.id
                             CategoryItem.match_row(item_id)
 
                         else:
@@ -178,8 +179,9 @@ def manage_admin_operation():
                         category = Category.search()
                         if category[0] is not False:
                             CategoryItem.show_item_side(category[0].id)
-                            item_id = Item.search().id
-                            if item_id is not False:
+                            item = Item.search()
+                            if item is not False:
+                                item_id = item.id
                                 CategoryItem.delete(category[0].id, item_id)
 
                     elif operation_manage_item == 8:

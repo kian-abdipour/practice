@@ -187,5 +187,8 @@ class Discount(DateTimeMixin, Base):
                 print(f'id: {discount.id}, title: {discount.title}, code: {discount.code} percent: {discount.percent},'
                       f' usage_limitation: {discount.usage_limitation}, start_date: {discount.start_date},'
                       f' expire_date: {discount.expire_date}, created_at: {discount.created_at},'
-                      f' description: {discount.description}, ')
+                      f' description: {discount.description}, disposable: {discount.disposable}')
+
+        else:
+            print('Now we don\'t have any discount')
 
