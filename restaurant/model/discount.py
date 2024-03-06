@@ -3,7 +3,7 @@ import re
 import string
 from datetime import date
 
-from sqlalchemy import Column, Integer, Unicode, String, Float, Date
+from sqlalchemy import Column, Integer, Unicode, String, Float, Date, Boolean
 from sqlalchemy.orm import relationship
 
 from restaurant.custom_exception import LengthError
@@ -23,6 +23,7 @@ class Discount(DateTimeMixin, Base):
     code = Column(String(10), nullable=False)
     description = Column(Unicode)
     usage_limitation = Column(Integer)
+    disposable = Column(Boolean)
 
     discount_histories = relationship('DiscountHistory', cascade='all, delete')
 
@@ -56,6 +57,21 @@ class Discount(DateTimeMixin, Base):
 
         except ValueError:
             return print('ValueError: The usage limitation should be just number')
+
+        try:
+            print('Enter a number to specific disposable of discount \n1.Be disposable\n2.ٔNot disposable')
+            number = int(input(': '))
+            if number == 1:
+                disposable = True
+
+            elif number == 2:
+                disposable = False
+
+            else:
+                return print('Waring: Number not found try again')
+
+        except ValueError:
+            return print('ValueError: You should type just number')
 
         # Process of choose start_date
         print('Enter start date of your discount like 2008-12-7 else don\'t type anything')
@@ -104,8 +120,8 @@ class Discount(DateTimeMixin, Base):
         if len(description) == 0:
             description = None
 
-        discount = cls(start_date=start_date, expire_date=expire_date, title=title,
-                       percent=percent, code=code, description=description, usage_limitation=usage_limitation)
+        discount = cls(start_date=start_date, expire_date=expire_date, title=title, percent=percent,
+                       code=code, description=description, usage_limitation=usage_limitation, disposable=disposable)
         with Session() as session:
             session.add(discount)
 

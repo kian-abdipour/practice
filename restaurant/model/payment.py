@@ -42,7 +42,7 @@ class Payment(DateTimeMixin, Base):
                 if discount is not None:
                     condition_discount_disposable = cls.check_discount_disposable(customer_id, discount.id)
 
-                    # This part is to check we pass the start date of our discount of not
+                    # This part is to check we pass the start date of our discount or not
                     condition_start_date = False
                     if discount.start_date is not None:
                         if discount.start_date < datetime.datetime.utcnow().date():
@@ -120,12 +120,13 @@ class Payment(DateTimeMixin, Base):
             if discount is not None and condition_expire_date and condition_start_date and condition_discount_disposable:
                 DiscountHistory.add(discount.id, result.id, base_amount, affected_amount)
 
-        if state == State.failed:  # Ask question about why payment.state raise a sqlalchemy Error ?
+        if state == State.failed:
             return False
 
         elif state == State.successful:
             return True
 
+    # This method is to check that customer used a specific discount or not
     @classmethod
     def check_discount_disposable(cls, customer_id, discount_id):
         with Session() as session:
