@@ -117,12 +117,11 @@ class Payment(DateTimeMixin, Base):
             session.add(payment)
 
             session.commit()
-
-            result = session.query(cls).filter(cls.created_at == payment.created_at).one()
+            session.refresh(payment)
 
         if discount_code is not None:
             if discount is not None and condition_expire_date and condition_start_date and condition_discount_disposable:
-                DiscountHistory.add(discount.id, result.id, base_amount, affected_amount)
+                DiscountHistory.add(discount.id, payment.id, base_amount, affected_amount)
 
         if state == State.failed:
             return False
