@@ -196,7 +196,7 @@ def manage_admin_operation():
                 elif operation == 3:
                     proceed_confirm_order = True
                     while proceed_confirm_order:
-                        print('Enter a number \n1.Confirm order\n2.Show all order\n3.Back')
+                        print('Enter a number \n1.Confirm waiting order\n2.Show all waiting order\n3.Back')
                         try:
                             operation_order = int(input(': '))
 

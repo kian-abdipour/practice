@@ -123,9 +123,9 @@ class Order(DateTimeMixin, Base):
 
                 session.commit()
 
-        if result == 1:
-            print('Order successfully confirm')
+            if result == 1:
+                print('Order successfully confirm')
 
-        else:
-            print('Waring: Order id not found try again')
+            else:
+                print('Waring: Order id not found try again')
 
