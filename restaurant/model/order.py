@@ -69,8 +69,7 @@ class Order(DateTimeMixin, Base):
             session.add(order)
 
             session.commit()
-
-            order = session.query(cls).filter(cls.id == order.id).one()
+            session.refresh(order)
 
         print('Your orders successfully added please do pay and wait until admin to confirm it')
         return order

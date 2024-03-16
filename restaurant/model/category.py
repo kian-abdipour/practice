@@ -41,7 +41,7 @@ class Category(DateTimeMixin, Base):
             print('Category successfully added')
 
         else:
-            print('Waring: This category name already exist try again')
+            print('Waring: This category with this name already exist try again')
 
     @classmethod
     def delete(cls):

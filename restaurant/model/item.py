@@ -33,7 +33,7 @@ class Item(DateTimeMixin, Base):
                 result = session.query(cls).filter(cls.name == name).one_or_none()
 
             if result is not None:
-                return print('Waring: This item name already exist try again')
+                return print('Waring: This item with this name already exist try again')
 
             print('Enter country of Item')
             country = input(': ')
