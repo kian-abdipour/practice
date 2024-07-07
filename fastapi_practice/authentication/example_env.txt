@@ -1,0 +1,4 @@
+# You need this variable to run main.py you should put them in .env file like this example:
+SECRET_KEY = '........'
+ALGORITHM_ENCRYPT = '........'
+
