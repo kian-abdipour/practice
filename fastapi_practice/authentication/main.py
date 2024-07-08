@@ -6,7 +6,7 @@ from fastapi import FastAPI, HTTPException, status, Header
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 
-from jwt import encode, decode, InvalidTokenError
+from jwt import encode, decode, InvalidTokenError, ExpiredSignatureError
 
 from user import User, UserForAuthentication
 from user_database import user_database
@@ -15,10 +15,10 @@ from dotenv import load_dotenv
 from os import getenv
 
 load_dotenv()
-
-app = FastAPI()
 secret_key = getenv('SECRET_KEY')
 algorithm_encrypt = getenv('ALGORYTHM_ENCRYPT')
+
+app = FastAPI()
 
 
 def get_user(username):
@@ -40,13 +40,13 @@ def authenticate_user(username, password):
 
 def create_access_token(data: dict, expire_delta: timedelta):
     token_expire = datetime.utcnow().replace(microsecond=0) + expire_delta
-    data.update({'expire': f'{token_expire}'})
+    data.update({'exp': token_expire})
     jwt_access_token = encode(data, secret_key, algorithm=algorithm_encrypt)
     return jwt_access_token
 
 
 def make_token(username):
-    access_token_expire_delta = timedelta(seconds=30)
+    access_token_expire_delta = timedelta(seconds=60)
     access_token = create_access_token(data={'access_key': username}, expire_delta=access_token_expire_delta)
     return access_token
 
@@ -62,20 +62,19 @@ def check_token(token):
 
             )
 
+    except ExpiredSignatureError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail='Authentication failed token is expired'
+        )
+
     except InvalidTokenError:
+        print('invalid token')
         raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail='Authentication failed token not found',
 
             )
-
-    token_expire = datetime.strptime(payload['expire'], '%Y-%m-%d %H:%M:%S')
-    if datetime.utcnow().replace(microsecond=0) > token_expire:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail='Authentication failed token is expired',
-
-        )
 
     return username
 
