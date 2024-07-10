@@ -69,7 +69,6 @@ def check_token(token):
         )
 
     except InvalidTokenError:
-        print('invalid token')
         raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail='Authentication failed token not found',
