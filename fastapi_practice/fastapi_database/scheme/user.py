@@ -9,7 +9,7 @@ class User(BaseModel):
     password: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class UserForRead(BaseModel):
@@ -18,10 +18,13 @@ class UserForRead(BaseModel):
     created_at: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class UserForLogin(BaseModel):
     username: str
     password: str
+
+    class Config:
+        from_attributes = True
 

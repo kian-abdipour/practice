@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from fastapi_practice.fastapi_database.model.user import User
 from fastapi_practice.fastapi_database.scheme.user import UserForLogin, UserForRead
 from fastapi_practice.fastapi_database.database import get_session
-from fastapi_practice.fastapi_database.token import make_token, check_token
+from fastapi_practice.fastapi_database.authentication import make_token, check_token
 from fastapi_practice.fastapi_database.model.mixin import get_hash_password, verify_password
 
 from typing import Any
@@ -26,6 +26,12 @@ router = APIRouter(
 
 @router.post('/signup', response_model=UserForRead)
 def signup(session: Session = Depends(get_session), user: UserForLogin = None) -> Any:
+    if len(user.password) != 8:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail='len of password should be 8 character'
+        )
+
     result = User.search_by_username(session, user.username)
     if result is not False:
         raise HTTPException(
@@ -38,7 +44,8 @@ def signup(session: Session = Depends(get_session), user: UserForLogin = None) -
     token = make_token(username=user.username, expire_delta=timedelta(seconds=60))
     headers = {'token': token}
     user_dict = user_created.__dict__
-    body = jsonable_encoder(user_dict.pop('password'))
+    user_dict.pop('password')
+    body = jsonable_encoder(user_dict)
     response = JSONResponse(headers=headers, content=body)
 
     return response
@@ -65,16 +72,24 @@ def read_specific_by_id(session: Session = Depends(get_session), user_id: int = 
 
 @router.post('/tokens')
 def login(session: Session = Depends(get_session), user: UserForLogin = None):
-    result = User.search_by_username_password(session, user)
+    result = User.search_by_username(session, user.username)
     if result is False:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail='Username or password is not correct'
+            detail='Username is not correct'
         )
+
+    if verify_password(user.password, result.password) is False:
+       raise HTTPException(
+           status_code=status.HTTP_401_UNAUTHORIZED,
+           detail='Password is not correct'
+       )
 
     token = make_token(username=user.username, expire_delta=timedelta(seconds=60))
     headers = {'token': token}
-    body = jsonable_encoder(result.__dict__)
+    user_dict = result.__dict__
+    user_dict.pop('password')
+    body = jsonable_encoder(user_dict)
     response = JSONResponse(headers=headers, content=body)
 
     return response

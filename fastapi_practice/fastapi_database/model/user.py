@@ -9,7 +9,7 @@ class User(DateTimeMixin, Base):
     __tablename__ = 'user'
     id = Column(Integer, primary_key=True)
     username = Column(Unicode(16), unique=True, nullable=False)
-    password = Column(Unicode(8), nullable=False)
+    password = Column(Unicode(70), nullable=False)
 
     @classmethod
     def create(cls, session: Session, user):
@@ -51,17 +51,6 @@ class User(DateTimeMixin, Base):
 
         if resul is not None:
             return resul
-
-        else:
-            return False
-
-    @classmethod
-    def search_by_username_password(cls, session: Session, user):
-        result = session.query(cls).filter(
-            cls.username == user.username, cls.password == user.password).one_or_none()
-
-        if result is not None:
-            return result
 
         else:
             return False
