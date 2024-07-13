@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 from dotenv import load_dotenv
 from os import getenv
 
-from fastapi import HTTPException, status
+#from fastapi import HTTPException, status
 
 
 load_dotenv()

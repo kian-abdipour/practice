@@ -8,6 +8,7 @@ from fastapi_practice.fastapi_database.model.user import User
 from fastapi_practice.fastapi_database.scheme.user import UserForLogin, UserForRead
 from fastapi_practice.fastapi_database.database import get_session
 from fastapi_practice.fastapi_database.token import make_token, check_token
+from fastapi_practice.fastapi_database.model.mixin import get_hash_password, verify_password
 
 from typing import Any
 
@@ -32,6 +33,7 @@ def signup(session: Session = Depends(get_session), user: UserForLogin = None) -
             detail='This username already exist choose another one'
         )
 
+    user.password = get_hash_password(user.password)
     user_created = User.create(session, user)
     token = make_token(username=user.username, expire_delta=timedelta(seconds=60))
     headers = {'token': token}
