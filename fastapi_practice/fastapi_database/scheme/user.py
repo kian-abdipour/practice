@@ -1,5 +1,7 @@
 from pydantic import BaseModel
 
+from datetime import datetime
+
 
 class User(BaseModel):
     id: int
@@ -13,6 +15,7 @@ class User(BaseModel):
 class UserForRead(BaseModel):
     id: int
     username: str
+    created_at: datetime
 
     class Config:
         orm_mode = True
