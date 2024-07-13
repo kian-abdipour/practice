@@ -24,7 +24,7 @@ router = APIRouter(
 )
 
 
-@router.post('/signup', response_model=UserForRead)
+@router.post('/signup')
 def signup(session: Session = Depends(get_session), user: UserForLogin = None) -> Any:
     if len(user.password) != 8:
         raise HTTPException(
@@ -80,10 +80,10 @@ def login(session: Session = Depends(get_session), user: UserForLogin = None):
         )
 
     if verify_password(user.password, result.password) is False:
-       raise HTTPException(
+        raise HTTPException(
            status_code=status.HTTP_401_UNAUTHORIZED,
            detail='Password is not correct'
-       )
+        )
 
     token = make_token(username=user.username, expire_delta=timedelta(seconds=60))
     headers = {'token': token}
@@ -95,7 +95,7 @@ def login(session: Session = Depends(get_session), user: UserForLogin = None):
     return response
 
 
-@router.get('/me')
+@router.get('/me', response_model=UserForRead)
 def read_current(session: Session = Depends(get_session), token: Annotated[str, Header()] = None):
     username = check_token(token)
     current_user = User.search_by_username(session, username)
@@ -103,11 +103,11 @@ def read_current(session: Session = Depends(get_session), token: Annotated[str, 
     return current_user
 
 
-@router.delete('/{user_id}/deletion')
+@router.delete('/{user_id}/deletion', response_model=UserForRead)
 def delete(session: Session = Depends(get_session), user_id: int = None):
     result = User.delete(session, user_id=user_id)
-    if result is True:
-        return {'massage': 'User successfully deleted'}
+    if result is not False:
+        return result
 
     else:
         raise HTTPException(

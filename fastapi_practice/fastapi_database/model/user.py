@@ -21,11 +21,12 @@ class User(DateTimeMixin, Base):
 
     @classmethod
     def delete(cls, session: Session, user_id):
-        result = session.query(cls).filter(cls.id == user_id).delete()
+        user = session.query(cls).filter(cls.id == user_id).one_or_none()
 
-        if result == 1:
+        if user is not None:
+            session.query(cls).filter(cls.id == user_id).delete()
             session.commit()
-            return True
+            return user
 
         else:
             return False
