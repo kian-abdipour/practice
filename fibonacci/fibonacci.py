@@ -13,7 +13,7 @@ def get_number_fibonacci():
 
 
 # Recursion
-def calculate_fibonacci_Numbers(number_fibonacci, numbers, counter):
+def calculate_fibonacci_numbers(number_fibonacci, numbers, counter):
     if number_fibonacci == 0 or number_fibonacci == 1 or number_fibonacci == 2:
         return "finish"
 
@@ -24,7 +24,7 @@ def calculate_fibonacci_Numbers(number_fibonacci, numbers, counter):
         numbers.append(new_number)
         counter += 1
         print(counter, " _ ",  new_number)
-        return calculate_fibonacci_Numbers(number_fibonacci - 1, numbers, counter)
+        return calculate_fibonacci_numbers(number_fibonacci - 1, numbers, counter)
 
 
 def main():
@@ -33,7 +33,7 @@ def main():
         number_fibonacci = get_number_fibonacci()
         print(1, " _ ", 0)
         print(2, " _ ", 1)
-        print(calculate_fibonacci_Numbers(number_fibonacci, [0, 1], 2))
+        print(calculate_fibonacci_numbers(number_fibonacci, [0, 1], 2))
 
         if number_fibonacci == "q":
             progress = False

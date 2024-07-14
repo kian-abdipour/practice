@@ -13,9 +13,9 @@ class User(BaseModel):
 
 
 class UserForRead(BaseModel):
+    created_at: datetime
     id: int
     username: str
-    created_at: datetime
 
     class Config:
         from_attributes = True

@@ -8,7 +8,7 @@ from fastapi_practice.fastapi_database.model.user import User
 from fastapi_practice.fastapi_database.scheme.user import UserForLogin, UserForRead
 from fastapi_practice.fastapi_database.database import get_session
 from fastapi_practice.fastapi_database.authentication import make_token, check_token
-from fastapi_practice.fastapi_database.model.mixin import get_hash_password, verify_password
+from fastapi_practice.fastapi_database.authentication import get_hash_password, verify_password, verify_password_pattern
 
 from typing import Any
 
@@ -26,10 +26,17 @@ router = APIRouter(
 
 @router.post('/signup')
 def signup(session: Session = Depends(get_session), user: UserForLogin = None) -> Any:
-    if len(user.password) != 8:
+    verify_password_state = verify_password_pattern(user.password)
+    if verify_password_state is not True:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail='len of password should be 8 character'
+            detail=verify_password_state
+        )
+
+    if len(user.username) > 16:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail='length of username should be at least 16 character'
         )
 
     result = User.search_by_username(session, user.username)
