@@ -1,8 +1,8 @@
-from fastapi_practice.fastapi_database.database import engine
 from fastapi import FastAPI
+import uvicorn
 
 from fastapi_practice.fastapi_database.router import user
-
+from fastapi_practice.fastapi_database.database import engine
 from fastapi_practice.fastapi_database.model.base import Base
 from fastapi_practice.fastapi_database.model.user import User
 

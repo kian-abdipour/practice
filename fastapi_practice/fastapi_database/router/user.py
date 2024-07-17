@@ -25,20 +25,7 @@ router = APIRouter(
 
 
 @router.post('/signup')
-def signup(session: Session = Depends(get_session), user: UserForLogin = None) -> Any:
-    verify_password_state = verify_password_pattern(user.password)
-    if verify_password_state is not True:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=verify_password_state
-        )
-
-    if len(user.username) > 16:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail='length of username should be at least 16 character'
-        )
-
+def signup(session: Session = Depends(get_session), user: UserForLogin = Any) -> Any:
     result = User.search_by_username(session, user.username)
     if result is not False:
         raise HTTPException(
