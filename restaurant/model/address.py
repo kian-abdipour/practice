@@ -1,9 +1,8 @@
 from sqlalchemy import Column, Unicode, ForeignKey, Integer
 from restaurant.model.base import Base
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, Session
 from restaurant.model.mixin import DateTimeMixin
-from restaurant.database import Session
-from restaurant.custom_exception import LengthError
+#from restaurant.custom_exception import LengthError
 
 
 class Address(DateTimeMixin, Base):
@@ -15,63 +14,40 @@ class Address(DateTimeMixin, Base):
     orders = relationship('Order', cascade='all, delete')
 
     @classmethod
-    def add(cls, customer_id):
-        print('Enter your address')
-        try:
-            text_address = input(': ')
-            if len(text_address) > 150:
-                error = LengthError(massage='LengthError: The address is very long')
-                raise error
+    def add(cls, session: Session, customer_id, address):
+        address = cls(address=address, customer_id=customer_id)
+        session.add(address)
+        session.commit()
+        session.refresh(address)
 
-        except LengthError:
-            error.show_massage()
-            return False
-
-        address = cls(address=text_address, customer_id=customer_id)
-        with Session() as session:
-            session.add(address)
-
-            session.commit()
-
-        print('Your address successfully added')
-        return True
+        return address
 
     @classmethod
-    def show_all(cls, customer_id):
-        with Session() as session:
-            result = session.query(cls).filter(cls.customer_id == customer_id).all()
+    def show_all(cls, session: Session, customer_id):
+        result = session.query(cls).filter(cls.customer_id == customer_id).all()
 
         if len(result) > 0:
-            for address in result:
-                print(f'id: {address.id}, address: {address.address}')
-            return True
+            return result
 
         else:
-            print('Now you don\' have any address, first add an address')
-            return False
+            return []
 
     @classmethod
-    def delete(cls, address_id, customer_id):
-        with Session() as session:
-            result = session.query(cls).filter(cls.id == address_id, cls.customer_id == customer_id).delete()
+    def search(cls, session: Session, address_id, customer_id):
+        result = session.query(cls).filter(cls.id == address_id, cls.customer_id == customer_id).one_or_none()
 
-            session.commit()
+        return result
+
+    @classmethod
+    def delete(cls, session: Session, address_id, customer_id):
+        result = session.query(cls).filter(cls.id == address_id, cls.customer_id == customer_id).delete()
+        address = cls.search(session, address_id, customer_id)
+
+        session.commit()
 
         if result == 1:
-            print('Address successfully deleted')
+            return address
 
         else:
-            print('Waring: Address id not found, try again')
-
-    @classmethod
-    def search(cls, address_id, customer_id):
-        with Session() as session:
-            result = session.query(cls).filter(cls.id == address_id, cls.customer_id == customer_id).one_or_none()
-
-        if result is not None:
-            return result.id
-
-        else:
-            print('Waring: Address id not found, try again')
-            return False
+            return None
 

@@ -58,7 +58,7 @@ def manage_super_admin_operation():
                         print('Deleting operation was field')
 
                 elif operation == 5:
-                    SuperAdmin.show_super_admin()
+                    SuperAdmin.show_all()
 
                 elif operation == 6:
                     Admin.show_admin()

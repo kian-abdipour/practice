@@ -1,68 +1,19 @@
-from restaurant.model import (SuperAdmin, Admin, Customer, Category, Item,
-                              Order, OrderItem, Payment, Address, category_item, Discount, DiscountHistory)
-from manage_role_operation import manage_super_admin_operation, manage_admin_operation, manage_customer_operation
+from fastapi import FastAPI
+
+from contextlib import asynccontextmanager
+
+from restaurant.model.base import Base
+from restaurant.database import engine
+from restaurant.router import customer
 
 
-def main():
-    proceed = True
-    while proceed:
-        print('Choose your role \n1.Customer\n2.Admin\n3.Super admin\n4.Exit')
-        # Make type safing
-        try:
-            operation = int(input(': '))
-
-        except ValueError:
-            print('Waring: You should type just number')
-            operation = None
-
-        if operation is not None:
-
-            if operation == 1:
-                proceed_admin = True
-                while proceed_admin:
-
-                    print('Enter a number \n1.Login\n2.Signup\n3.Back')
-                    try:
-                        operation_admin = int(input(': '))
-
-                    except ValueError:
-                        print('ValueError: You should type just number')
-                        operation_admin = None
-
-                    if operation_admin is not None:
-                        if operation_admin == 1:
-
-                            result_login = Customer.login()
-                            if result_login[0]:
-                                manage_customer_operation(result_login[1])
-
-                        elif operation_admin == 2:
-                            result_signup = Customer.signup()
-                            if result_signup[0]:
-                                manage_customer_operation(result_signup[1])
-
-                        elif operation_admin == 3:
-                            proceed_admin = False
-
-                        else:
-                            print('Number not found')
-
-            elif operation == 2:
-                manage_admin_operation()
-
-            elif operation == 3:
-                manage_super_admin_operation()
-
-            elif operation == 4:
-                proceed = False
-
-            else:
-                print('Number not found')
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    Base.metadata.create_all()
+    yield
 
 
-if __name__ == '__main__':
-    main()
+app = FastAPI(lifespan=lifespan)
 
-else:
-    print('Waring: This program should run from main file')
+app.include_router(router=customer.router)
 
