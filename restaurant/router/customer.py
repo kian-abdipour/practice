@@ -21,6 +21,8 @@ router = APIRouter(
     tags=['customer']
 )
 
+role = 'customer'
+
 
 @router.post('/tokens')
 def signup(session: Session = Depends(get_session), customer: CustomerForLogin = Any) -> Any:
@@ -37,7 +39,12 @@ def signup(session: Session = Depends(get_session), customer: CustomerForLogin =
     customer_dict.pop('password')
     body = jsonable_encoder(customer_dict)
 
-    token = make_token(id_=added_customer.id, username=added_customer.username, expire_delta=timedelta(seconds=20))
+    token = make_token(
+        id_=added_customer.id,
+        role=role,
+        username=added_customer.username,
+        expire_delta=timedelta(seconds=20)
+    )
     header = {'token': token}
 
     return JSONResponse(content=body, headers=header)
@@ -68,6 +75,7 @@ def login(session: Session = Depends(get_session), customer: CustomerForLogin = 
 
     token = make_token(
         id_=customer_in_database.id,
+        role=role,
         username=customer_in_database.username,
         expire_delta=timedelta(seconds=20)
     )

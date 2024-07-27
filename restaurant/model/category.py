@@ -1,10 +1,8 @@
 from sqlalchemy import Column, Integer, Unicode
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, Session
 
 from restaurant.model.base import Base
 from restaurant.model.mixin import DateTimeMixin
-from restaurant.database import Session
-from restaurant.custom_exception import LengthError
 
 
 class Category(DateTimeMixin, Base):
@@ -15,103 +13,42 @@ class Category(DateTimeMixin, Base):
     items = relationship('CategoryItem', cascade='all, delete')
 
     @classmethod
-    def add(cls):
-        print('Enter name of your category')
-        name = input(': ')
+    def add(cls, session: Session, name):
+        category = cls(name=name)
+        session.add(category)
 
-        # Make type safing
-        try:
-            if len(name) > 40:
-                error = LengthError(massage='LengthError: Len of Name is out of 30!, try again')
-                raise error
+        session.commit()
+        session.refresh(category)
 
-        except LengthError:
-            error.show_massage()
-
-        with Session() as session:
-            result = session.query(cls).filter(cls.name == name).one_or_none()
-
-        if result is None:
-            category = cls(name=name)
-            with Session() as session:
-                session.add(category)
-
-                session.commit()
-
-            print('Category successfully added')
-
-        else:
-            print('Waring: This category with this name already exist try again')
+        return category
 
     @classmethod
-    def delete(cls):
-        print('Enter name of category that you want to delete')
-        name = input(': ')
+    def delete(cls, session: Session, id_):
+        category = session.query(cls).filter(cls.id == id_).one_or_none()
+        if category is None:
+            return None
 
-        # Make type safing
-        try:
-            if len(name) > 40:
-                error = LengthError(massage='LengthError: Len of Name is out of 30!, try again')
-                raise error
+        session.query(cls).filter(cls.id == id_).delete()
 
-        except LengthError:
-            error.show_massage()
+        session.commit()
 
-        with Session() as session:
-            result = session.query(cls).filter(cls.name == name).delete()
-
-            session.commit()
-
-        if result == 1:
-            print('Category successfully deleted')
-            return True
-
-        else:
-            print('Category not found')
-            return False
+        return category
 
     @classmethod
-    def show_all(cls):
-        with Session() as session:
-            result = session.query(cls).all()
+    def show_all(cls, session: Session):
+        result = session.query(cls).all()
 
-        if len(result) > 0:
-            for category in result:
-                print(f'id: {category.id}, name: {category.name}')
-
-        else:
-            print('Now we don\'t have any category')
-            return False
+        return result
 
     @classmethod
-    def search(cls):
-        if cls.show_all() is not False:
-            print('Enter name of category')
-            name = input(': ')
+    def search_by_name(cls, session: Session, name):
+        result = session.query(cls).filter(cls.name == name).one_or_none()
 
-            # Make type safing
-            try:
-                if len(name) > 40:
-                    error = LengthError(massage='LengthError: Len of Name is out of 30!, try again')
-                    raise error
+        return result
 
-            except LengthError:
-                error.show_massage()
+    @classmethod
+    def search_by_id(cls, session: Session, category_id):
+        result = session.query(cls).filter(cls.id == category_id).one_or_none()
 
-            with Session() as session:
-                result = session.query(cls).filter(cls.name == name).one_or_none()
-
-            if result is not None:
-                print(f'id: {result.id}, name: {result.name}')
-                return result, name
-
-            elif name == 'q':
-                return False, name
-
-            else:
-                print('Waring: Category not found')
-                return False, name
-
-        else:
-            return False, 'q'
+        return result
 

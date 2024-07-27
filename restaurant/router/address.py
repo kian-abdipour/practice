@@ -15,10 +15,20 @@ router = APIRouter(
     tags=['address']
 )
 
+role = 'customer'
+
 
 @router.post('', response_model=AddressForRead)
 def addition(customer_token: str, address: AddressForAddition, session: Session = Depends(get_session)):
-    username = check_token(token=customer_token)
+    token_payload = check_token(token=customer_token)
+    token_role = token_payload['role']
+    if token_role != role:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail='You don\'t have access to add address'
+        )
+
+    username = token_payload['username']
     customer = Customer.search_by_username(session=session, username=username)
     added_address = Address.add(session=session, customer_id=customer.id, address=address.address)
 
@@ -26,8 +36,16 @@ def addition(customer_token: str, address: AddressForAddition, session: Session 
 
 
 @router.delete('/{address_id}', response_model=AddressForRead)
-def deletion(address_id: int, customer_token: str, session: Session = Depends(get_session)):
-    username = check_token(customer_token)
+def deletion(customer_token: str, address_id: int, session: Session = Depends(get_session)):
+    token_payload = check_token(token=customer_token)
+    token_role = token_payload['role']
+    if token_role != role:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail='You don\'t have access to delete address'
+        )
+
+    username = token_payload['username']
     customer = Customer.search_by_username(session=session, username=username)
 
     deleted_address = Address.delete(session=session, customer_id=customer.id, address_id=address_id)
@@ -42,7 +60,15 @@ def deletion(address_id: int, customer_token: str, session: Session = Depends(ge
 
 @router.get('', response_model=[AddressForRead])
 def show_all(customer_token: str, session: Session = Depends(get_session)):
-    username = check_token(customer_token)
+    token_payload = check_token(token=customer_token)
+    token_role = token_payload['role']
+    if token_role != role:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail='You don\'t have access to see addresses of this customer'
+        )
+
+    username = token_payload['username']
     customer = Customer.search_by_username(session=session, username=username)
     addresses = Address.show_all(session=session, customer_id=customer.id)
 
@@ -50,8 +76,16 @@ def show_all(customer_token: str, session: Session = Depends(get_session)):
 
 
 @router.get('/{address_id}', response_model=AddressForRead)
-def show_specific(address_id: int, customer_token: str, session: Session = Depends(get_session)):
-    username = check_token(customer_token)
+def show_specific(customer_token: str, address_id: int, session: Session = Depends(get_session)):
+    token_payload = check_token(token=customer_token)
+    token_role = token_payload['role']
+    if token_role != role:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail='You don\'t have access to see addresses of this customer'
+        )
+
+    username = token_payload['username']
     customer = Customer.search_by_username(session=session, username=username)
     address = Address.search(session=session, customer_id=customer.id, address_id=address_id)
 

@@ -17,10 +17,11 @@ algorithm_encrypt = getenv('ALGORYTHM_ENCRYPT')
 algorithm_hash = getenv('ALGORYTHM_HASH')
 
 
-def make_token(id_: int, username: str, expire_delta: timedelta):
+def make_token(id_: int, role: str, username: str, expire_delta: timedelta):
     token_expire = datetime.utcnow().replace(microsecond=0) + expire_delta
     data = {
         'id': id_,
+        'role': role,
         'access_key': username,
         'exp': token_expire
     }

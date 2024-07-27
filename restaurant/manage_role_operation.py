@@ -134,7 +134,7 @@ def manage_admin_operation():
                         Category.show_all()
 
                     elif operation_manage_category == 2:
-                        category = Category.search()
+                        category = Category.search_by_name()
                         if category[0] is not False:
                             CategoryItem.show_item_side(category[0].id)
 
@@ -164,19 +164,19 @@ def manage_admin_operation():
                         Item.search()
 
                     elif operation_manage_item == 4:
-                        CategoryItem.match_row(Item.add())
+                        CategoryItem.add(Item.add())
 
                     elif operation_manage_item == 6:
                         item = Item.search()
                         if item is not False:
                             item_id = item.id
-                            CategoryItem.match_row(item_id)
+                            CategoryItem.add(item_id)
 
                         else:
                             pass
 
                     elif operation_manage_item == 7:
-                        category = Category.search()
+                        category = Category.search_by_name()
                         if category[0] is not False:
                             CategoryItem.show_item_side(category[0].id)
                             item = Item.search()
@@ -275,7 +275,7 @@ def manage_customer_operation(customer_id):
 
                             print('If it\'s finish type q to go to payment '
                                   'part if you selected item, else it will go back')
-                            category = Category.search()
+                            category = Category.search_by_name()
                             if category[0] is not False:
                                 print('Items in this category:')
 

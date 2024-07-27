@@ -16,18 +16,28 @@ router = APIRouter(
     tags=['admin']
 )
 
+role = 'super_admin'
+
 
 @router.post('', response_model=AdminForRead)
 def addition(super_admin_token: str, admin: AdminForAddition, session: Session = Depends(get_session)):
-    super_admin_id = check_token(super_admin_token)
+    token_payload = check_token(super_admin_token)
 
-    admin = Admin.search_by_username(session=session, username=admin.username)
-    if admin is not None:
+    token_role = token_payload['role']
+    if token_role != role:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail='You don\'t have access to add admin'
+        )
+
+    admin_in_database = Admin.search_by_username(session=session, username=admin.username)
+    if admin_in_database is not None:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail='This username already exist choose another one'
         )
 
+    super_admin_id = token_payload['id']
     hashed_password = get_hash_password(admin.password)
 
     added_admin = Admin.add(session=session, first_name=admin.first_name,
@@ -64,7 +74,14 @@ def login(admin: AdminForLogin, session: Session):
 
 @router.get('', response_model=[AdminForRead])
 def show_all(super_admin_token: str, session: Session):
-    check_token(super_admin_token)
+    token_payload = check_token(super_admin_token)
+
+    token_role = token_payload['role']
+    if token_role != role:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail='You don\'t have access to see admin'
+        )
 
     admins = Admin.show_all(session=session)
 
@@ -73,7 +90,14 @@ def show_all(super_admin_token: str, session: Session):
 
 @router.get('/{admin_id}', response_model=AdminForRead)
 def show_specific(super_admin_token: str, admin_id: str, session: Session = Depends(get_session)):
-    check_token(super_admin_token)
+    token_payload = check_token(super_admin_token)
+
+    token_role = token_payload['role']
+    if token_role != role:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail='You don\'t have access to see admin'
+        )
 
     admin = Admin.search_by_id(session=session, admin_id=admin_id)
     if admin is None:
@@ -87,7 +111,14 @@ def show_specific(super_admin_token: str, admin_id: str, session: Session = Depe
 
 @router.delete('/{admin_id}', response_model=AdminForRead)
 def delete(super_admin_token: str, admin_id: int, session: Session = Depends(get_session)):
-    check_token(token=super_admin_token)
+    token_payload = check_token(super_admin_token)
+
+    token_role = token_payload['role']
+    if token_role != role:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail='You don\'t have access to delete admin'
+        )
 
     deleted_admin = Admin.delete(session=session, admin_id=admin_id)
 

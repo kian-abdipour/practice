@@ -98,4 +98,6 @@ class AdminForRead(BaseModel):
     last_name: str
     username: str
 
+    class Config:
+        from_attributes = True
 

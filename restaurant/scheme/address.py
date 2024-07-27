@@ -28,5 +28,3 @@ class AddressForRead(BaseModel):
 
     class Config:
         from_attributes = True
-
-
