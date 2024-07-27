@@ -17,9 +17,16 @@ class AddressForAddition(BaseModel):
 
         return address
 
+    class Config:
+        from_attributes = True
+
 
 class AddressForRead(BaseModel):
     id: int
     address: str
     customer_id: str
+
+    class Config:
+        from_attributes = True
+
 

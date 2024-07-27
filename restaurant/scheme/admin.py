@@ -1,13 +1,13 @@
-from pydantic import BaseModel, field_validator, Field
+from pydantic import BaseModel, Field, field_validator
 
 from fastapi import HTTPException, status
 
 from re import match
 
 
-class SuperAdminForLogin(BaseModel):
-    username: str = Field(description='Length of Username should be between at least 2 and at most 16 character')
-    password: str = Field(description='Length of password should be 8')
+class AdminForLogin(BaseModel):
+    username: str = Field(description='Length of username should be at most 16 character')
+    password: str = Field(description='Length of Password should be 8')
 
     @field_validator('username')
     @classmethod
@@ -15,10 +15,8 @@ class SuperAdminForLogin(BaseModel):
         if 2 > len(username) > 16:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail='Length of Username should be between at least 2 and at most 16 character'
+                detail='Length of username should be between at least 2 character and at most 16 character'
             )
-
-        return username
 
     @field_validator('password')
     @classmethod
@@ -26,14 +24,14 @@ class SuperAdminForLogin(BaseModel):
         if len(password) != 8:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail='Length of password should be 8'
+                detail='Length of password should be 8 character'
             )
 
     class Config:
         from_attributes = True
 
 
-class SuperAdminForAddition(BaseModel):
+class AdminForAddition(BaseModel):
     first_name: str = Field(description='Length of first_name should be at most 40 character')
     last_name: str = Field(description='Length of last_name should be at most 40 character')
     username: str = Field(description='Length of username should be between at least 2 and at most 16 character')
@@ -94,9 +92,10 @@ class SuperAdminForAddition(BaseModel):
         from_attributes = True
 
 
-class SuperAdminForRead(BaseModel):
+class AdminForRead(BaseModel):
     id: int
     first_name: str
     last_name: str
     username: str
+
 

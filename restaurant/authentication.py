@@ -17,11 +17,13 @@ algorithm_encrypt = getenv('ALGORYTHM_ENCRYPT')
 algorithm_hash = getenv('ALGORYTHM_HASH')
 
 
-def make_token(username: str, expire_delta: timedelta):
+def make_token(id_: int, username: str, expire_delta: timedelta):
     token_expire = datetime.utcnow().replace(microsecond=0) + expire_delta
-    data = {'access_key': username,
-            'exp': token_expire
-            }
+    data = {
+        'id': id_,
+        'access_key': username,
+        'exp': token_expire
+    }
 
     jwt_access_token = encode(data, secret_key, algorithm=algorithm_encrypt)
     print(jwt_access_token)
@@ -52,7 +54,7 @@ def check_token(token: str):
 
             )
 
-    return username
+    return payload
 
 
 def get_hash_password(password):

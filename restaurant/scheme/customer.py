@@ -1,4 +1,4 @@
-import re
+from re import match
 
 from pydantic import BaseModel, Field, field_validator
 
@@ -33,11 +33,14 @@ class CustomerForLogin(BaseModel):
             )
 
         password_pattern = r'(?=.{1,}\d)(?=.{1,}[a-z])(?=.{1,}[A-Z])(?=.{1,}[!@#$%])'
-        if bool(re.match(password_pattern, password)) is False:
+        if bool(match(password_pattern, password)) is False:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                                 detail='Password should be 8 character contain: a-z, A-Z, 0-9 and one of !@#$%')
 
         return password
+
+    class Config:
+        from_attributes = True
 
     class Config:
         from_attributes = True

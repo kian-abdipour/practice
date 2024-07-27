@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, status, Depends
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 
-from restaurant.scheme.super_admin import SuperAdminForLogin, SuperAdminForCreate, SuperAdminForRead
+from restaurant.scheme.super_admin import SuperAdminForLogin, SuperAdminForAddition, SuperAdminForRead
 from restaurant.database import get_session
 from restaurant.model import SuperAdmin
 from restaurant.authentication import verify_password, make_token, check_token, get_hash_password
@@ -42,15 +42,20 @@ def login(super_admin: SuperAdminForLogin, session: Depends(get_session)):
     super_admin_dict.pop('password')
     body = jsonable_encoder(super_admin_dict)
 
-    token = make_token(username=super_admin.username, expire_delta=timedelta(seconds=20))
+    token = make_token(
+        id_=super_admin_in_database.id,
+        username=super_admin_in_database.username,
+        expire_delta=timedelta(seconds=20)
+    )
     header = {'token': token}
 
     return JSONResponse(content=body, headers=header)
 
 
 @router.post('')
-def addition(top_level_super_admin_token: str, super_admin: SuperAdminForCreate, session: Session = Depends(get_session)):
-    username = check_token(token=top_level_super_admin_token)
+def addition(top_level_super_admin_token: str, super_admin: SuperAdminForAddition, session: Session = Depends(get_session)):
+    token_payload = check_token(token=top_level_super_admin_token)
+    username = token_payload['username']
     if username != top_level_super_admin_username:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
@@ -74,7 +79,11 @@ def addition(top_level_super_admin_token: str, super_admin: SuperAdminForCreate,
     super_admin_dict.pop('password')
     body = jsonable_encoder(super_admin_dict)
 
-    token = make_token(username=super_admin.username, expire_delta=timedelta(seconds=20))
+    token = make_token(
+        id_=added_super_admin.id,
+        username=added_super_admin.username,
+        expire_delta=timedelta(seconds=20)
+    )
     header = {'token': token}
 
     return JSONResponse(content=body, headers=header)
@@ -82,7 +91,9 @@ def addition(top_level_super_admin_token: str, super_admin: SuperAdminForCreate,
 
 @router.get('', response_model=[SuperAdminForRead])
 def show_all(top_level_super_admin_token: str, session: Session = Depends(get_session)):
-    username = check_token(token=top_level_super_admin_token)
+    token_payload = check_token(token=top_level_super_admin_token)
+
+    username = token_payload['username']
     if username != top_level_super_admin_username:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
@@ -96,7 +107,9 @@ def show_all(top_level_super_admin_token: str, session: Session = Depends(get_se
 
 @router.get('{super_admin_id}', response_model=SuperAdminForRead)
 def show_specific(top_level_super_admin_token: str, super_admin_id: int, session: Session = Depends(get_session)):
-    username = check_token(token=top_level_super_admin_token)
+    token_payload = check_token(token=top_level_super_admin_token)
+
+    username = token_payload['username']
     if username != top_level_super_admin_username:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
@@ -115,8 +128,10 @@ def show_specific(top_level_super_admin_token: str, super_admin_id: int, session
 
 
 @router.delete('{super_admin_id}', response_model=SuperAdminForRead)
-def delete(top_level_super_admin_token: str, super_admin_id: int, session: Session = Depends(get_session))
-    username = check_token(token=top_level_super_admin_token)
+def delete(top_level_super_admin_token: str, super_admin_id: int, session: Session = Depends(get_session)):
+    token_payload = check_token(token=top_level_super_admin_token)
+
+    username = token_payload['username']
     if username != top_level_super_admin_username:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
