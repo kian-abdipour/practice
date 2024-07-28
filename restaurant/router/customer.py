@@ -7,6 +7,7 @@ from fastapi.responses import JSONResponse
 from restaurant.database import get_session
 from restaurant.scheme.customer import CustomerForLogin
 from restaurant.model.customer import Customer
+from restaurant.model.cart import Cart
 from restaurant.authentication import make_token, check_token, get_hash_password, verify_password
 
 from sqlalchemy.orm import Session
@@ -33,8 +34,12 @@ def signup(session: Session = Depends(get_session), customer: CustomerForLogin =
         )
 
     hashed_password = get_hash_password(password=customer.password)
-    added_customer = Customer.add(session=session, username=customer.username,
-                                  password=hashed_password, phone_number=customer.phone_number)
+    added_customer = Customer.add(
+        session=session, username=customer.username,
+        password=hashed_password, phone_number=customer.phone_number
+    )
+    Cart.add(session=session, customer_id=added_customer.id)
+
     customer_dict = added_customer.__dict__
     customer_dict.pop('password')
     body = jsonable_encoder(customer_dict)

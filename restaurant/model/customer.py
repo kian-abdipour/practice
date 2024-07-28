@@ -16,6 +16,7 @@ class Customer(DateTimeMixin, Base):
     orders = relationship('Order', cascade='all, delete')
     payments = relationship('Payment', cascade='all, delete')
     addresses = relationship('Address', cascade='all, delete')
+    cart = relationship('Cart', cascade='all, delete', uselist=False)
 
     @classmethod
     def add(cls, session: Session, username, password, phone_number):
@@ -23,10 +24,9 @@ class Customer(DateTimeMixin, Base):
         session.add(customer)
 
         session.commit()
+        session.refresh(customer)
 
-        result = session.query(cls).filter(cls.username == username).one()
-
-        return result
+        return customer
 
     @classmethod
     def search_by_username(cls, session: Session, username):

@@ -16,6 +16,7 @@ class Item(DateTimeMixin, Base):
 
     orders = relationship('OrderItem', cascade='all, delete')
     categories = relationship('CategoryItem', cascade='all, delete')
+    carts = relationship('CategoryItem', cascade='all, delete')
 
     @classmethod
     def add(cls, session: Session, name, country, price, stock, description):

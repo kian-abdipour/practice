@@ -1,9 +1,9 @@
 from sqlalchemy import Unicode, Column, Integer, ForeignKey
+from sqlalchemy.orm import relationship, Session
+
 from restaurant.model.base import Base
-from sqlalchemy.orm import relationship
 from restaurant.model.mixin import DateTimeMixin
 from restaurant.model.helper import State, DeliveryType
-from restaurant.database import Session
 from restaurant.model.address import Address
 from restaurant.model.payment import Payment
 
@@ -22,56 +22,20 @@ class Order(DateTimeMixin, Base):
     payments = relationship('Payment', cascade='all, delete')
 
     @classmethod
-    def add(cls, customer_id, address_id):
-        state = State.waiting_to_confirmation
+    def add(cls, session: Session, state, delivery_type, desk_number, description, address_id, customer_id):
+        order = cls(
+            state=state,
+            delivery_type=delivery_type,
+            desk_number=desk_number,
+            description=description,
+            address_id=address_id,
+            customer_id=customer_id
+        )
+        session.add(order)
 
-        try:
-            print(f'Enter a number if your are at home you should choose bike delivery,'
-                  f'\n1.{DeliveryType.bike_delivery}'
-                  f'\n2.{DeliveryType.eat_in_restaurant}'
-                  f'\n3.{DeliveryType.eat_out}')
-            number_delivery_type = int(input(': '))
-            delivery_types = [DeliveryType.bike_delivery, DeliveryType.eat_in_restaurant, DeliveryType.eat_out]
-            delivery_type = delivery_types[number_delivery_type - 1]
+        session.commit()
+        session.refresh(order)
 
-        except ValueError:
-            return print('ValueError: You should type just number')
-
-        except IndexError:
-            return print('IndexError: Number not found')
-
-        if delivery_type == DeliveryType.eat_in_restaurant:
-            condition_desk_number = True
-            while condition_desk_number:
-                try:
-                    print('Enter your desk number')
-                    desk_number = int(input(': '))
-
-                except ValueError:
-                    print('ValueError: Your desk number must be just number, try again')
-                    desk_number = None
-
-                if desk_number is not None:
-                    condition_desk_number = False
-
-        else:
-            desk_number = None
-
-        print('If you want description enter it else type No')
-        description = input(': ')
-        if description == '' or description == 'no' or description == 'No':
-            description = None
-
-        order = cls(state=state, delivery_type=delivery_type,
-                    desk_number=desk_number, description=description,
-                    address_id=address_id, customer_id=customer_id)
-        with Session() as session:
-            session.add(order)
-
-            session.commit()
-            session.refresh(order)
-
-        print('Your orders successfully added please do pay and wait until admin to confirm it')
         return order
 
     @classmethod
