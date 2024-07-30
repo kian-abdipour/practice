@@ -13,8 +13,8 @@ class CategoryItem(DateTimeMixin, Base):
     category_id = Column(ForeignKey('category.id'))
     item_id = Column(ForeignKey('item.id'))
 
-    categories = relationship('Category', overlaps='items', cascade='all, delete')
-    items = relationship('Item', overlaps='categories', cascade='all, delete')
+    category = relationship('Category', overlaps='items', cascade='all, delete', back_populates='items')
+    item = relationship('Item', overlaps='categories', cascade='all, delete', back_populates='categories')
 
     @classmethod
     def add(cls, session: Session, category_id, item_id):

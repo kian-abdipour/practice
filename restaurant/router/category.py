@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Header
 
 
 from restaurant.scheme.category import CategoryForCreate, CategoryForRead
@@ -8,6 +8,7 @@ from restaurant.authentication import check_token
 
 from sqlalchemy.orm import Session
 
+from typing import Annotated, List
 
 router = APIRouter(
     prefix='/categories',
@@ -18,7 +19,11 @@ role = 'admin'
 
 
 @router.post('', response_model=CategoryForRead)
-def addition(admin_token: str, category: CategoryForCreate, session: Session = Depends(get_session)):
+def addition(
+        admin_token: Annotated[str, Header()],
+        category: CategoryForCreate,
+        session: Session = Depends(get_session)
+):
     token_payload = check_token(token=admin_token)
 
     token_role = token_payload['role']
@@ -40,8 +45,8 @@ def addition(admin_token: str, category: CategoryForCreate, session: Session = D
     return added_category
 
 
-@router.get('', response_model=[CategoryForRead])
-def show_all(admin_token: str, session: Session = Depends(get_session)):
+@router.get('', response_model=List[CategoryForRead])
+def show_all(admin_token: Annotated[str, Header()], session: Session = Depends(get_session)):
     token_payload = check_token(admin_token)
 
     token_role = token_payload['role']
@@ -56,7 +61,11 @@ def show_all(admin_token: str, session: Session = Depends(get_session)):
 
 
 @router.get('{category_id}', response_model=CategoryForRead)
-def show_specific(admin_token: str, category: CategoryForRead, session: Session = Depends(get_session)):
+def show_specific(
+        admin_token: Annotated[str, Header()],
+        category: CategoryForRead,
+        session: Session = Depends(get_session)
+):
     token_payload = check_token(admin_token)
 
     token_role = token_payload['role']
@@ -77,7 +86,7 @@ def show_specific(admin_token: str, category: CategoryForRead, session: Session 
 
 
 @router.delete('{category_id}', response_model=CategoryForRead)
-def delete(admin_token: str, category_id: int, session: Session = Depends(get_session)):
+def delete(admin_token: Annotated[str, Header()], category_id: int, session: Session = Depends(get_session)):
     token_payload = check_token(admin_token)
 
     token_role = token_payload['role']

@@ -3,6 +3,7 @@ from sqlalchemy.orm import relationship, Session
 
 from restaurant.model.base import Base
 from restaurant.model.mixin import DateTimeMixin
+from restaurant.custom_exception import OutOfStockError
 
 
 class Item(DateTimeMixin, Base):
@@ -14,9 +15,9 @@ class Item(DateTimeMixin, Base):
     stock = Column(Integer, default=0, nullable=False)
     description = Column(Unicode)
 
-    orders = relationship('OrderItem', cascade='all, delete')
-    categories = relationship('CategoryItem', cascade='all, delete')
-    carts = relationship('CategoryItem', cascade='all, delete')
+    orders = relationship('OrderItem', back_populates='item')
+    categories = relationship('CategoryItem', back_populates='item')
+    carts = relationship('CartItem', back_populates='item')
 
     @classmethod
     def add(cls, session: Session, name, country, price, stock, description):
@@ -64,4 +65,9 @@ class Item(DateTimeMixin, Base):
             session.commit()
 
         print(f'Addition to stock was successful, now the stock of {item.name} is {item.stock + addition_stock}')
+
+    @classmethod
+    def check_item_stock(cls, item, quantity):
+        if quantity > item.stock:
+            raise OutOfStockError(massage=f'Stock of {item.name} with id {item.id} is {item.stock} and you want {quantity}')
 

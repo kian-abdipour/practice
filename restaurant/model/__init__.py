@@ -10,4 +10,8 @@ from restaurant.model.super_admin import SuperAdmin
 from restaurant.model.admin import Admin
 from restaurant.model.discount import Discount
 from restaurant.model.discount_history import DiscountHistory
+from restaurant.model.cart_item import CartItem
+from restaurant.model.cart import Cart
+
+
 

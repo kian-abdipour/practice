@@ -1,22 +1,25 @@
 from sqlalchemy import Column, Integer, ForeignKey, func
-from sqlalchemy.orm import relationship, Session, ColumnProperty
+from sqlalchemy.orm import relationship, Session, column_property
 
 
 from restaurant.model.base import Base
 from restaurant.model.mixin import DateTimeMixin
 from restaurant.model.cart_item import CartItem
-from restaurant.database import get_session
+#from restaurant.session import get_session
+
+#for database_session in get_session():
+#    session = database_session
 
 
 class Cart(DateTimeMixin, Base):
     __tablename__ = 'cart'
     id = Column(Integer, primary_key=True)
+    total_quantity = Column(Integer) #column_property(session.query(func.count(CartItem.cart_id)).join(id == CartItem.cart_id))
+    total_amount = Column(Integer) #column_property(session.query(func.sum(CartItem.total_amount)).join(id == CartItem.cart_id))
     customer_id = Column(ForeignKey('customer.id'))
-    total_quantity = ColumnProperty(get_session().query(func.count(CartItem.cart_id)).join(id == CartItem.cart_id))
-    total_amount = ColumnProperty(get_session().query(func.sum(CartItem.total_amount)).join(id == CartItem.cart_id))
 
-    customer = relationship('Customer', cascade='all, delete')
-    items = relationship('CartItem', cascade='all, delete')
+    customer = relationship('Customer', back_populates='cart')
+    items = relationship('CartItem', back_populates='cart')
 
     @classmethod
     def add(cls, session: Session, customer_id):
@@ -39,4 +42,15 @@ class Cart(DateTimeMixin, Base):
         cart = session.query(cls).filter(cls.id == cart_id).one_or_none()
 
         return cart
+
+    @classmethod
+    def show_item_identifiers_in_a_cart(cls, session: Session, customer_id):
+        cart = session.query(cls).filter(cls.customer_id == customer_id).one_or_none()
+        if cart is None:
+            return None
+
+        cart_items = session.query(CartItem).filter(cls.id == cart.id).all()
+
+        return cart_items
+
 

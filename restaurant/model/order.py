@@ -18,8 +18,9 @@ class Order(DateTimeMixin, Base):
     address_id = Column(ForeignKey('address.id'))
     customer_id = Column(ForeignKey('customer.id'))
 
-    items = relationship('OrderItem', cascade='all, delete')
-    payments = relationship('Payment', cascade='all, delete')
+    items = relationship('OrderItem', cascade='all, delete', back_populates='order')
+    payments = relationship('Payment', cascade='all, delete', back_populates='order')
+    customer = relationship('Customer', back_populates='orders')
 
     @classmethod
     def add(cls, session: Session, state, delivery_type, desk_number, description, address_id, customer_id):
@@ -53,42 +54,40 @@ class Order(DateTimeMixin, Base):
             print('History of your order is empty')
 
     @classmethod
-    def show_all_waiting_to_confirm(cls):
-        with Session() as session:
-            result = session.query(cls, Address.address, Payment).filter(cls.state == State.waiting_to_confirmation).join(Address).join(Payment).order_by(cls.id).all()  # Question where to be cut
+    def show_all_waiting_to_confirm(cls, session: Session):
+        result = session.query(cls, Address.address, Payment).filter(cls.state == State.waiting_to_confirmation).join(Address).join(Payment).order_by(cls.id).all()  # Question where to be cut
 
-        if len(result) > 0:
-            for row in result:
-                text_address = row[1]
-                order = row[0]
-                payment = row[2]
-                print(f'Created at: {order.created_at}, id: {order.id}, customer_id: {order.customer_id}'
-                      f' state: {order.state}, payment state: {payment.state}, address: {text_address}')
+        #if len(result) > 0:
+        #    for row in result:
+        #        text_address = row[1]
+        #        order = row[0]
+        #        payment = row[2]
+        #        print(f'Created at: {order.created_at}, id: {order.id}, customer_id: {order.customer_id}'
+        #              f' state: {order.state}, payment state: {payment.state}, address: {text_address}')
+#
+        #else:
+        #    print('Now we don\'t have any order')
 
-        else:
-            print('Now we don\'t have any order')
+        return result
 
     @classmethod
-    def confirm(cls):
-        print('Enter id of order that you want to confirm')
-        try:
-            order_id = int(input(': '))
+    def search_by_id(cls, session: Session, order_id):
+        order = session.query(cls).filter(cls.id == order_id).one_or_none()
 
-        except ValueError:
-            print('ValueError: You should type just number')
-            order_id = None
+        return order
 
-        if order_id is not None:
-            with Session() as session:
-                result = session.query(cls).filter(cls.id == order_id).update(
-                    {cls.state: State.confirm_and_finish}
-                )
+    @classmethod
+    def confirm(cls, session: Session, order_id):
+        order = cls.search_by_id(session=session, order_id=order_id)
+        if order is None:
+            return None
 
-                session.commit()
+        session.query(cls).filter(cls.id == order_id).update(
+            {cls.state: State.confirm_and_finish}
+        )
 
-            if result == 1:
-                print('Order successfully confirm')
+        session.commit()
+        session.refresh(order)
 
-            else:
-                print('Waring: Order id not found try again')
+        return order
 

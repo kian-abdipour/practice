@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, status, Depends
+from fastapi import APIRouter, HTTPException, status, Depends, Header
 
 from sqlalchemy.orm import Session
 
@@ -6,6 +6,8 @@ from restaurant.authentication import check_token
 from restaurant.model import Item
 from restaurant.scheme.item import ItemForCreate, ItemForRead
 from restaurant.database import get_session
+
+from typing import Annotated, List
 
 
 router = APIRouter(
@@ -18,7 +20,11 @@ customer_role = 'customer'
 
 
 @router.post('', response_model=ItemForCreate)
-def addition(customer_or_admin_token: str, item: ItemForCreate, session: Session = Depends(get_session)):
+def addition(
+        customer_or_admin_token: Annotated[str, Header()],
+        item: ItemForCreate,
+        session: Session = Depends(get_session)
+):
     token_payload = check_token(token=customer_or_admin_token)
 
     token_role = token_payload['role']
@@ -44,8 +50,8 @@ def addition(customer_or_admin_token: str, item: ItemForCreate, session: Session
     return added_item
 
 
-@router.get('', response_model=[ItemForRead])
-def show_all(customer_or_admin_token: str, session: Session = Depends(get_session)):
+@router.get('', response_model=List[ItemForRead])
+def show_all(customer_or_admin_token: Annotated[str, Header()], session: Session = Depends(get_session)):
     token_payload = check_token(token=customer_or_admin_token)
 
     token_role = token_payload['role']
@@ -61,7 +67,11 @@ def show_all(customer_or_admin_token: str, session: Session = Depends(get_sessio
 
 
 @router.get('{item_id}', response_model=ItemForRead)
-def show_specific_by_id(customer_or_admin_token: str, item_id: int, session: Session = Depends(get_session)):
+def show_specific_by_id(
+        customer_or_admin_token: Annotated[str, Header()],
+        item_id: int,
+        session: Session = Depends(get_session)
+):
     token_payload = check_token(token=customer_or_admin_token)
 
     token_role = token_payload['role']
@@ -81,8 +91,12 @@ def show_specific_by_id(customer_or_admin_token: str, item_id: int, session: Ses
     return item
 
 
-@router.get('item_name', response_model=ItemForRead)
-def show_specific_by_name(customer_or_admin_token: str, name: str, session: Session = Depends(get_session)):
+@router.get('/item_name', response_model=ItemForRead)
+def show_specific_by_name(
+        customer_or_admin_token: Annotated[str, Header()],
+        name: str,
+        session: Session = Depends(get_session)
+):
     token_payload = check_token(token=customer_or_admin_token)
 
     token_role = token_payload['role']
@@ -98,4 +112,6 @@ def show_specific_by_name(customer_or_admin_token: str, name: str, session: Sess
             status_code=status.HTTP_404_NOT_FOUND,
             detail='Item with this name not found'
         )
+
+    return item
 

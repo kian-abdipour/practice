@@ -22,6 +22,8 @@ class Payment(DateTimeMixin, Base):
     customer_id = Column(ForeignKey('customer.id'))
 
     discount_histories = relationship('DiscountHistory', cascade='all, delete')
+    customer = relationship('Customer', back_populates='payments')
+    order = relationship('Order', back_populates='payments')
 
     @classmethod
     def add(cls, session: Session, state, type_, amount, order_id, customer_id):
@@ -39,3 +41,4 @@ class Payment(DateTimeMixin, Base):
         result = session.query(DiscountHistory).join(cls).filter(cls.customer_id == customer_id, DiscountHistory.discount_id == discount_id).one_or_none()
 
         return result
+

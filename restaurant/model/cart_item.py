@@ -1,9 +1,14 @@
 from sqlalchemy import Column, Integer, Float, ForeignKey, Column
-from sqlalchemy.orm import relationship, Session, ColumnProperty, query
+from sqlalchemy.orm import relationship, Session, column_property, query
 
 from restaurant.model.base import Base
 from restaurant.model.mixin import DateTimeMixin
 from restaurant.model.item import Item
+#from restaurant.session import get_session
+
+
+#for database_session in get_session():
+#    session = database_session
 
 
 class CartItem(DateTimeMixin, Base):
@@ -12,11 +17,11 @@ class CartItem(DateTimeMixin, Base):
     item_id = Column(ForeignKey('item.id'))
     cart_id = Column(ForeignKey('cart.id'))
     quantity = Column(Integer, default=1, nullable=False)
-    unit_amount = ColumnProperty(query(Item).filter(item_id == Item.id).one().price)
-    total_amount = ColumnProperty(unit_amount * quantity)
+    unit_amount = Column(Integer) #column_property(Item.search_by_id(session=session, item_id=item_id).price)
+    total_amount = Column(Integer) #column_property(unit_amount * quantity)
 
-    carts = relationship('Cart', overlaps='items', cascade='all, delete')
-    items = relationship('Item', overlaps='carts', cascade='all, delete')
+    cart = relationship('Cart', overlaps='items', cascade='all, delete', back_populates='items')
+    item = relationship('Item', overlaps='carts', cascade='all, delete', back_populates='carts')
 
     @classmethod
     def add(cls, session: Session, item_id, cart_id, quantity):

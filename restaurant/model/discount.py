@@ -1,13 +1,14 @@
+import datetime
 import random
 import re
 import string
 from datetime import date
 
 from sqlalchemy import Column, Integer, Unicode, String, Float, Date, Boolean
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, Session
 
-from restaurant.custom_exception import LengthError
-from restaurant.database import Session
+from restaurant.custom_exception import LengthError, DisposableDiscountError, StartDateDiscountError, \
+    ExpireDateDiscountError, UsageLimitationDiscountError
 from restaurant.model.base import Base
 from restaurant.model.helper import character_for_discount_code
 from restaurant.model.mixin import DateTimeMixin
@@ -20,12 +21,12 @@ class Discount(DateTimeMixin, Base):
     expire_date = Column(Date)
     title = Column(Unicode(40), nullable=False)
     percent = Column(Float, nullable=False)
-    code = Column(String(10), nullable=False)
+    code = Column(String(10), nullable=False, unique=True)
     description = Column(Unicode)
     usage_limitation = Column(Integer)
     disposable = Column(Boolean)
 
-    discount_histories = relationship('DiscountHistory', cascade='all, delete')
+    discount_histories = relationship('DiscountHistory', back_populates='discount')
 
     @classmethod
     def add(cls, code):
@@ -171,9 +172,8 @@ class Discount(DateTimeMixin, Base):
             print('Waring: Discount id not found')
 
     @classmethod
-    def search_by_code(cls, code):
-        with Session() as session:
-            result = session.query(cls).filter(cls.code == code).one_or_none()
+    def search_by_code(cls, session: Session, code):
+        result = session.query(cls).filter(cls.code == code).one_or_none()
 
         return result
 
@@ -191,4 +191,27 @@ class Discount(DateTimeMixin, Base):
 
         else:
             print('Now we don\'t have any discount')
+
+    @classmethod
+    def apply_discount(cls, discount, amount):
+        if discount.disposable is False:
+            raise DisposableDiscountError
+
+        if discount.start_date > date.today():
+            raise StartDateDiscountError
+
+        if discount.expire_date < date.today():
+            raise ExpireDateDiscountError
+
+        if discount.usage_limitation == 0:
+            raise UsageLimitationDiscountError
+
+        amount = amount - (discount.percent * amount)
+
+        return amount
+
+    @classmethod
+    def decrease_usage_limitation(cls, session: Session, discount_id):
+        session.query(cls).filter(cls.id == discount_id).update({cls.usage_limitation: cls.usage_limitation - 1})
+        session.commit()
 

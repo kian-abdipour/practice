@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, Unicode, ForeignKey
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, relationship
 
 from restaurant.model.base import Base
 from restaurant.model.mixin import DateTimeMixin
@@ -14,6 +14,8 @@ class Admin(DateTimeMixin, Base):
     username = Column(Unicode(16), unique=True, nullable=False)
     password = Column(Unicode(8), nullable=False)
     superadmin_id = Column(ForeignKey('super_admin.id'))
+
+    super_admin = relationship('SuperAdmin', back_populates='admins')
 
     @classmethod
     def add(cls, session: Session, first_name, last_name, username, password, super_admin_id):

@@ -10,7 +10,7 @@ class Category(DateTimeMixin, Base):
     id = Column(Integer, primary_key=True)
     name = Column(Unicode(40), nullable=False, unique=True)
 
-    items = relationship('CategoryItem', cascade='all, delete')
+    items = relationship('CategoryItem', cascade='all, delete', back_populates='category')
 
     @classmethod
     def add(cls, session: Session, name):

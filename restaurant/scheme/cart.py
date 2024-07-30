@@ -8,6 +8,9 @@ class CartItemForCreate(BaseModel):
     cart_id: int
     quantity: int = Field(default=1)
 
+    class Config:
+        from_attributes = True
+
 
 class CartItemForRead(BaseModel):
     id: int
@@ -17,6 +20,9 @@ class CartItemForRead(BaseModel):
     unit_amount: float
     total_amount: float
 
+    class Config:
+        from_attributes = True
+
 
 class CartForRead(BaseModel):
     id: int
@@ -24,4 +30,6 @@ class CartForRead(BaseModel):
     total_quantity: int
     total_amount: int
 
+    class Config:
+        from_attributes = True
 

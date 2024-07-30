@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, Unicode
+from sqlalchemy import Column, Integer, Unicode, ForeignKey
 from sqlalchemy.orm import relationship, Session
 from restaurant.model.base import Base
 from restaurant.model.mixin import DateTimeMixin
@@ -13,10 +13,10 @@ class Customer(DateTimeMixin, Base):
     password = Column(Unicode(8), nullable=False)
     phone_number = Column(Unicode(11), unique=True, nullable=False)
 
-    orders = relationship('Order', cascade='all, delete')
-    payments = relationship('Payment', cascade='all, delete')
-    addresses = relationship('Address', cascade='all, delete')
-    cart = relationship('Cart', cascade='all, delete', uselist=False)
+    orders = relationship('Order', back_populates='customer')
+    payments = relationship('Payment', back_populates='customer')
+    addresses = relationship('Address', back_populates='customer')
+    cart = relationship('Cart', back_populates='customer', uselist=False)
 
     @classmethod
     def add(cls, session: Session, username, password, phone_number):

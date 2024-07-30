@@ -28,3 +28,10 @@ class AddressForRead(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+#class AllAddressForRead(BaseModel):
+#    addresses: [AddressForRead]
+#
+#    class Config:
+#        from_attributes = True

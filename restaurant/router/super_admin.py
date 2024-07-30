@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, status, Depends
+from fastapi import APIRouter, HTTPException, status, Depends, Header
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 
@@ -10,6 +10,8 @@ from restaurant.authentication import verify_password, make_token, check_token, 
 from sqlalchemy.orm import Session
 
 from datetime import timedelta
+
+from typing import Annotated, List
 
 from dotenv import load_dotenv
 from os import getenv
@@ -25,7 +27,7 @@ router = APIRouter(
 
 
 @router.post('/login/tokens')
-def login(super_admin: SuperAdminForLogin, session: Depends(get_session)):
+def login(super_admin: SuperAdminForLogin, session: Session = Depends(get_session)):
     super_admin_in_database = SuperAdmin.search_by_username(session=session, username=super_admin.username)
     if super_admin_in_database is None:
         raise HTTPException(
@@ -55,7 +57,11 @@ def login(super_admin: SuperAdminForLogin, session: Depends(get_session)):
 
 
 @router.post('')
-def addition(top_level_super_admin_token: str, super_admin: SuperAdminForAddition, session: Session = Depends(get_session)):
+def addition(
+        top_level_super_admin_token: Annotated[str, Header()],
+        super_admin: SuperAdminForAddition,
+        session: Session = Depends(get_session)
+):
     token_payload = check_token(token=top_level_super_admin_token)
 
     username = token_payload['username']
@@ -94,8 +100,8 @@ def addition(top_level_super_admin_token: str, super_admin: SuperAdminForAdditio
     return JSONResponse(content=body, headers=header)
 
 
-@router.get('', response_model=[SuperAdminForRead])
-def show_all(top_level_super_admin_token: str, session: Session = Depends(get_session)):
+@router.get('', response_model=List[SuperAdminForRead])
+def show_all(top_level_super_admin_token: Annotated[str, Header()], session: Session = Depends(get_session)):
     token_payload = check_token(token=top_level_super_admin_token)
 
     username = token_payload['username']
@@ -112,7 +118,11 @@ def show_all(top_level_super_admin_token: str, session: Session = Depends(get_se
 
 
 @router.get('{super_admin_id}', response_model=SuperAdminForRead)
-def show_specific(top_level_super_admin_token: str, super_admin_id: int, session: Session = Depends(get_session)):
+def show_specific(
+        top_level_super_admin_token: Annotated[str, Header()],
+        super_admin_id: int,
+        session: Session = Depends(get_session)
+):
     token_payload = check_token(token=top_level_super_admin_token)
 
     username = token_payload['username']
@@ -135,7 +145,11 @@ def show_specific(top_level_super_admin_token: str, super_admin_id: int, session
 
 
 @router.delete('{super_admin_id}', response_model=SuperAdminForRead)
-def delete(top_level_super_admin_token: str, super_admin_id: int, session: Session = Depends(get_session)):
+def delete(
+        top_level_super_admin_token: Annotated[str, Header()],
+        super_admin_id: int,
+        session: Session = Depends(get_session)
+):
     token_payload = check_token(token=top_level_super_admin_token)
 
     username = token_payload['username']

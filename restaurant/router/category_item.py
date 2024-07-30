@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, status, Depends
+from fastapi import APIRouter, HTTPException, status, Depends, Header
 
 from restaurant.scheme.category_item import CategoryItemForRead, AdditionItemToCategory, DeleteItemFromCategory
 from restaurant.database import get_session
@@ -7,6 +7,7 @@ from restaurant.authentication import check_token
 
 from sqlalchemy.orm import Session
 
+from typing import Annotated
 
 router = APIRouter(
     prefix='/category_items',
@@ -17,7 +18,11 @@ role = 'admin'
 
 
 @router.post('', response_model=AdditionItemToCategory)
-def addition(admin_token: str, category_item: AdditionItemToCategory, session: Session = Depends(get_session)):
+def addition(
+        admin_token: Annotated[str, Header()],
+        category_item: AdditionItemToCategory,
+        session: Session = Depends(get_session)
+):
     token_payload = check_token(token=admin_token)
 
     token_role = token_payload['role']
@@ -42,7 +47,11 @@ def addition(admin_token: str, category_item: AdditionItemToCategory, session: S
 
 
 @router.get('{category_id}', response_model=CategoryItemForRead)
-def show_item_side(admin_token: str, category_id: int, session: Session = Depends(get_session)):
+def show_item_side(
+        admin_token: Annotated[str, Header()],
+        category_id: int,
+        session: Session = Depends(get_session)
+):
     token_payload = check_token(token=admin_token)
 
     token_role = token_payload['role']
@@ -66,7 +75,11 @@ def show_item_side(admin_token: str, category_id: int, session: Session = Depend
 
 
 @router.delete('', response_model=DeleteItemFromCategory)
-def delete(admin_token: str, category_item: DeleteItemFromCategory, session: Session = Depends(get_session)):
+def delete(
+        admin_token: Annotated[str, Header()],
+        category_item: DeleteItemFromCategory,
+        session: Session = Depends(get_session)
+):
     token_payload = check_token(token=admin_token)
 
     token_role = token_payload['role']

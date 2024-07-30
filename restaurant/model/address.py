@@ -12,6 +12,7 @@ class Address(DateTimeMixin, Base):
     customer_id = Column(ForeignKey('customer.id'))
 
     orders = relationship('Order', cascade='all, delete')
+    customer = relationship('Customer', back_populates='addresses')
 
     @classmethod
     def add(cls, session: Session, customer_id, address):

@@ -34,3 +34,4 @@ class CategoryForRead(BaseModel):
 
     class Config:
         from_attributes = True
+

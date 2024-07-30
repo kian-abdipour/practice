@@ -1,9 +1,10 @@
 from sqlalchemy import Column, Integer, ForeignKey, Float
+from sqlalchemy.orm import relationship, Session, ColumnProperty
+
 from restaurant.model.base import Base
-from sqlalchemy.orm import relationship
 from restaurant.model.mixin import DateTimeMixin
-from restaurant.database import Session
-from restaurant.model import Item
+from restaurant.model.item import Item
+from restaurant.custom_exception import OutOfStockError
 
 from copy import deepcopy
 
@@ -13,35 +14,28 @@ class OrderItem(Base, DateTimeMixin):
     id = Column(Integer, primary_key=True)
     quantity = Column(Integer, default=1, nullable=False)
     unit_amount = Column(Float, nullable=False)
-    total_amount = Column(Float, default=0, nullable=False)
+    total_amount = ColumnProperty(unit_amount*quantity)
     order_id = Column(ForeignKey('order.id'))
     item_id = Column(ForeignKey('item.id'))
 
-    orders = relationship('Order', overlaps='items', cascade='all, delete')
-    items = relationship('Item', overlaps='orders', cascade='all, delete')
+    order = relationship('Order', overlaps='items', cascade='all, delete', back_populates='items')
+    item = relationship('Item', overlaps='orders', cascade='all, delete', back_populates='orders')
 
     @classmethod
-    def add(cls, order_id, list_item, list_item_id):
-        list_item_deep_copy = deepcopy(list_item)
-        list_item_id_deep_copy = deepcopy(list_item_id)
+    def add(cls, session: Session, order_id, item_id, quantity, unit_amount, total_amount):
+        order_item = cls(
+            quantity=quantity, unit_amount=unit_amount,
+            total_amount=total_amount, order_id=order_id, item_id=item_id
+        )
+        item = session.query(Item).filter(Item.id == item_id).one()
+        if item.stock == 0:
+            raise OutOfStockError(massage='The item is out of stock')
 
-        for item in list_item:
-            item_id = item.id
-            unit_amount = item.price
-            quantity = list_item_id_deep_copy.count(item_id)
-            total_amount = item.price * quantity
-            while item.id in list_item_id_deep_copy:
-                list_item_deep_copy.pop(list_item_id_deep_copy.index(item_id))
-                list_item_id_deep_copy.remove(item_id)
+        session.add(order_item)
+        session.query(Item).filter(Item.id == item_id).one().update({Item.stock: (Item.stock - quantity)})
 
-            order_item = cls(quantity=quantity, unit_amount=unit_amount,
-                             total_amount=total_amount, order_id=order_id, item_id=item_id)
-            with Session() as session:
-                session.add(order_item)
-                session.query(Item).filter(Item.id == item.id).update({Item.stock: (Item.stock - quantity)})
+        session.commit()
+        session.refresh(order_item)
 
-                session.commit()
-
-            if len(list_item_deep_copy) == 0:
-                return
+        return order_item
 

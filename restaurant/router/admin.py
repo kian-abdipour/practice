@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Header
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 
@@ -11,6 +11,9 @@ from sqlalchemy.orm import Session
 
 from datetime import timedelta
 
+from typing import Annotated, List
+
+
 router = APIRouter(
     prefix='/admins',
     tags=['admin']
@@ -20,7 +23,11 @@ role = 'super_admin'
 
 
 @router.post('', response_model=AdminForRead)
-def addition(super_admin_token: str, admin: AdminForAddition, session: Session = Depends(get_session)):
+def addition(
+        super_admin_token: Annotated[str, Header()],
+        admin: AdminForAddition,
+        session: Session = Depends(get_session)
+):
     token_payload = check_token(super_admin_token)
 
     token_role = token_payload['role']
@@ -48,7 +55,7 @@ def addition(super_admin_token: str, admin: AdminForAddition, session: Session =
 
 
 @router.post('/login/tokens')
-def login(admin: AdminForLogin, session: Session):
+def login(admin: AdminForLogin, session: Session = Depends(get_session)):
     admin = Admin.search_by_username(session=session, username=admin.username)
     if admin is None:
         raise HTTPException(
@@ -72,8 +79,8 @@ def login(admin: AdminForLogin, session: Session):
     return JSONResponse(content=body, headers=header)
 
 
-@router.get('', response_model=[AdminForRead])
-def show_all(super_admin_token: str, session: Session):
+@router.get('', response_model=List[AdminForRead])
+def show_all(super_admin_token: Annotated[str, Header()], session: Session = Depends(get_session)):
     token_payload = check_token(super_admin_token)
 
     token_role = token_payload['role']
@@ -89,7 +96,7 @@ def show_all(super_admin_token: str, session: Session):
 
 
 @router.get('/{admin_id}', response_model=AdminForRead)
-def show_specific(super_admin_token: str, admin_id: str, session: Session = Depends(get_session)):
+def show_specific(super_admin_token: Annotated[str, Header()], admin_id: str, session: Session = Depends(get_session)):
     token_payload = check_token(super_admin_token)
 
     token_role = token_payload['role']
@@ -110,7 +117,7 @@ def show_specific(super_admin_token: str, admin_id: str, session: Session = Depe
 
 
 @router.delete('/{admin_id}', response_model=AdminForRead)
-def delete(super_admin_token: str, admin_id: int, session: Session = Depends(get_session)):
+def delete(super_admin_token: Annotated[str, Header()], admin_id: int, session: Session = Depends(get_session)):
     token_payload = check_token(super_admin_token)
 
     token_role = token_payload['role']

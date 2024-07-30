@@ -1,13 +1,13 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Header
 
 from restaurant.database import get_session
 from restaurant.authentication import check_token
 from restaurant.model import Address, Customer
-from restaurant.scheme.address import AddressForAddition, AddressForRead
+from restaurant.scheme.address import AddressForAddition, AddressForRead  # AllAddressForRead
 
 from sqlalchemy.orm import Session
 
-from typing import Any
+from typing import Annotated, List
 
 
 router = APIRouter(
@@ -19,7 +19,10 @@ role = 'customer'
 
 
 @router.post('', response_model=AddressForRead)
-def addition(customer_token: str, address: AddressForAddition, session: Session = Depends(get_session)):
+def addition(customer_token: Annotated[str, Header()],
+             address: AddressForAddition,
+             session: Session = Depends(get_session)):
+
     token_payload = check_token(token=customer_token)
     token_role = token_payload['role']
     if token_role != role:
@@ -36,7 +39,7 @@ def addition(customer_token: str, address: AddressForAddition, session: Session 
 
 
 @router.delete('/{address_id}', response_model=AddressForRead)
-def deletion(customer_token: str, address_id: int, session: Session = Depends(get_session)):
+def deletion(customer_token: Annotated[str, Header()], address_id: int, session: Session = Depends(get_session)):
     token_payload = check_token(token=customer_token)
     token_role = token_payload['role']
     if token_role != role:
@@ -58,8 +61,8 @@ def deletion(customer_token: str, address_id: int, session: Session = Depends(ge
     return deleted_address
 
 
-@router.get('', response_model=[AddressForRead])
-def show_all(customer_token: str, session: Session = Depends(get_session)):
+@router.get('', response_model=List[AddressForRead])
+def show_all(customer_token: Annotated[str, Header()], session: Session = Depends(get_session)):
     token_payload = check_token(token=customer_token)
     token_role = token_payload['role']
     if token_role != role:
@@ -76,7 +79,7 @@ def show_all(customer_token: str, session: Session = Depends(get_session)):
 
 
 @router.get('/{address_id}', response_model=AddressForRead)
-def show_specific(customer_token: str, address_id: int, session: Session = Depends(get_session)):
+def show_specific(customer_token: Annotated[str, Header()], address_id: int, session: Session = Depends(get_session)):
     token_payload = check_token(token=customer_token)
     token_role = token_payload['role']
     if token_role != role:

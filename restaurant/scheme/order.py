@@ -35,6 +35,9 @@ class OrderForCreate(BaseModel):
 
         return description
 
+    class Config:
+        from_attributes = True
+
 
 class OrderForRead(BaseModel):
     id: int
@@ -44,4 +47,7 @@ class OrderForRead(BaseModel):
     description: str
     address_id: int
     customer_id: int
+
+    class Config:
+        from_attributes = True
 

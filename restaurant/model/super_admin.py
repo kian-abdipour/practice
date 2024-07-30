@@ -14,7 +14,7 @@ class SuperAdmin(DateTimeMixin, Base):
     username = Column(Unicode(16), unique=True, nullable=False)
     password = Column(Unicode(8), nullable=False)
 
-    admins = relationship('Admin', cascade='all, delete')
+    admins = relationship('Admin', back_populates='super_admin')
 
     @classmethod
     def add(cls, session: Session, first_name, last_name, username, password):

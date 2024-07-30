@@ -8,6 +8,7 @@ from restaurant.model.cart import Cart
 from restaurant.model.item import Item
 from restaurant.database import get_session
 from restaurant.authentication import check_token
+from restaurant.custom_exception import OutOfStockError
 
 from typing import Annotated
 
@@ -21,11 +22,13 @@ role = 'customer'
 
 
 @router.post('/item', response_model=CartItemForRead)
-def addition_item_to_cart(customer_token: Annotated[str, Header()],
-                          item_id: int,
-                          cart_id: int,
-                          quantity: int,
-                          session: Session = Depends(get_session)):
+def addition_item_to_cart(
+        customer_token: Annotated[str, Header()],
+        item_id: int,
+        cart_id: int,
+        quantity: int,
+        session: Session = Depends(get_session)
+):
     token_payload = check_token(customer_token)
 
     token_role = token_payload['role']
@@ -73,10 +76,12 @@ def deletion(customer_token: Annotated[str, Header()], cart_id, item_id, session
 
 
 @router.delete('/{cart_id}/{item_id}', response_model=CartItemForRead)
-def decrease_quantity(customer_token: Annotated[str, Header()],
-                      cart_id,
-                      item_id,
-                      session: Session = Depends(get_session)):
+def decrease_quantity(
+        customer_token: Annotated[str, Header()],
+        cart_id: int,
+        item_id: int,
+        session: Session = Depends(get_session)
+):
     token_payload = check_token(customer_token)
 
     token_role = token_payload['role']
@@ -101,4 +106,19 @@ def decrease_quantity(customer_token: Annotated[str, Header()],
     updated_cart_item = CartItem.decrease_quantity(session=session, item_id=item_id, cart_id=cart_id)
 
     return updated_cart_item
+
+
+@router.get('/{customer_id}/item_stock')
+def check_stock_of_item_in_cart(customer_id: int, session: Session = Depends(get_session)):
+    cart_items = Cart.show_item_identifiers_in_a_cart(session=session, customer_id=customer_id)
+    for cart_item in cart_items:
+        item = Item.search_by_id(session=session, item_id=cart_item.item_id)
+        try:
+            Item.check_item_stock(item=item, quantity=cart_item.quantity)
+
+        except OutOfStockError:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f'Stock of {item.name} with id {item.id} is {item.stock} and you want {cart_item.quantity}'
+            )
 
