@@ -5,12 +5,13 @@ from contextlib import asynccontextmanager
 from restaurant.model.base import Base
 from restaurant.database import engine
 from restaurant.router import customer, address, admin, cart, category, category_item, item, order, payment, super_admin
-#from restaurant.model import Customer, Address, Admin, Cart, Category, CartItem, Item, Order, Payment, SuperAdmin
+#from restaurant.model import SuperAdmin, Admin, Category, Item, CategoryItem, Customer, Order, OrderItem, Payment, \
+#    Discount, DiscountHistory, CartItem, Cart, Address
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    Base.metadata.create_all(bind=engine, )
+    Base.metadata.create_all(bind=engine)
     yield
 
 

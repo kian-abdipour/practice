@@ -9,7 +9,7 @@ from restaurant.custom_exception import OutOfStockError
 from copy import deepcopy
 
 
-class OrderItem(Base, DateTimeMixin):
+class OrderItem(DateTimeMixin, Base):
     __tablename__ = 'order_item'
     id = Column(Integer, primary_key=True)
     quantity = Column(Integer, default=1, nullable=False)

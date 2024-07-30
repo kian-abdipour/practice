@@ -5,17 +5,17 @@ from sqlalchemy.orm import relationship, Session, column_property
 from restaurant.model.base import Base
 from restaurant.model.mixin import DateTimeMixin
 from restaurant.model.cart_item import CartItem
-#from restaurant.session import get_session
+from restaurant.database import get_session
 
-#for database_session in get_session():
-#    session = database_session
+for database_session in get_session():
+    db_session = database_session
 
 
 class Cart(DateTimeMixin, Base):
     __tablename__ = 'cart'
     id = Column(Integer, primary_key=True)
-    total_quantity = Column(Integer) #column_property(session.query(func.count(CartItem.cart_id)).join(id == CartItem.cart_id))
-    total_amount = Column(Integer) #column_property(session.query(func.sum(CartItem.total_amount)).join(id == CartItem.cart_id))
+    total_quantity = column_property(db_session.query(func.count(CartItem.cart_id)).filter(id == CartItem.cart_id))
+    total_amount = column_property(db_session.query(func.sum(CartItem.total_amount)).filter(id == CartItem.cart_id))
     customer_id = Column(ForeignKey('customer.id'))
 
     customer = relationship('Customer', back_populates='cart')
