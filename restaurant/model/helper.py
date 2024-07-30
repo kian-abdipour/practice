@@ -24,3 +24,9 @@ class TypePay:
 
 character_for_discount_code = ['?', '!', '$', '#', '.']
 
+
+class Role:
+    super_admin = 'super_admin'
+    admin = 'admin'
+    customer = 'customer'
+

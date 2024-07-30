@@ -4,6 +4,7 @@ from restaurant.database import get_session
 from restaurant.authentication import check_token
 from restaurant.model import Address, Customer
 from restaurant.scheme.address import AddressForAddition, AddressForRead  # AllAddressForRead
+from restaurant.model.helper import Role
 
 from sqlalchemy.orm import Session
 
@@ -15,8 +16,6 @@ router = APIRouter(
     tags=['address']
 )
 
-role = 'customer'
-
 
 @router.post('', response_model=AddressForRead)
 def addition(customer_token: Annotated[str, Header()],
@@ -25,7 +24,7 @@ def addition(customer_token: Annotated[str, Header()],
 
     token_payload = check_token(token=customer_token)
     token_role = token_payload['role']
-    if token_role != role:
+    if token_role != Role.customer:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='You don\'t have access to add address'
@@ -42,7 +41,7 @@ def addition(customer_token: Annotated[str, Header()],
 def deletion(customer_token: Annotated[str, Header()], address_id: int, session: Session = Depends(get_session)):
     token_payload = check_token(token=customer_token)
     token_role = token_payload['role']
-    if token_role != role:
+    if token_role != Role.customer:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='You don\'t have access to delete address'
@@ -65,7 +64,7 @@ def deletion(customer_token: Annotated[str, Header()], address_id: int, session:
 def show_all(customer_token: Annotated[str, Header()], session: Session = Depends(get_session)):
     token_payload = check_token(token=customer_token)
     token_role = token_payload['role']
-    if token_role != role:
+    if token_role != Role.customer:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='You don\'t have access to see addresses of this customer'
@@ -82,7 +81,7 @@ def show_all(customer_token: Annotated[str, Header()], session: Session = Depend
 def show_specific(customer_token: Annotated[str, Header()], address_id: int, session: Session = Depends(get_session)):
     token_payload = check_token(token=customer_token)
     token_role = token_payload['role']
-    if token_role != role:
+    if token_role != Role.customer:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='You don\'t have access to see addresses of this customer'

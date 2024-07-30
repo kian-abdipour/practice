@@ -6,6 +6,7 @@ from restaurant.scheme.admin import AdminForAddition, AdminForLogin, AdminForRea
 from restaurant.database import get_session
 from restaurant.model import Admin
 from restaurant.authentication import get_hash_password, verify_password, check_token, make_token
+from restaurant.model.helper import Role
 
 from sqlalchemy.orm import Session
 
@@ -19,8 +20,6 @@ router = APIRouter(
     tags=['admin']
 )
 
-role = 'super_admin'
-
 
 @router.post('', response_model=AdminForRead)
 def addition(
@@ -31,7 +30,7 @@ def addition(
     token_payload = check_token(super_admin_token)
 
     token_role = token_payload['role']
-    if token_role != role:
+    if token_role != Role.super_admin:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='You don\'t have access to add admin'
@@ -73,7 +72,7 @@ def login(admin: AdminForLogin, session: Session = Depends(get_session)):
     admin_dict.pop('passowrd')
     body = jsonable_encoder(admin_dict)
 
-    token = make_token(id_=admin.id, username=admin.username, expire_delta=timedelta(seconds=20))
+    token = make_token(id_=admin.id, role=Role.admin, username=admin.username, expire_delta=timedelta(seconds=20))
     header = {'token': token}
 
     return JSONResponse(content=body, headers=header)
@@ -84,7 +83,7 @@ def show_all(super_admin_token: Annotated[str, Header()], session: Session = Dep
     token_payload = check_token(super_admin_token)
 
     token_role = token_payload['role']
-    if token_role != role:
+    if token_role != Role.super_admin:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='You don\'t have access to see admin'
@@ -100,7 +99,7 @@ def show_specific(super_admin_token: Annotated[str, Header()], admin_id: str, se
     token_payload = check_token(super_admin_token)
 
     token_role = token_payload['role']
-    if token_role != role:
+    if token_role != Role.super_admin:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='You don\'t have access to see admin'
@@ -121,7 +120,7 @@ def delete(super_admin_token: Annotated[str, Header()], admin_id: int, session: 
     token_payload = check_token(super_admin_token)
 
     token_role = token_payload['role']
-    if token_role != role:
+    if token_role != Role.super_admin:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='You don\'t have access to delete admin'

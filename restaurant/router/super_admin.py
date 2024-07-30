@@ -6,6 +6,7 @@ from restaurant.scheme.super_admin import SuperAdminForLogin, SuperAdminForAddit
 from restaurant.database import get_session
 from restaurant.model import SuperAdmin
 from restaurant.authentication import verify_password, make_token, check_token, get_hash_password
+from restaurant.model.helper import Role
 
 from sqlalchemy.orm import Session
 
@@ -18,7 +19,6 @@ from os import getenv
 
 load_dotenv()
 top_level_super_admin_username = getenv('TOP_LEVEL_SUPER_ADMIN_USERNAME')
-super_admin_role = 'super_admin'
 
 router = APIRouter(
     prefix='/super_admins',
@@ -47,7 +47,7 @@ def login(super_admin: SuperAdminForLogin, session: Session = Depends(get_sessio
 
     token = make_token(
         id_=super_admin_in_database.id,
-        role=super_admin_role,
+        role=Role.super_admin,
         username=super_admin_in_database.username,
         expire_delta=timedelta(seconds=20)
     )
@@ -66,7 +66,7 @@ def addition(
 
     username = token_payload['username']
     token_role = token_payload['role']
-    if username != top_level_super_admin_username or token_role != super_admin_role:
+    if username != top_level_super_admin_username or token_role != Role.super_admin:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='You do not have access to addition super_admin'
@@ -91,7 +91,7 @@ def addition(
 
     token = make_token(
         id_=added_super_admin.id,
-        role=super_admin_role,
+        role=Role.super_admin,
         username=added_super_admin.username,
         expire_delta=timedelta(seconds=20)
     )
@@ -106,7 +106,7 @@ def show_all(top_level_super_admin_token: Annotated[str, Header()], session: Ses
 
     username = token_payload['username']
     token_role = token_payload['role']
-    if username != top_level_super_admin_username or token_role != super_admin_role:
+    if username != top_level_super_admin_username or token_role != Role.super_admin:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='You do not have access to see super_admins'
@@ -127,7 +127,7 @@ def show_specific(
 
     username = token_payload['username']
     token_role = token_payload['role']
-    if username != top_level_super_admin_username or token_role != super_admin_role:
+    if username != top_level_super_admin_username or token_role != Role.super_admin:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='You do not have access to see super_admins'
@@ -154,7 +154,7 @@ def delete(
 
     username = token_payload['username']
     token_role = token_payload['role']
-    if username != top_level_super_admin_username or token_role != super_admin_role:
+    if username != top_level_super_admin_username or token_role != Role.super_admin:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='You do not have access to delete super_admin'

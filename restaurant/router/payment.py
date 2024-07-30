@@ -5,7 +5,8 @@ from restaurant.model import Payment, Discount, DiscountHistory
 from restaurant.database import get_session
 from restaurant.custom_exception import DisposableDiscountError, StartDateDiscountError, ExpireDateDiscountError,\
                                          UsageLimitationDiscountError
-from restaurant.model.helper import State
+from restaurant.model.helper import State, Role
+from restaurant.authentication import check_token
 
 from sqlalchemy.orm import Session
 
@@ -20,7 +21,20 @@ router = APIRouter(
 
 
 @router.post('', response_model=PaymentForRead)
-def addition(admin_token: Annotated[str, Header()], payment: PaymentForCreate, session: Session = Depends(get_session)):
+def addition(
+        customer_token: Annotated[str, Header()],
+        payment: PaymentForCreate,
+        session: Session = Depends(get_session)
+):
+    token_payload = check_token(token=customer_token)
+
+    token_role = token_payload['role']
+    if token_role != Role.customer:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail='You don\'t have access to see item'
+        )
+
     if payment.discount_code is not None:
         discount = Discount.search_by_code(session=session, code=payment.discount_code)
         if discount is None:

@@ -6,6 +6,7 @@ from restaurant.model import Order, OrderItem
 from restaurant.model.cart import Cart, CartItem
 from restaurant.custom_exception import OutOfStockError
 from restaurant.authentication import check_token
+from restaurant.model.helper import Role
 
 from sqlalchemy.orm import Session
 
@@ -17,19 +18,16 @@ router = APIRouter(
     tags=['order']
 )
 
-admin_role = 'admin'
-customer_role = 'customer'
-
 
 @router.post('', response_model=OrderForRead)
 def addition(admin_token: Annotated[str, Header()], order: OrderForCreate, session: Session = Depends(get_session)):
     token_payload = check_token(token=admin_token)
 
     token_role = token_payload['role']
-    if token_role != admin_role:
+    if token_role != Role.customer:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail='You don\'t have access to see item'
+            detail='You don\'t have access to add order'
         )
 
     cart_items = Cart.show_item_identifiers_in_a_cart(session=session, customer_id=order.customer_id)
@@ -76,7 +74,7 @@ def show_all_waiting_to_confirm(
     token_payload = check_token(token=customer_or_admin_token)
 
     token_role = token_payload['role']
-    if token_role != admin_role and token_role != customer_role:
+    if token_role != Role.admin and token_role != Role.customer:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='You don\'t have access to see item'
@@ -96,7 +94,7 @@ def confirm_order(
     token_payload = check_token(token=admin_token)
 
     token_role = token_payload['role']
-    if token_role != admin_role:
+    if token_role != Role.admin:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='You don\'t have access to see item'

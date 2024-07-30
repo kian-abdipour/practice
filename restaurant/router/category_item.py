@@ -4,6 +4,7 @@ from restaurant.scheme.category_item import CategoryItemForRead, AdditionItemToC
 from restaurant.database import get_session
 from restaurant.model import Category, CategoryItem, Item
 from restaurant.authentication import check_token
+from restaurant.model.helper import Role
 
 from sqlalchemy.orm import Session
 
@@ -13,8 +14,6 @@ router = APIRouter(
     prefix='/category_items',
     tags=['category_item']
 )
-
-role = 'admin'
 
 
 @router.post('', response_model=AdditionItemToCategory)
@@ -26,7 +25,7 @@ def addition(
     token_payload = check_token(token=admin_token)
 
     token_role = token_payload['role']
-    if token_role != role:
+    if token_role != Role.admin:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='You don\'t have access to add item to category'
@@ -55,7 +54,7 @@ def show_item_side(
     token_payload = check_token(token=admin_token)
 
     token_role = token_payload['role']
-    if token_role != role:
+    if token_role != Role.admin:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='You don\'t have access see item of category'
@@ -83,7 +82,7 @@ def delete(
     token_payload = check_token(token=admin_token)
 
     token_role = token_payload['role']
-    if token_role != role:
+    if token_role != Role.admin:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='You don\'t have access to delete item from category'
@@ -115,5 +114,4 @@ def delete(
         )
 
     return deleted_category_item
-
 

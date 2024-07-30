@@ -9,6 +9,7 @@ from restaurant.model.item import Item
 from restaurant.database import get_session
 from restaurant.authentication import check_token
 from restaurant.custom_exception import OutOfStockError
+from restaurant.model.helper import Role
 
 from typing import Annotated
 
@@ -17,8 +18,6 @@ router = APIRouter(
     prefix='/carts',
     tags=['cart']
 )
-
-role = 'customer'
 
 
 @router.post('/item', response_model=CartItemForRead)
@@ -32,7 +31,7 @@ def addition_item_to_cart(
     token_payload = check_token(customer_token)
 
     token_role = token_payload['role']
-    if token_role != role:
+    if token_role != Role.customer:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='You don\'t have access to add item to cart for customer'
@@ -47,7 +46,7 @@ def deletion(customer_token: Annotated[str, Header()], cart_id, item_id, session
     token_payload = check_token(customer_token)
 
     token_role = token_payload['role']
-    if token_role != role:
+    if token_role != Role.customer:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='You don\'t have access to delete item from cart for customer'
@@ -85,7 +84,7 @@ def decrease_quantity(
     token_payload = check_token(customer_token)
 
     token_role = token_payload['role']
-    if token_role != role:
+    if token_role != Role.customer:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='You don\'t have access to delete item from cart for customer'

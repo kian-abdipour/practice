@@ -5,6 +5,7 @@ from restaurant.scheme.category import CategoryForCreate, CategoryForRead
 from restaurant.database import get_session
 from restaurant.model import Category
 from restaurant.authentication import check_token
+from restaurant.model.helper import Role
 
 from sqlalchemy.orm import Session
 
@@ -14,8 +15,6 @@ router = APIRouter(
     prefix='/categories',
     tags=['Category']
 )
-
-role = 'admin'
 
 
 @router.post('', response_model=CategoryForRead)
@@ -27,7 +26,7 @@ def addition(
     token_payload = check_token(token=admin_token)
 
     token_role = token_payload['role']
-    if token_role != role:
+    if token_role != Role.admin:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='You don\'t have access to add category'
@@ -50,7 +49,7 @@ def show_all(admin_token: Annotated[str, Header()], session: Session = Depends(g
     token_payload = check_token(admin_token)
 
     token_role = token_payload['role']
-    if token_role != role:
+    if token_role != Role.admin:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='You don\'t have access to see category'
@@ -69,7 +68,7 @@ def show_specific(
     token_payload = check_token(admin_token)
 
     token_role = token_payload['role']
-    if token_role != role:
+    if token_role != Role.admin:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='You don\'t have access to see category'
@@ -90,7 +89,7 @@ def delete(admin_token: Annotated[str, Header()], category_id: int, session: Ses
     token_payload = check_token(admin_token)
 
     token_role = token_payload['role']
-    if token_role != role:
+    if token_role != Role.admin:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='You don\'t have access to delete category'

@@ -9,6 +9,7 @@ from restaurant.scheme.customer import CustomerForLogin
 from restaurant.model.customer import Customer
 from restaurant.model.cart import Cart
 from restaurant.authentication import make_token, check_token, get_hash_password, verify_password
+from restaurant.model.helper import Role
 
 from sqlalchemy.orm import Session
 
@@ -21,8 +22,6 @@ router = APIRouter(
     prefix='/customer',
     tags=['customer']
 )
-
-role = 'customer'
 
 
 @router.post('/tokens')
@@ -46,7 +45,7 @@ def signup(session: Session = Depends(get_session), customer: CustomerForLogin =
 
     token = make_token(
         id_=added_customer.id,
-        role=role,
+        role=Role.customer,
         username=added_customer.username,
         expire_delta=timedelta(seconds=20)
     )
@@ -80,7 +79,7 @@ def login(session: Session = Depends(get_session), customer: CustomerForLogin = 
 
     token = make_token(
         id_=customer_in_database.id,
-        role=role,
+        role=Role.customer,
         username=customer_in_database.username,
         expire_delta=timedelta(seconds=20)
     )

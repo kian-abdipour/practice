@@ -6,6 +6,7 @@ from restaurant.authentication import check_token
 from restaurant.model import Item
 from restaurant.scheme.item import ItemForCreate, ItemForRead
 from restaurant.database import get_session
+from restaurant.model.helper import Role
 
 from typing import Annotated, List
 
@@ -14,9 +15,6 @@ router = APIRouter(
     prefix='/items',
     tags=['item']
 )
-
-admin_role = 'admin'
-customer_role = 'customer'
 
 
 @router.post('', response_model=ItemForCreate)
@@ -28,7 +26,7 @@ def addition(
     token_payload = check_token(token=customer_or_admin_token)
 
     token_role = token_payload['role']
-    if token_role != admin_role and token_role != customer_role:
+    if token_role != Role.admin:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='You don\'t have access to add item'
@@ -55,7 +53,7 @@ def show_all(customer_or_admin_token: Annotated[str, Header()], session: Session
     token_payload = check_token(token=customer_or_admin_token)
 
     token_role = token_payload['role']
-    if token_role != admin_role and token_role != customer_role:
+    if token_role != Role.admin and token_role != Role.customer:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='You don\'t have access to see item'
@@ -75,7 +73,7 @@ def show_specific_by_id(
     token_payload = check_token(token=customer_or_admin_token)
 
     token_role = token_payload['role']
-    if token_role != admin_role and token_role != customer_role:
+    if token_role != Role.admin and token_role != Role.customer:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='You don\'t have access to see item'
@@ -100,7 +98,7 @@ def show_specific_by_name(
     token_payload = check_token(token=customer_or_admin_token)
 
     token_role = token_payload['role']
-    if token_role != admin_role and token_role != customer_role:
+    if token_role != Role.admin and token_role != Role.customer:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='You don\'t have access to see item'
