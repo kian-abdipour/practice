@@ -55,24 +55,30 @@ def addition(
 
 @router.post('/login/tokens')
 def login(admin: AdminForLogin, session: Session = Depends(get_session)):
-    admin = Admin.search_by_username(session=session, username=admin.username)
-    if admin is None:
+    admin_in_database = Admin.search_by_username(session=session, username=admin.username)
+    if admin_in_database is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail='Username not found'
         )
 
-    if verify_password(password=admin.password, hashed_password=admin.password) is False:
+    if verify_password(password=admin.password, hashed_password=admin_in_database.password) is False:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail='Password is not correct'
         )
 
-    admin_dict = admin.__dict__
-    admin_dict.pop('passowrd')
+    admin_dict = admin_in_database.__dict__
+    print(admin_dict)
+    admin_dict.pop('password')
     body = jsonable_encoder(admin_dict)
 
-    token = make_token(id_=admin.id, role=Role.admin, username=admin.username, expire_delta=timedelta(seconds=20))
+    token = make_token(
+        id_=admin_in_database.id,
+        role=Role.admin,
+        username=admin_in_database.username,
+        expire_delta=timedelta(minutes=5)
+    )
     header = {'token': token}
 
     return JSONResponse(content=body, headers=header)

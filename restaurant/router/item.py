@@ -17,13 +17,13 @@ router = APIRouter(
 )
 
 
-@router.post('', response_model=ItemForCreate)
+@router.post('', response_model=ItemForRead)
 def addition(
-        customer_or_admin_token: Annotated[str, Header()],
+        admin_token: Annotated[str, Header()],
         item: ItemForCreate,
         session: Session = Depends(get_session)
 ):
-    token_payload = check_token(token=customer_or_admin_token)
+    token_payload = check_token(token=admin_token)
 
     token_role = token_payload['role']
     if token_role != Role.admin:

@@ -15,6 +15,8 @@ class CategoryForCreate(BaseModel):
                 detail='Category name should be at least 40 character'
             )
 
+        return name
+
     class Config:
         from_attributes = True
 
@@ -31,6 +33,8 @@ class CategoryForRead(BaseModel):
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail='Category name should be at least 40 character'
             )
+
+        return name
 
     class Config:
         from_attributes = True

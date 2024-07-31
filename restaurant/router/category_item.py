@@ -45,7 +45,7 @@ def addition(
     return added_category_item
 
 
-@router.get('{category_id}', response_model=CategoryItemForRead)
+@router.get('/{category_id}', response_model=CategoryItemForRead)
 def show_item_side(
         admin_token: Annotated[str, Header()],
         category_id: int,

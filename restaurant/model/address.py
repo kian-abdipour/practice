@@ -41,8 +41,8 @@ class Address(DateTimeMixin, Base):
 
     @classmethod
     def delete(cls, session: Session, address_id, customer_id):
-        result = session.query(cls).filter(cls.id == address_id, cls.customer_id == customer_id).delete()
         address = cls.search(session, address_id, customer_id)
+        result = session.query(cls).filter(cls.id == address_id, cls.customer_id == customer_id).delete()
 
         session.commit()
 

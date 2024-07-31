@@ -54,8 +54,8 @@ class Order(DateTimeMixin, Base):
             print('History of your order is empty')
 
     @classmethod
-    def show_all_waiting_to_confirm(cls, session: Session):
-        result = session.query(cls, Address.address, Payment).filter(cls.state == State.waiting_to_confirmation).join(Address).join(Payment).order_by(cls.id).all()  # Question where to be cut
+    def show_by_state(cls, session: Session, state):
+        result = session.query(cls, Address.address, Payment).filter(cls.state == state).join(Address).join(Payment).order_by(cls.id).all()  # Question where to be cut
 
         #if len(result) > 0:
         #    for row in result:

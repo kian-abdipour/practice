@@ -30,9 +30,8 @@ def addition(customer_token: Annotated[str, Header()],
             detail='You don\'t have access to add address'
         )
 
-    username = token_payload['username']
-    customer = Customer.search_by_username(session=session, username=username)
-    added_address = Address.add(session=session, customer_id=customer.id, address=address.address)
+    customer_id = token_payload['id']
+    added_address = Address.add(session=session, customer_id=customer_id, address=address.address)
 
     return added_address
 
@@ -47,10 +46,8 @@ def deletion(customer_token: Annotated[str, Header()], address_id: int, session:
             detail='You don\'t have access to delete address'
         )
 
-    username = token_payload['username']
-    customer = Customer.search_by_username(session=session, username=username)
-
-    deleted_address = Address.delete(session=session, customer_id=customer.id, address_id=address_id)
+    customer_id = token_payload['id']
+    deleted_address = Address.delete(session=session, customer_id=customer_id, address_id=address_id)
     if deleted_address is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -70,9 +67,8 @@ def show_all(customer_token: Annotated[str, Header()], session: Session = Depend
             detail='You don\'t have access to see addresses of this customer'
         )
 
-    username = token_payload['username']
-    customer = Customer.search_by_username(session=session, username=username)
-    addresses = Address.show_all(session=session, customer_id=customer.id)
+    customer_id = token_payload['id']
+    addresses = Address.show_all(session=session, customer_id=customer_id)
 
     return addresses
 
@@ -87,9 +83,8 @@ def show_specific(customer_token: Annotated[str, Header()], address_id: int, ses
             detail='You don\'t have access to see addresses of this customer'
         )
 
-    username = token_payload['username']
-    customer = Customer.search_by_username(session=session, username=username)
-    address = Address.search(session=session, customer_id=customer.id, address_id=address_id)
+    customer_id = token_payload['id']
+    address = Address.search(session=session, customer_id=customer_id, address_id=address_id)
 
     if address is None:
         raise HTTPException(

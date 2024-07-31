@@ -6,11 +6,11 @@ from restaurant.model import Order, OrderItem
 from restaurant.model.cart import Cart, CartItem
 from restaurant.custom_exception import OutOfStockError
 from restaurant.authentication import check_token
-from restaurant.model.helper import Role
+from restaurant.model.helper import Role, State
 
 from sqlalchemy.orm import Session
 
-from typing import Annotated
+from typing import Annotated, List
 
 
 router = APIRouter(
@@ -20,8 +20,8 @@ router = APIRouter(
 
 
 @router.post('', response_model=OrderForRead)
-def addition(admin_token: Annotated[str, Header()], order: OrderForCreate, session: Session = Depends(get_session)):
-    token_payload = check_token(token=admin_token)
+def addition(customer_token: Annotated[str, Header()], order: OrderForCreate, session: Session = Depends(get_session)):
+    token_payload = check_token(token=customer_token)
 
     token_role = token_payload['role']
     if token_role != Role.customer:
@@ -30,16 +30,17 @@ def addition(admin_token: Annotated[str, Header()], order: OrderForCreate, sessi
             detail='You don\'t have access to add order'
         )
 
-    cart_items = Cart.show_item_identifiers_in_a_cart(session=session, customer_id=order.customer_id)
-    if cart_items is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail='A customer with this id not found'
-        )
+    customer_id = token_payload['id']
+    cart_items = Cart.show_item_identifiers_in_a_cart(session=session, customer_id=customer_id)
+#    if cart_items is None:
+#        raise HTTPException(
+#            status_code=status.HTTP_404_NOT_FOUND,
+#            detail='A customer with this id not found'
+#        )
 
     added_order = Order.add(
         session=session,
-        state=order.state,
+        state=State.waiting_to_confirmation,
         delivery_type=order.delivery_type,
         desk_number=order.desk_number,
         description=order.description,
@@ -64,28 +65,32 @@ def addition(admin_token: Annotated[str, Header()], order: OrderForCreate, sessi
                 detail=f'The item with id {cart_item.item_id} is out of stock'
             )
 
+        CartItem.delete(session=session, item_id=cart_item.item_id, cart_id=cart_item.cart_id)
+
     return added_order
 
 
-@router.get('/?state=Waiting to confirmation')
-def show_all_waiting_to_confirm(
-        customer_or_admin_token: Annotated[str, Header()], session: Session = Depends(get_session)
+@router.get('/{state}', response_model=List[OrderForRead])
+def show_by_state(
+        admin_token: Annotated[str, Header()],
+        state: str,
+        session: Session = Depends(get_session)
 ):
-    token_payload = check_token(token=customer_or_admin_token)
+    token_payload = check_token(token=admin_token)
 
     token_role = token_payload['role']
-    if token_role != Role.admin and token_role != Role.customer:
+    if token_role != Role.admin:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='You don\'t have access to see item'
         )
 
-    orders = Order.show_all_waiting_to_confirm(session=session)
+    orders = Order.show_by_state(session=session, state=state)
 
     return orders
 
 
-@router.put('{order_id}', response_model=OrderForRead)
+@router.put('/{order_id}', response_model=OrderForRead)
 def confirm_order(
         admin_token: Annotated[str, Header()],
         order_id: str,

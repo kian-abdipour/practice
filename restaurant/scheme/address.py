@@ -24,7 +24,7 @@ class AddressForAddition(BaseModel):
 class AddressForRead(BaseModel):
     id: int
     address: str
-    customer_id: str
+    customer_id: int
 
     class Config:
         from_attributes = True

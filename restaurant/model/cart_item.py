@@ -6,6 +6,7 @@ from restaurant.model.mixin import DateTimeMixin
 from restaurant.model.item import Item
 from restaurant.database import get_session
 
+from copy import deepcopy
 
 for database_session in get_session():
     db_session = database_session
@@ -24,7 +25,15 @@ class CartItem(DateTimeMixin, Base):
     item = relationship('Item', overlaps='carts', cascade='all, delete', back_populates='carts')
 
     @classmethod
-    def add(cls, session: Session, item_id, cart_id, quantity):
+    def add(cls, session: Session, item_id, cart_id, quantity, cart_item_in_database):
+        if cart_item_in_database is not None:
+            session.query(cls).filter(cls.id == cart_item_in_database.id).update({cls.quantity: cls.quantity + quantity})
+
+            session.commit()
+            session.refresh(cart_item_in_database)
+
+            return cart_item_in_database
+
         cart_item = cls(item_id=item_id, cart_id=cart_id, quantity=quantity)
 
         session.add(cart_item)
@@ -36,28 +45,41 @@ class CartItem(DateTimeMixin, Base):
 
     @classmethod
     def delete(cls, session: Session, item_id, cart_id):
-        cart_item = session.query(cls).filter(cls.item_id == item_id, cls.cart_id == cart_id).one_or_none()
+        cart_item = cls.search(session=session, item_id=item_id, cart_id=cart_id)
         if cart_item is None:
             return None
 
+        cart_item_for_response = deepcopy(cart_item)
         session.query(cls).filter(cls.item_id == item_id, cls.cart_id == cart_id).delete()
 
         session.commit()
 
-        return cart_item
+        return cart_item_for_response
 
     @classmethod
     def decrease_quantity(cls, session: Session, item_id, cart_id):
-        cart_item = session.query(cls).filter(cls.item_id == item_id, cls.cart_id == cart_id).one_or_none()
+        cart_item = cls.search(session=session, item_id=item_id, cart_id=cart_id)
         if cart_item is None:
             return None
 
         if cart_item.quantity == 1:
             cls.delete(session=session, item_id=item_id, cart_id=cart_id)
 
+            session.commit()
+
+            return cart_item
+
         session.query(cls).filter(cls.item_id == item_id, cls.cart_id == cart_id).update(
             {cls.quantity: cls.quantity - 1}
         )
+
+        session.commit()
+
+        return cart_item
+
+    @classmethod
+    def search(cls, session: Session, item_id, cart_id):
+        cart_item = session.query(cls).filter(cls.item_id == item_id, cls.cart_id == cart_id).one_or_none()
 
         return cart_item
 

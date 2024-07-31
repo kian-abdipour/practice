@@ -22,7 +22,7 @@ def make_token(id_: int, role: str, username: str, expire_delta: timedelta):
     data = {
         'id': id_,
         'role': role,
-        'access_key': username,
+        'username': username,
         'exp': token_expire
     }
 
@@ -34,7 +34,7 @@ def make_token(id_: int, role: str, username: str, expire_delta: timedelta):
 def check_token(token: str):
     try:
         payload = decode(token, secret_key, algorithm_encrypt)
-        username = payload['access_key']
+        username = payload['username']
         if username is None:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,

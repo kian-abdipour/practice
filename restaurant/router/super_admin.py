@@ -49,7 +49,7 @@ def login(super_admin: SuperAdminForLogin, session: Session = Depends(get_sessio
         id_=super_admin_in_database.id,
         role=Role.super_admin,
         username=super_admin_in_database.username,
-        expire_delta=timedelta(seconds=20)
+        expire_delta=timedelta(minutes=5)
     )
     header = {'token': token}
 
@@ -89,15 +89,7 @@ def addition(
     super_admin_dict.pop('password')
     body = jsonable_encoder(super_admin_dict)
 
-    token = make_token(
-        id_=added_super_admin.id,
-        role=Role.super_admin,
-        username=added_super_admin.username,
-        expire_delta=timedelta(seconds=20)
-    )
-    header = {'token': token}
-
-    return JSONResponse(content=body, headers=header)
+    return JSONResponse(content=body)
 
 
 @router.get('', response_model=List[SuperAdminForRead])
@@ -117,7 +109,7 @@ def show_all(top_level_super_admin_token: Annotated[str, Header()], session: Ses
     return super_admins
 
 
-@router.get('{super_admin_id}', response_model=SuperAdminForRead)
+@router.get('/{super_admin_id}', response_model=SuperAdminForRead)
 def show_specific(
         top_level_super_admin_token: Annotated[str, Header()],
         super_admin_id: int,
@@ -144,7 +136,7 @@ def show_specific(
     return super_admin
 
 
-@router.delete('{super_admin_id}', response_model=SuperAdminForRead)
+@router.delete('/{super_admin_id}', response_model=SuperAdminForRead)
 def delete(
         top_level_super_admin_token: Annotated[str, Header()],
         super_admin_id: int,

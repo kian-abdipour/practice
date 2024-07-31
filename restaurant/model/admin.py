@@ -12,7 +12,7 @@ class Admin(DateTimeMixin, Base):
     first_name = Column(Unicode(40), nullable=False)
     last_name = Column(Unicode(40), nullable=False)
     username = Column(Unicode(16), unique=True, nullable=False)
-    password = Column(Unicode(8), nullable=False)
+    password = Column(Unicode(64), nullable=False)
     superadmin_id = Column(ForeignKey('super_admin.id'))
 
     super_admin = relationship('SuperAdmin', back_populates='admins')

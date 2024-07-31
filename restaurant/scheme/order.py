@@ -6,7 +6,9 @@ from restaurant.model.helper import State, DeliveryType
 
 
 class OrderForCreate(BaseModel):
-    state: str = Field(default=State.waiting_to_confirmation)
+#    state: str = Field(
+#        description='Order state should be one of: Waiting to confirmation or Successfully confirm and finish'
+#    )
     delivery_type: str = Field(
         description='Delivery type should be one of "Bike delivery" or "In restaurant" or "Outside"'
 
@@ -14,7 +16,6 @@ class OrderForCreate(BaseModel):
     desk_number: int = Field(description='Desk number should be integer')
     description: str = Field(description='If you don\'t want to add any description sent an empty string')
     address_id: int = Field()
-    customer_id: int = Field()
 
     @field_validator('delivery_type')
     @classmethod

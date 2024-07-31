@@ -59,10 +59,10 @@ def show_all(admin_token: Annotated[str, Header()], session: Session = Depends(g
     return result
 
 
-@router.get('{category_id}', response_model=CategoryForRead)
+@router.get('/{category_id}', response_model=CategoryForRead)
 def show_specific(
         admin_token: Annotated[str, Header()],
-        category: CategoryForRead,
+        category_id: int,
         session: Session = Depends(get_session)
 ):
     token_payload = check_token(admin_token)
@@ -73,7 +73,7 @@ def show_specific(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='You don\'t have access to see category'
         )
-    result = Category.search_by_id(session=session, item_id=category.id)
+    result = Category.search_by_id(session=session, category_id=category_id)
 
     if result is None:
         raise HTTPException(
@@ -84,7 +84,7 @@ def show_specific(
     return result
 
 
-@router.delete('{category_id}', response_model=CategoryForRead)
+@router.delete('/{category_id}', response_model=CategoryForRead)
 def delete(admin_token: Annotated[str, Header()], category_id: int, session: Session = Depends(get_session)):
     token_payload = check_token(admin_token)
 

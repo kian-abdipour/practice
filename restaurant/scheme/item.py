@@ -2,13 +2,15 @@ from pydantic import BaseModel, Field, field_validator
 
 from fastapi import HTTPException, status
 
+from datetime import datetime
+
 
 class ItemForCreate(BaseModel):
     name: str = Field(description='An item name should be at least 40 character')
     country: str = Field(description='A country name should be at least 30 character')
     price: float = Field()
     stock: int = Field(default=0)
-    description: str = Field(description='If you don\'t want to add any description sent an empty string')
+    description: str | None = Field(description='If you don\'t want to add any description sent an empty string')
 
     @field_validator('name')
     @classmethod
@@ -48,9 +50,10 @@ class ItemForRead(BaseModel):
     id: int
     name: str
     country: str
-    price: int
+    price: float
     stock: int
-    description: str
+    description: str | None
+    created_at: datetime
 
     class Config:
         from_attributes = True
