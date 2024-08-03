@@ -1,11 +1,9 @@
-import hashlib
-
 from fastapi import APIRouter, HTTPException, status, Header, Depends
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 
 from restaurant.database import get_session
-from restaurant.scheme.customer import CustomerForLogin, CustomerForCreate
+from restaurant.scheme.customer import CustomerForLogin, CustomerForCreate, CustomerForRead
 from restaurant.model.customer import Customer
 from restaurant.model.cart import Cart
 from restaurant.authentication import make_token, check_token, get_hash_password, verify_password
@@ -13,13 +11,13 @@ from restaurant.model.helper import Role
 
 from sqlalchemy.orm import Session
 
-from typing import Any
+from typing import Any, List
 
 from datetime import timedelta
 
 
 router = APIRouter(
-    prefix='/customer',
+    prefix='/customers',
     tags=['customer']
 )
 
@@ -93,4 +91,41 @@ def login(session: Session = Depends(get_session), customer: CustomerForLogin = 
     header = {'token': token}
 
     return JSONResponse(content=body, headers=header)
+
+
+@router.get('', response_model=List[CustomerForRead])
+def show_all(admin_token: str, session: Session = Depends(get_session)):
+    token_payload = check_token(token=admin_token)
+
+    token_role = token_payload['role']
+    if token_role != Role.admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail='You don\'t have access to see customers'
+        )
+
+    customers = Customer.show_all(session=session)
+
+    return customers
+
+
+@router.get('/{username}', response_model=CustomerForRead)
+def show_specific(admin_token: str, username: str, session: Session = Depends(get_session)):
+    token_payload = check_token(token=admin_token)
+
+    token_role = token_payload['role']
+    if token_role != Role.admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail='You don\'t have access to see discounts'
+        )
+
+    customer = Customer.search_by_username(session=session, username=username)
+    if customer is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail='An customer with this username not found'
+        )
+
+    return customer
 

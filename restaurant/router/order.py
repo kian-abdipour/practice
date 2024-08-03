@@ -71,7 +71,7 @@ def addition(customer_token: Annotated[str, Header()], order: OrderForCreate, se
     return added_order
 
 
-@router.get('/{state}', response_model=List[OrderForRead])
+@router.get('/states/{state}', response_model=List[OrderForRead])
 def show_by_state(
         admin_token: Annotated[str, Header()],
         state: str,
@@ -87,8 +87,31 @@ def show_by_state(
         )
 
     orders = Order.show_by_state(session=session, state=state)
+    print('jkjjl;asddjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj')
 
     return orders
+
+
+@router.get('/{order_id}', response_model=OrderForRead)
+def show_specific_order(admin_token: Annotated[str, Header()], order_id: int, session: Session = Depends(get_session)):
+    token_payload = check_token(token=admin_token)
+
+    token_role = token_payload['role']
+    if token_role != Role.admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail='You don\'t have access to see orders'
+        )
+
+    order = Order.search_by_id(session=session, order_id=order_id)
+    print('order')
+    if order is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail='An order with this id not found'
+        )
+
+    return order
 
 
 @router.put('/{order_id}', response_model=OrderForRead)
@@ -103,7 +126,7 @@ def confirm_order(
     if token_role != Role.admin:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail='You don\'t have access to see item'
+            detail='You don\'t have access to confirm order'
         )
     
     order = Order.search_by_id(session=session, order_id=order_id)
@@ -127,4 +150,24 @@ def confirm_order(
         )
 
     return confirmed_order
+
+
+@router.get('/customer/orders', response_model=List[OrderForRead])
+def show_all_orders_for_customer(
+        customer_token: Annotated[str, Header()],
+        session: Session = Depends(get_session)
+):
+    token_payload = check_token(token=customer_token)
+
+    token_role = token_payload['role']
+    if token_role != Role.customer:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail='You don\'t have access to see orders'
+        )
+
+    customer_id = token_payload['id']
+    orders = Order.search_by_customer_id(session=session, customer_id=customer_id)
+
+    return orders
 

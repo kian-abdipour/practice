@@ -46,6 +46,12 @@ class Customer(DateTimeMixin, Base):
 
         return result
 
+    @classmethod
+    def show_all(cls, session: Session):
+        customers = session.query(cls).all()
+
+        return customers
+
     def __convert_to_dict__(self):
         return {
             'id': self.id,

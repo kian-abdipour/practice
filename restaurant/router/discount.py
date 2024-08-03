@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, status, Depends
+from fastapi import APIRouter, HTTPException, status, Depends, Header
 
 from restaurant.scheme.discount import DiscountForCreate, DiscountForRead
 from restaurant.database import get_session
@@ -8,7 +8,7 @@ from restaurant.model.discount import Discount
 
 from sqlalchemy.orm import Session
 
-from typing import List
+from typing import List, Annotated
 
 router = APIRouter(
     prefix='/discounts',
@@ -17,7 +17,11 @@ router = APIRouter(
 
 
 @router.post('', response_model=DiscountForRead)
-def addition(admin_token, discount: DiscountForCreate, session: Session = Depends(get_session)):
+def addition(
+        admin_token: Annotated[str, Header()],
+        discount: DiscountForCreate,
+        session: Session = Depends(get_session)
+):
     token_payload = check_token(token=admin_token)
 
     token_role = token_payload['role']
@@ -44,7 +48,12 @@ def addition(admin_token, discount: DiscountForCreate, session: Session = Depend
 
 
 @router.put('/{Discount_id}/{disposable}', response_model=DiscountForRead)
-def update_disposable(admin_token, discount_code, disposable, session: Session = Depends(get_session)):
+def update_disposable(
+        admin_token: Annotated[str, Header()],
+        discount_code,
+        disposable,
+        session: Session = Depends(get_session)
+):
     token_payload = check_token(token=admin_token)
 
     token_role = token_payload['role']
@@ -62,17 +71,17 @@ def update_disposable(admin_token, discount_code, disposable, session: Session =
         )
 
     updated_discount = Discount.update_disposable(session=session, discount_id=discount.id, disposable=disposable)
-    if updated_discount.disposable is False:
-        updated_discount.disposable = 'false'
-
-    if updated_discount.disposable is True:
-        updated_discount.disposable = 'true'
+#    if updated_discount.disposable is False:
+#        updated_discount.disposable = 'false'
+#
+#    if updated_discount.disposable is True:
+#        updated_discount.disposable = 'true'
 
     return updated_discount
 
 
 @router.get('', response_model=List[DiscountForRead])
-def show_all(admin_token, session: Session = Depends(get_session)):
+def show_all(admin_token: Annotated[str, Header()], session: Session = Depends(get_session)):
     token_payload = check_token(token=admin_token)
 
     token_role = token_payload['role']

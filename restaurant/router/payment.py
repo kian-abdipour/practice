@@ -10,7 +10,7 @@ from restaurant.authentication import check_token
 
 from sqlalchemy.orm import Session
 
-from typing import Annotated
+from typing import Annotated, List
 
 
 router = APIRouter(
@@ -107,4 +107,41 @@ def addition(
         )
 
     return added_payment
+
+
+@router.get('', response_model=List[PaymentForRead])
+def show_all(admin_token: Annotated[str, Header()], session: Session = Depends(get_session)):
+    token_payload = check_token(admin_token)
+
+    token_role = token_payload['role']
+    if token_role != Role.admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail='You don\'t have access to see payments'
+        )
+
+    payments = Payment.show_all(session=session)
+
+    return payments
+
+
+@router.get('/{payment_id}', response_model=PaymentForRead)
+def show_specific(admin_token: Annotated[str, Header()], payment_id, session: Session = Depends(get_session)):
+    token_payload = check_token(admin_token)
+
+    token_role = token_payload['role']
+    if token_role != Role.admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail='You don\'t have access to see payments'
+        )
+
+    payment = Payment.search_by_id(session=session, payment_id=payment_id)
+    if payment is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail='A payment with this id not found'
+        )
+
+    return payment
 

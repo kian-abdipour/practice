@@ -15,7 +15,7 @@ class DiscountForRead(BaseModel):
     percent: float
     code: str
     description: str | None
-    usage_limitation: str | None
+    usage_limitation: int | None
     disposable: bool
     created_at: datetime
 
@@ -26,7 +26,7 @@ class DiscountForCreate(BaseModel):
     title: str = Field(description='Length of title should be at least 40 character')
     percent: float = Field(description='Percent should be between 0.1 to 0.99')
     description: str | None
-    usage_limitation: str | None = Field(description='Usage limitation should be positive integer')
+    usage_limitation: int | None = Field(description='Usage limitation should be positive integer')
     disposable: bool = Field()
 
     @field_validator('start_date')

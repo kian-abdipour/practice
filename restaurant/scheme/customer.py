@@ -4,6 +4,8 @@ from pydantic import BaseModel, Field, field_validator
 
 from fastapi import HTTPException, status
 
+from datetime import datetime
+
 
 class CustomerForLogin(BaseModel):
     username: str = Field(description='Length of username should be at least 2 and at most 20')
@@ -90,4 +92,11 @@ class CustomerForCreate(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class CustomerForRead(BaseModel):
+    id: int
+    username: str
+    phone_number: str
+    created_at: datetime
 

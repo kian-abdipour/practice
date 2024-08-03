@@ -93,3 +93,9 @@ class Order(DateTimeMixin, Base):
 
         return order
 
+    @classmethod
+    def search_by_customer_id(cls, session: Session, customer_id):
+        orders = session.query(cls).filter(cls.customer_id == customer_id).all()
+
+        return orders
+
