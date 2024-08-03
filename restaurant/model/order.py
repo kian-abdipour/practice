@@ -17,18 +17,20 @@ class Order(DateTimeMixin, Base):
     description = Column(Unicode, nullable=True)
     address_id = Column(ForeignKey('address.id'))
     customer_id = Column(ForeignKey('customer.id'))
+    payment_id = Column(ForeignKey('payment.id'))
 
-    items = relationship('OrderItem', cascade='all, delete', back_populates='order')
-    payments = relationship('Payment', cascade='all, delete', back_populates='order')
+    items = relationship('OrderItem', back_populates='order')
+    payments = relationship('Payment', back_populates='order')
     customer = relationship('Customer', back_populates='orders')
 
     @classmethod
-    def add(cls, session: Session, state, delivery_type, desk_number, description, address_id, customer_id):
+    def add(cls, session: Session, state, delivery_type, desk_number, description, payment_id, address_id, customer_id):
         order = cls(
             state=state,
             delivery_type=delivery_type,
             desk_number=desk_number,
             description=description,
+            payment_id=payment_id,
             address_id=address_id,
             customer_id=customer_id
         )
@@ -55,7 +57,7 @@ class Order(DateTimeMixin, Base):
 
     @classmethod
     def show_by_state(cls, session: Session, state):
-        result = session.query(cls, Address.address, Payment).filter(cls.state == state).join(Address).join(Payment).order_by(cls.id).all()  # Question where to be cut
+        result = session.query(cls).filter(cls.state == state).all()  # Question where to be cut
 
         #if len(result) > 0:
         #    for row in result:

@@ -51,7 +51,7 @@ def addition_item_to_cart(
         )
 
     cart = Cart.search_cart_by_customer(session=session, customer_id=customer_id)
-    cart_item_in_database = CartItem.search(session=session, item_id=item.id, cart_id=cart.id)
+    cart_item_in_database = CartItem.search_by_item_id(session=session, item_id=item.id, cart_id=cart.id)
     if cart_item_in_database is not None:
         if (cart_item_in_database.quantity + cart_item.quantity) > item.stock:
             raise HTTPException(

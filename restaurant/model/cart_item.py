@@ -45,7 +45,7 @@ class CartItem(DateTimeMixin, Base):
 
     @classmethod
     def delete(cls, session: Session, item_id, cart_id):
-        cart_item = cls.search(session=session, item_id=item_id, cart_id=cart_id)
+        cart_item = cls.search_by_item_id(session=session, item_id=item_id, cart_id=cart_id)
         if cart_item is None:
             return None
 
@@ -58,7 +58,7 @@ class CartItem(DateTimeMixin, Base):
 
     @classmethod
     def decrease_quantity(cls, session: Session, item_id, cart_id):
-        cart_item = cls.search(session=session, item_id=item_id, cart_id=cart_id)
+        cart_item = cls.search_by_item_id(session=session, item_id=item_id, cart_id=cart_id)
         if cart_item is None:
             return None
 
@@ -78,8 +78,15 @@ class CartItem(DateTimeMixin, Base):
         return cart_item
 
     @classmethod
-    def search(cls, session: Session, item_id, cart_id):
+    def search_by_item_id(cls, session: Session, item_id, cart_id):
         cart_item = session.query(cls).filter(cls.item_id == item_id, cls.cart_id == cart_id).one_or_none()
 
         return cart_item
+
+    @classmethod
+    def search_by_cart_id(cls, session: Session, cart_id):
+        cart_items = session.query(cls).filter(cls.cart_id == cart_id).all()
+
+        return cart_items
+
 

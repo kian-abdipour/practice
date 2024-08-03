@@ -1,9 +1,9 @@
 from fastapi import APIRouter, HTTPException, status, Depends, Header
 
 from restaurant.scheme.payment import PaymentForRead, PaymentForCreate
-from restaurant.model import Payment, Discount, DiscountHistory
+from restaurant.model import Payment, Discount, DiscountHistory, Item, CartItem, Cart
 from restaurant.database import get_session
-from restaurant.custom_exception import DisposableDiscountError, StartDateDiscountError, ExpireDateDiscountError,\
+from restaurant.custom_exception import DisposableDiscountError, StartDateDiscountError, ExpireDateDiscountError, \
                                          UsageLimitationDiscountError
 from restaurant.model.helper import State, Role
 from restaurant.authentication import check_token
@@ -32,9 +32,23 @@ def addition(
     if token_role != Role.customer:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail='You don\'t have access to see item'
+            detail='You don\'t have access to add payment'
         )
 
+    customer_id = token_payload['id']
+    cart = Cart.search_cart_by_customer(session=session, customer_id=customer_id)
+    cart_items = CartItem.search_by_cart_id(session=session, cart_id=cart.id)
+    if len(cart_items) == 0:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail='Customer does not have any item in it\'s cart'
+        )
+
+    amount = 0
+    for cart_item in cart_items:
+        item = Item.search_by_id(session=session, item_id=cart_item.item_id)
+        amount += (item.price * cart_item.quantity)
+    print(f'>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>: {amount}')
     if payment.discount_code is not None:
         discount = Discount.search_by_code(session=session, code=payment.discount_code)
         if discount is None:
@@ -44,7 +58,7 @@ def addition(
             )
 
         try:
-            amount = discount.apply_discount(session=session, discount=discount)
+            effected_amount = Discount.apply_discount(amount=amount, discount=discount)
 
         except DisposableDiscountError:
             raise HTTPException(
@@ -71,24 +85,24 @@ def addition(
             )
 
     else:
-        amount = payment.amount
+        effected_amount = amount
 
     added_payment = Payment.add(
         session=session,
         state=payment.state,
         type_=payment.type,
-        amount=amount,
-        order_id=payment.order_id,
-        customer_id=payment.customer_id
+        amount=effected_amount,
+        customer_id=customer_id
     )
 
     if added_payment.state == State.successful and payment.discount_code is not None:
-        Discount.decrease_usage_limitation(session=session, discount_id=discount.id)
+        if discount.usage_limitation is not None:
+            Discount.decrease_usage_limitation(session=session, discount_id=discount.id)
         DiscountHistory.add(
             session=session,
             discount_id=discount.id,
             payment_id=added_payment.id,
-            base_amount=payment.amount,
+            base_amount=amount,
             affected_amount=added_payment.amount
         )
 

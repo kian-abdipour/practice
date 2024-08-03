@@ -13,7 +13,6 @@ class PaymentForRead(BaseModel):
     state: str
     type: str
     amount: float
-    order_id: int
     customer_id: int
 
     class Config:
@@ -23,10 +22,10 @@ class PaymentForRead(BaseModel):
 class PaymentForCreate(BaseModel):
     state: str = Field(description='State should be Successful or Failed')
     type: str = Field(description='Pay Type should be one of Online or Cash or Transfer', default=TypePay.online)
-    amount: float
-    order_id: int
-    customer_id: int
-    discount_code: str = Field(default=None)
+    discount_code: str | None = Field(
+        default=None,
+        description='If you don\'t want discount code send it as empty string'
+    )
 
     @field_validator('state')
     @classmethod
@@ -47,6 +46,8 @@ class PaymentForCreate(BaseModel):
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail='Pay Type should be one of Online or Cash or Transfer'
             )
+
+        return type_
 
     class Config:
         from_attributes = True

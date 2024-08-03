@@ -44,8 +44,9 @@ def addition(customer_token: Annotated[str, Header()], order: OrderForCreate, se
         delivery_type=order.delivery_type,
         desk_number=order.desk_number,
         description=order.description,
+        payment_id=order.payment_id,
         address_id=order.address_id,
-        customer_id=order.customer_id
+        customer_id=customer_id
     )
 
     for cart_item in cart_items:
@@ -104,7 +105,20 @@ def confirm_order(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='You don\'t have access to see item'
         )
+    
+    order = Order.search_by_id(session=session, order_id=order_id)
+    if order is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail='An order with this id not found'
+        )
 
+    if order.state == State.confirm_and_finish:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail='This order is already confirmed'
+        )
+    
     confirmed_order = Order.confirm(session=session, order_id=order_id)
     if confirmed_order is None:
         raise HTTPException(

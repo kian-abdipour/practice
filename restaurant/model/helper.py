@@ -13,7 +13,7 @@ class State:
 class DeliveryType:
     bike_delivery = 'Bike delivery'
     eat_in_restaurant = 'In restaurant'
-    eat_out = 'Outside'
+    eat_out = 'Eat out'
 
 
 class TypePay:

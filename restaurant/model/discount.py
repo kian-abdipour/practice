@@ -29,109 +29,21 @@ class Discount(DateTimeMixin, Base):
     discount_histories = relationship('DiscountHistory', back_populates='discount')
 
     @classmethod
-    def add(cls, code):
-        try:
-            print('Enter title of your discount')
-            title = input(': ')
-            if len(title) > 40:
-                error = LengthError(massage='LengthError: Title is too long! try again')
-                raise error
-
-            print('Enter percent of your discount is should be 1 to 99 percent')
-            percent = float(input(': '))
-            if 1 < percent < 99:
-                pass
-
-            else:
-                return print('Waring: The percent is to small or to big it should be 1 to 99 percent')
-
-        except LengthError:
-            error.show_massage()
-            return False
-
-        except ValueError:
-            return print('ValueError: Your percent should be just number like 26.5 percent, try again')
-
-        try:
-            print('Enter usage limitation of your discount')
-            usage_limitation = int(input(': '))
-
-        except ValueError:
-            return print('ValueError: The usage limitation should be just number')
-
-        try:
-            print('Enter a number to specific disposable of discount \n1.Be disposable\n2.ٔNot disposable')
-            number = int(input(': '))
-            if number == 1:
-                disposable = True
-
-            elif number == 2:
-                disposable = False
-
-            else:
-                return print('Waring: Number not found try again')
-
-        except ValueError:
-            return print('ValueError: You should type just number')
-
-        # Process of choose start_date
-        print('Enter start date of your discount like 2008-12-7 else don\'t type anything')
-        start_date = input(': ')
-        if len(start_date) == 0:
-            start_date = None
-
-        else:
-            pattern = '[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}'
-            result_pattern = re.search(pattern, start_date)
-            if result_pattern is not None:
-                start_date = start_date.split('-')
-                try:
-                    start_date = date(year=int(start_date[0]),
-                                      month=int(start_date[1]),
-                                      day=int(start_date[2]))
-
-                except ValueError:
-                    return print('ValeError: Month or day is out of rang')
-
-            else:
-                return print('Pattern of your start date should be like 2001-1-1')
-
-        # Process of choose expire_date
-        print('Enter expire date of your discount like 2008-12-7 else don\'t type anything')
-        expire_date = input(': ')
-        if len(expire_date) == 0:
-            expire_date = None
-
-        else:
-            pattern = '[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}'
-            result_pattern = re.search(pattern, expire_date)
-            if result_pattern is not None:
-                expire_date = expire_date.split('-')
-                try:
-                    expire_date = date(year=int(expire_date[0]), month=int(expire_date[1]), day=int(expire_date[2]))
-
-                except ValueError:
-                    return print('ValueError: Month or day is out of rang')
-
-            else:
-                return print('Pattern of your expire date should be like 2001-1-1')
-
-        print('Enter description of your discount else don\'t type anything')
-        description = input(': ')
-        if len(description) == 0:
-            description = None
-
+    def add(
+            cls, session: Session, start_date, expire_date, title,
+            percent, code, description, usage_limitation, disposable
+    ):
         discount = cls(start_date=start_date, expire_date=expire_date, title=title, percent=percent,
                        code=code, description=description, usage_limitation=usage_limitation, disposable=disposable)
-        with Session() as session:
-            session.add(discount)
+        session.add(discount)
 
-            session.commit()
+        session.commit()
+        session.refresh(discount)
 
-        print(f'Discount successfully Added and it\'s code is {code}')
+        return discount
 
     @classmethod
-    def generate_code(cls):
+    def generate_code(cls, session: Session):
         proceed_duplicated_code = False
         while proceed_duplicated_code is False:
             # This process is for making code of our discount
@@ -147,8 +59,7 @@ class Discount(DateTimeMixin, Base):
             while len(code) != 10:
                 code = code + random.choice(character_for_discount_code)
 
-            with Session() as session:
-                result = session.query(cls).filter(cls.code == code).all()
+            result = session.query(cls).filter(cls.code == code).all()
 
             if len(result) == 0:
                 return code
@@ -178,33 +89,24 @@ class Discount(DateTimeMixin, Base):
         return result
 
     @classmethod
-    def show_all(cls):
-        with Session() as session:
-            result = session.query(cls).all()
+    def show_all(cls, session: Session):
+        discounts = session.query(cls).all()
 
-        if len(result) > 0:
-            for discount in result:
-                print(f'id: {discount.id}, title: {discount.title}, code: {discount.code} percent: {discount.percent},'
-                      f' usage_limitation: {discount.usage_limitation}, start_date: {discount.start_date},'
-                      f' expire_date: {discount.expire_date}, created_at: {discount.created_at},'
-                      f' description: {discount.description}, disposable: {discount.disposable}')
-
-        else:
-            print('Now we don\'t have any discount')
+        return discounts
 
     @classmethod
     def apply_discount(cls, discount, amount):
         if discount.disposable is False:
-            raise DisposableDiscountError
+            raise DisposableDiscountError('')
 
         if discount.start_date > date.today():
-            raise StartDateDiscountError
+            raise StartDateDiscountError('')
 
         if discount.expire_date < date.today():
-            raise ExpireDateDiscountError
+            raise ExpireDateDiscountError('')
 
         if discount.usage_limitation == 0:
-            raise UsageLimitationDiscountError
+            raise UsageLimitationDiscountError('')
 
         amount = amount - (discount.percent * amount)
 
@@ -214,4 +116,26 @@ class Discount(DateTimeMixin, Base):
     def decrease_usage_limitation(cls, session: Session, discount_id):
         session.query(cls).filter(cls.id == discount_id).update({cls.usage_limitation: cls.usage_limitation - 1})
         session.commit()
+
+    @classmethod
+    def search_by_id(cls, session: Session, discount_id):
+        discount = session.query(cls).filter(cls.id == discount_id).one_or_none()
+
+        return discount
+
+    @classmethod
+    def update_disposable(cls, discount_id, disposable, session):
+        discount = cls.search_by_id(session=session, discount_id=discount_id)
+        if disposable == 'false':
+            disposable = False
+
+        if disposable == 'true':
+            disposable = True
+
+        session.query(cls).filter(cls.id == discount_id).update({cls.disposable: disposable})
+
+        session.commit()
+        session.refresh(discount)
+
+        return discount
 

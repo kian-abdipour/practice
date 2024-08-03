@@ -31,6 +31,18 @@ def addition(
             detail='You don\'t have access to add item to category'
         )
 
+    if Category.search_by_id(session=session, category_id=category_item.category_id) is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail='A category with this id not found'
+        )
+
+    if Item.search_by_id(session=session, item_id=category_item.item_id) is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail='An item with this id not found'
+        )
+
     added_category_item = CategoryItem.add(
         session=session,
         category_id=category_item.category_id,

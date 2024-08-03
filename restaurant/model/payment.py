@@ -18,7 +18,6 @@ class Payment(DateTimeMixin, Base):
     state = Column(Unicode, nullable=False)
     type = Column(Unicode, nullable=False)
     amount = Column(Float, nullable=False)
-    order_id = Column(ForeignKey('order.id'))
     customer_id = Column(ForeignKey('customer.id'))
 
     discount_histories = relationship('DiscountHistory', cascade='all, delete')
@@ -26,8 +25,8 @@ class Payment(DateTimeMixin, Base):
     order = relationship('Order', back_populates='payments')
 
     @classmethod
-    def add(cls, session: Session, state, type_, amount, order_id, customer_id):
-        payment = cls(state=state, type=type_, amount=amount, order_id=order_id, customer_id=customer_id)
+    def add(cls, session: Session, state, type_, amount, customer_id):
+        payment = cls(state=state, type=type_, amount=amount, customer_id=customer_id)
         session.add(payment)
 
         session.commit()

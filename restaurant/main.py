@@ -4,10 +4,8 @@ from contextlib import asynccontextmanager
 
 from restaurant.model.base import Base
 from restaurant.database import engine
-from restaurant.router import customer, address, admin, cart, category, category_item, item, order, payment, super_admin
-#from restaurant.model import SuperAdmin, Admin, Category, Item, CategoryItem, Customer, Order, OrderItem, Payment, \
-#    Discount, DiscountHistory, CartItem, Cart, Address
-
+from restaurant.router import customer, address, admin, cart, category, category_item, item, order, payment, \
+                              super_admin, discount
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -27,4 +25,5 @@ app.include_router(router=category.router)
 app.include_router(router=category_item.router)
 app.include_router(router=order.router)
 app.include_router(router=payment.router)
+app.include_router(router=discount.router)
 

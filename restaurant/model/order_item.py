@@ -32,7 +32,7 @@ class OrderItem(DateTimeMixin, Base):
             raise OutOfStockError(massage='The item is out of stock')
 
         session.add(order_item)
-        session.query(Item).filter(Item.id == item_id).one().update({Item.stock: (Item.stock - quantity)})
+        session.query(Item).filter(Item.id == item_id).update({Item.stock: (Item.stock - quantity)})
 
         session.commit()
         session.refresh(order_item)
