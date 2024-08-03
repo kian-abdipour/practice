@@ -23,7 +23,7 @@ router = APIRouter(
 
 
 @router.post('/signup/tokens')
-def signup(session: Session = Depends(get_session), customer: CustomerForCreate = Any) -> Any:
+def signup(customer: CustomerForCreate, session: Session = Depends(get_session)):
     if Customer.search_by_username(session=session, username=customer.username) is not None:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
@@ -59,7 +59,7 @@ def signup(session: Session = Depends(get_session), customer: CustomerForCreate 
 
 
 @router.post('/login/tokens')
-def login(session: Session = Depends(get_session), customer: CustomerForLogin = Any) -> Any:
+def login(customer: CustomerForLogin, session: Session = Depends(get_session)):
     customer_in_database = Customer.search_by_username(
         session=session,
         username=customer.username,
