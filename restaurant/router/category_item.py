@@ -59,14 +59,14 @@ def addition(
 
 @router.get('/{category_id}', response_model=CategoryItemForRead)
 def show_item_side(
-        admin_token: Annotated[str, Header()],
+        admin_token_or_customer_token: Annotated[str, Header()],
         category_id: int,
         session: Session = Depends(get_session)
 ):
-    token_payload = check_token(token=admin_token)
+    token_payload = check_token(token=admin_token_or_customer_token)
 
     token_role = token_payload['role']
-    if token_role != Role.admin:
+    if token_role != Role.admin and token_role != Role.customer:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='You don\'t have access see item of category'

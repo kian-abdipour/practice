@@ -64,7 +64,7 @@ def show_all(customer_or_admin_token: Annotated[str, Header()], session: Session
     return result
 
 
-@router.get('{item_id}', response_model=ItemForRead)
+@router.get('/{item_id}', response_model=ItemForRead)
 def show_specific_by_id(
         customer_or_admin_token: Annotated[str, Header()],
         item_id: int,
@@ -89,10 +89,10 @@ def show_specific_by_id(
     return item
 
 
-@router.get('/item_name', response_model=ItemForRead)
+@router.get('/{item_name}', response_model=ItemForRead)
 def show_specific_by_name(
         customer_or_admin_token: Annotated[str, Header()],
-        name: str,
+        item_name: str,
         session: Session = Depends(get_session)
 ):
     token_payload = check_token(token=customer_or_admin_token)
@@ -104,7 +104,7 @@ def show_specific_by_name(
             detail='You don\'t have access to see item'
         )
 
-    item = Item.search_by_name(session=session, name=name)
+    item = Item.search_by_name(session=session, name=item_name)
     if item is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

@@ -46,7 +46,6 @@ def signup(session: Session = Depends(get_session), customer: CustomerForCreate 
     Cart.add(session=session, customer_id=added_customer.id)
 
     customer_dict = added_customer.__convert_to_dict__()
-    print(f'>>>>: {customer_dict}')
     customer_dict.pop('password')
     body = jsonable_encoder(customer_dict)
 
@@ -54,7 +53,7 @@ def signup(session: Session = Depends(get_session), customer: CustomerForCreate 
         id_=added_customer.id,
         role=Role.customer,
         username=added_customer.username,
-        expire_delta=timedelta(minutes=5)
+        expire_delta=timedelta(hours=1)
     )
     header = {'token': token}
 
@@ -89,7 +88,7 @@ def login(session: Session = Depends(get_session), customer: CustomerForLogin = 
         id_=customer_in_database.id,
         role=Role.customer,
         username=customer_in_database.username,
-        expire_delta=timedelta(minutes=5)
+        expire_delta=timedelta(hours=1)
     )
     header = {'token': token}
 

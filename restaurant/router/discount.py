@@ -54,7 +54,6 @@ def update_disposable(admin_token, discount_code, disposable, session: Session =
             detail='You don\'t have access to add discount'
         )
 
-    print(f'>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>: {disposable}')
     discount = Discount.search_by_code(session=session, code=discount_code)
     if discount is None:
         raise HTTPException(
@@ -84,8 +83,6 @@ def show_all(admin_token, session: Session = Depends(get_session)):
         )
 
     discounts = Discount.show_all(session=session)
-    for discount in discounts:
-        print(f'>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>: {discount.disposable}')
 
     return discounts
 
