@@ -2,7 +2,7 @@ from sqlalchemy import Column, ForeignKey, Integer, Float
 from sqlalchemy.orm import column_property, Session, relationship
 
 from restaurant.model.mixin import DateTimeMixin
-from restaurant.model.discount import Discount
+from restaurant.model.payment import Payment
 from restaurant.model.base import Base
 
 
@@ -27,6 +27,12 @@ class DiscountHistory(DateTimeMixin, Base):
         #                                                                  (Discount.usage_limitation - 1)})
 
         session.commit()
+
+        return discount_history
+
+    @classmethod
+    def check_one_use(cls, session: Session, customer_id):
+        discount_history = session.query(Payment).join(cls).filter(Payment.customer_id == customer_id).one_or_none()
 
         return discount_history
 

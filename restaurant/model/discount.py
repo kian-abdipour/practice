@@ -8,10 +8,11 @@ from sqlalchemy import Column, Integer, Unicode, String, Float, Date, Boolean
 from sqlalchemy.orm import relationship, Session
 
 from restaurant.custom_exception import LengthError, DisposableDiscountError, StartDateDiscountError, \
-    ExpireDateDiscountError, UsageLimitationDiscountError
+    ExpireDateDiscountError, UsageLimitationDiscountError, UsedDiscountError
 from restaurant.model.base import Base
 from restaurant.model.helper import character_for_discount_code
 from restaurant.model.mixin import DateTimeMixin
+from restaurant.model.discount_history import DiscountHistory
 
 
 class Discount(DateTimeMixin, Base):
@@ -24,17 +25,27 @@ class Discount(DateTimeMixin, Base):
     code = Column(String(10), nullable=False, unique=True)
     description = Column(Unicode)
     usage_limitation = Column(Integer)
-    disposable = Column(Boolean)
+    disposable = Column(Boolean, nullable=False)
+    one_use = Column(Boolean, nullable=False)
 
     discount_histories = relationship('DiscountHistory', back_populates='discount')
 
     @classmethod
     def add(
             cls, session: Session, start_date, expire_date, title,
-            percent, code, description, usage_limitation, disposable
+            percent, code, description, usage_limitation, disposable, one_use
     ):
-        discount = cls(start_date=start_date, expire_date=expire_date, title=title, percent=percent,
-                       code=code, description=description, usage_limitation=usage_limitation, disposable=disposable)
+        discount = cls(
+            start_date=start_date,
+            expire_date=expire_date,
+            title=title,
+            percent=percent,
+            code=code,
+            description=description,
+            usage_limitation=usage_limitation,
+            disposable=disposable,
+            one_use=one_use
+        )
         session.add(discount)
 
         session.commit()
@@ -95,9 +106,13 @@ class Discount(DateTimeMixin, Base):
         return discounts
 
     @classmethod
-    def apply_discount(cls, discount, amount):
+    def apply_discount(cls, session: Session, customer_id, discount, amount):
         if discount.disposable is False:
             raise DisposableDiscountError('')
+
+        if discount.one_use is True:
+            if DiscountHistory.check_one_use(session=session, customer_id=customer_id) is not None:
+                raise UsedDiscountError('')
 
         if discount.start_date > date.today():
             raise StartDateDiscountError('')

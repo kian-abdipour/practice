@@ -4,7 +4,7 @@ from restaurant.scheme.payment import PaymentForRead, PaymentForCreate
 from restaurant.model import Payment, Discount, DiscountHistory, Item, CartItem, Cart
 from restaurant.database import get_session
 from restaurant.custom_exception import DisposableDiscountError, StartDateDiscountError, ExpireDateDiscountError, \
-                                         UsageLimitationDiscountError
+                                         UsageLimitationDiscountError, UsedDiscountError
 from restaurant.model.helper import State, Role
 from restaurant.authentication import check_token
 
@@ -58,7 +58,18 @@ def addition(
             )
 
         try:
-            effected_amount = Discount.apply_discount(amount=amount, discount=discount)
+            effected_amount = Discount.apply_discount(
+                amount=amount,
+                session=session,
+                customer_id=customer_id,
+                discount=discount
+            )
+
+        except UsedDiscountError:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail='Discount is one-use and you used it'
+            )
 
         except DisposableDiscountError:
             raise HTTPException(

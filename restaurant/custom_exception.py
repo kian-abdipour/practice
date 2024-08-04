@@ -45,3 +45,11 @@ class UsageLimitationDiscountError(Exception):
     def show_massage(self):
         print(f'{self.massage}')
 
+
+class UsedDiscountError(Exception):
+    def __init__(self, massage):
+        self.massage = massage
+
+    def show_massage(self):
+        print(f'{self.massage}')
+

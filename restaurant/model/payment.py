@@ -8,8 +8,6 @@ from copy import deepcopy
 from restaurant.model.base import Base
 from restaurant.model.mixin import DateTimeMixin
 from restaurant.model.helper import State, TypePay
-from restaurant.model.discount import Discount
-from restaurant.model.discount_history import DiscountHistory
 
 
 class Payment(DateTimeMixin, Base):
@@ -52,3 +50,4 @@ class Payment(DateTimeMixin, Base):
         payment = session.query(cls).filter(cls.id == payment_id).one_or_none()
 
         return payment
+

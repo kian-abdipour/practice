@@ -17,6 +17,7 @@ class DiscountForRead(BaseModel):
     description: str | None
     usage_limitation: int | None
     disposable: bool
+    one_use: bool
     created_at: datetime
 
 
@@ -28,6 +29,7 @@ class DiscountForCreate(BaseModel):
     description: str | None
     usage_limitation: int | None = Field(description='Usage limitation should be positive integer')
     disposable: bool = Field()
+    one_use: bool = Field()
 
     @field_validator('start_date')
     @classmethod
@@ -111,5 +113,20 @@ class DiscountForCreate(BaseModel):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail='Disposable should be bool like true or false'
+            )
+
+    @field_validator('one_use')
+    @classmethod
+    def validate_disposable(cls, one_use):
+        if one_use is False:
+            return False
+
+        elif one_use is True:
+            return True
+
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail='one_use should be bool like true or false'
             )
 

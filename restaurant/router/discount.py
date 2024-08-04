@@ -42,7 +42,8 @@ def addition(
         code=code,
         description=discount.description,
         usage_limitation=discount.usage_limitation,
-        disposable=discount.disposable
+        disposable=discount.disposable,
+        one_use=discount.one_use
     )
     return added_discount
 
@@ -94,4 +95,25 @@ def show_all(admin_token: Annotated[str, Header()], session: Session = Depends(g
     discounts = Discount.show_all(session=session)
 
     return discounts
+
+
+@router.get('/{discount_code}', response_model=DiscountForRead)
+def show_specific(admin_token: str, discount_code: str, session: Session = Depends(get_session)):
+    token_payload = check_token(admin_token)
+
+    token_role = token_payload['role']
+    if token_role != Role.admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail='You don\'t have access to se discount'
+        )
+
+    discount = Discount.search_by_code(session=session, code=discount_code)
+    if discount is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail='Discount with this id not found'
+        )
+
+    return discount
 
