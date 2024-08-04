@@ -1,4 +1,7 @@
 # You need this data and you should add your .env data like this example
-SUPER_ADMIN_USERNAME = '......'
-DATABASE_URL = '......'
+DATABASE_UTL = '......'
+SECRET_KEY = '......'
+ALGORYTHM_ENCRYPT = '......'
+ALGORYTHM_HASH = '......'
+TOP_LEVEL_SUPER_ADMIN_USERNAME = '......'
 

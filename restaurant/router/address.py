@@ -57,8 +57,24 @@ def deletion(customer_token: Annotated[str, Header()], address_id: int, session:
     return deleted_address
 
 
-@router.get('', response_model=List[AddressForRead])
-def show_all(customer_token: Annotated[str, Header()], session: Session = Depends(get_session)):
+@router.get('/admin', response_model=List[AddressForRead])
+def show_all_for_admin(admin_token: Annotated[str, Header()], session: Session = Depends(get_session)):
+    token_payload = check_token(token=admin_token)
+
+    token_role = token_payload['role']
+    if token_role != Role.admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail='You don\'t have access to see addresses of this customer'
+        )
+
+    addresses = Address.show_all_for_admin(session=session)
+
+    return addresses
+
+
+@router.get('/customer', response_model=List[AddressForRead])
+def show_all_for_customer(customer_token: Annotated[str, Header()], session: Session = Depends(get_session)):
     token_payload = check_token(token=customer_token)
     token_role = token_payload['role']
     if token_role != Role.customer:
@@ -68,7 +84,7 @@ def show_all(customer_token: Annotated[str, Header()], session: Session = Depend
         )
 
     customer_id = token_payload['id']
-    addresses = Address.show_all(session=session, customer_id=customer_id)
+    addresses = Address.show_all_for_customer(session=session, customer_id=customer_id)
 
     return addresses
 
@@ -76,6 +92,7 @@ def show_all(customer_token: Annotated[str, Header()], session: Session = Depend
 @router.get('/{address_id}', response_model=AddressForRead)
 def show_specific(customer_token: Annotated[str, Header()], address_id: int, session: Session = Depends(get_session)):
     token_payload = check_token(token=customer_token)
+
     token_role = token_payload['role']
     if token_role != Role.customer:
         raise HTTPException(

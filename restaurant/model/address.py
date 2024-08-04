@@ -24,7 +24,7 @@ class Address(DateTimeMixin, Base):
         return address
 
     @classmethod
-    def show_all(cls, session: Session, customer_id):
+    def show_all_for_customer(cls, session: Session, customer_id):
         result = session.query(cls).filter(cls.customer_id == customer_id).all()
 
         if len(result) > 0:
@@ -51,4 +51,10 @@ class Address(DateTimeMixin, Base):
 
         else:
             return None
+
+    @classmethod
+    def show_all_for_admin(cls, session: Session):
+        addresses = session.query(cls).all()
+
+        return addresses
 
