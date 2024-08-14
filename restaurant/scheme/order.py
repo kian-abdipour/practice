@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field, field_validator
 
 from fastapi import HTTPException, status
 
-from restaurant.model.helper import State, DeliveryType
+from restaurant.model.helper import State, DeliveryType, TypePay
 
 from datetime import datetime
 
@@ -11,9 +11,10 @@ class OrderForCreate(BaseModel):
     delivery_type: str = Field(
         description='Delivery type should be one of Bike delivery or In restaurant or Outside'
     )
-    desk_number: int = Field(description='Desk number should be integer')
-    description: str | None = Field(description='If you don\'t want to add any description sent an empty string')
-    payment_id: int
+    desk_number: int | None = Field(description='Desk number should be integer')
+    description: str | None
+    payment_type: str
+    discount_code: str | None
     address_id: int
 
     @field_validator('delivery_type')
@@ -30,13 +31,26 @@ class OrderForCreate(BaseModel):
 
         return delivery_type
 
-    @field_validator('description')
+    @field_validator('payment_type')
     @classmethod
-    def validate_description(cls, description):
-        if description == '':
+    def validate_type(cls, payment_type):
+        if payment_type != TypePay.online and payment_type != TypePay.cash and payment_type != TypePay.transfer:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail='Pay Type should be one of Online or Cash or Transfer'
+            )
+
+        return payment_type
+
+    @field_validator('desk_number')
+    @classmethod
+    def validate_desk_number(cls, desk_number, delivery_type):
+        delivery_type = delivery_type.data['delivery_type']
+        if delivery_type == DeliveryType.eat_out or delivery_type == DeliveryType.bike_delivery:
             return None
 
-        return description
+        else:
+            return desk_number
 
     class Config:
         from_attributes = True

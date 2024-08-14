@@ -42,33 +42,21 @@ class Order(DateTimeMixin, Base):
         return order
 
     @classmethod
-    def show_all_for_customer(cls, customer_id):
-        with Session() as session:
-            result = session.query(cls, Address.address).filter(cls.customer_id == customer_id).join(Address).order_by(cls.id).all()
+    def show_all_for_customer(cls, session: Session, customer_id):
+#        result = session.query(cls, Address.address).filter(cls.customer_id == customer_id).join(Address).order_by(cls.id).all()
+        result = session.query(cls).filter(cls.customer_id == customer_id).all()
 
-        if len(result) > 0:
-            for row in result:
-                text_address = row[1]
-                order = row[0]
-                print(f'Created at: {order.created_at}, id: {order.id}, state: {order.state}, address: {text_address}')
-
-        else:
-            print('History of your order is empty')
+        return result
 
     @classmethod
-    def show_by_state(cls, session: Session, state):
+    def show_by_state_for_admin(cls, session: Session, state):
         result = session.query(cls).filter(cls.state == state).all()  # Question where to be cut
 
-        #if len(result) > 0:
-        #    for row in result:
-        #        text_address = row[1]
-        #        order = row[0]
-        #        payment = row[2]
-        #        print(f'Created at: {order.created_at}, id: {order.id}, customer_id: {order.customer_id}'
-        #              f' state: {order.state}, payment state: {payment.state}, address: {text_address}')
-#
-        #else:
-        #    print('Now we don\'t have any order')
+        return result
+
+    @classmethod
+    def show_by_state_for_customer(cls, session: Session, customer_id, state):
+        result = session.query(cls).filter(cls.state == state, cls.customer_id == customer_id).all()
 
         return result
 
@@ -96,6 +84,18 @@ class Order(DateTimeMixin, Base):
     @classmethod
     def search_by_customer_id(cls, session: Session, customer_id):
         orders = session.query(cls).filter(cls.customer_id == customer_id).all()
+
+        return orders
+
+    @classmethod
+    def show_all_for_admin(cls, session: Session):
+        orders = session.query(cls).all()
+
+        return orders
+
+    @classmethod
+    def search_by_customer_id_and_order_id(cls, session: Session, customer_id, order_id):
+        orders = session.query(cls).filter(cls.customer_id == customer_id, cls.id == order_id).one_or_none()
 
         return orders
 

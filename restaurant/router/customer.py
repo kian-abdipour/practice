@@ -3,7 +3,7 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 
 from restaurant.database import get_session
-from restaurant.scheme.customer import CustomerForLogin, CustomerForCreate, CustomerForRead
+from restaurant.scheme.customer import CustomerForLogin, CustomerForCreate, CustomerForRead, CustomerFilter
 from restaurant.model.customer import Customer
 from restaurant.model.cart import Cart
 from restaurant.authentication import make_token, check_token, get_hash_password, verify_password
@@ -11,18 +11,22 @@ from restaurant.model.helper import Role
 
 from sqlalchemy.orm import Session
 
-from typing import Any, List
+from typing import Any, List, Annotated
 
 from datetime import timedelta
+
+from fastapi_pagination import LimitOffsetPage, paginate, add_pagination
+from fastapi_filter import FilterDepends
 
 
 router = APIRouter(
     prefix='/customers',
     tags=['customer']
 )
+add_pagination(router)
 
 
-@router.post('/signup/tokens')
+@router.post('-registration')
 def signup(customer: CustomerForCreate, session: Session = Depends(get_session)):
     if Customer.search_by_username(session=session, username=customer.username) is not None:
         raise HTTPException(
@@ -58,7 +62,7 @@ def signup(customer: CustomerForCreate, session: Session = Depends(get_session))
     return JSONResponse(content=body, headers=header)
 
 
-@router.post('/login/tokens')
+@router.post('-tokens')
 def login(customer: CustomerForLogin, session: Session = Depends(get_session)):
     customer_in_database = Customer.search_by_username(
         session=session,
@@ -93,8 +97,10 @@ def login(customer: CustomerForLogin, session: Session = Depends(get_session)):
     return JSONResponse(content=body, headers=header)
 
 
-@router.get('', response_model=List[CustomerForRead])
-def show_all(admin_token: str, session: Session = Depends(get_session)):
+@router.get('', response_model=LimitOffsetPage[CustomerForRead])
+def search(admin_token: Annotated[str, Header()],
+           customer_filter: CustomerFilter = FilterDepends(CustomerFilter),
+           session: Session = Depends(get_session)):
     token_payload = check_token(token=admin_token)
 
     token_role = token_payload['role']
@@ -104,28 +110,52 @@ def show_all(admin_token: str, session: Session = Depends(get_session)):
             detail='You don\'t have access to see customers'
         )
 
-    customers = Customer.show_all(session=session)
+    if customer_filter.customer_id is not None:
+        customer = Customer.search_by_id(session=session, customer_id=customer_filter.customer_id)
+        if customer is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail='Customer with this id not found'
+            )
 
-    return customers
+        customer_dict = customer.__dict__
+        print(f'>>>>: {customer_dict}')
+        customer_dict.pop('password')
+        jsonable_customer = jsonable_encoder(customer)
 
+        return JSONResponse(status_code=200, content=jsonable_customer)
 
-@router.get('/{username}', response_model=CustomerForRead)
-def show_specific(admin_token: str, username: str, session: Session = Depends(get_session)):
-    token_payload = check_token(token=admin_token)
+    elif customer_filter.username is not None:
+        customer = Customer.search_by_username(session=session, username=customer_filter.username)
+        if customer is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail='Customer with this username not found'
+            )
 
-    token_role = token_payload['role']
-    if token_role != Role.admin:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail='You don\'t have access to see discounts'
-        )
+        customer_dict = customer.__dict__
+        customer_dict.pop('password')
+        jsonable_customer = jsonable_encoder(customer)
 
-    customer = Customer.search_by_username(session=session, username=username)
-    if customer is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail='An customer with this username not found'
-        )
+        return JSONResponse(status_code=200, content=jsonable_customer)
 
-    return customer
+    elif customer_filter.phone_number is not None:
+        customer = Customer.search_by_phone_number(session=session, phone_number=customer_filter.phone_number)
+        if customer is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail='Customer with this phone number not found'
+            )
+
+        customer_dict = customer.__dict__
+        customer_dict.pop('password')
+        jsonable_customer = jsonable_encoder(customer)
+
+        return JSONResponse(status_code=200, content=jsonable_customer)
+
+    elif customer_filter.customer_id is None and customer_filter.username is None and \
+            customer_filter.phone_number is None:
+        customers = Customer.show_all(session=session, customer_filter=customer_filter)
+
+        return paginate(customers)
 

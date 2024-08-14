@@ -1,20 +1,26 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Header
+from fastapi.responses import JSONResponse
+from fastapi.encoders import jsonable_encoder
 
 from restaurant.database import get_session
 from restaurant.authentication import check_token
 from restaurant.model import Address, Customer
-from restaurant.scheme.address import AddressForAddition, AddressForRead  # AllAddressForRead
+from restaurant.scheme.address import AddressForAddition, AddressForRead, AddressFilter  # AllAddressForRead
 from restaurant.model.helper import Role
 
 from sqlalchemy.orm import Session
 
 from typing import Annotated, List
 
+from fastapi_pagination import LimitOffsetPage, paginate, add_pagination
+from fastapi_filter import FilterDepends
+
 
 router = APIRouter(
     prefix='/addresses',
     tags=['address']
 )
+add_pagination(router)
 
 
 @router.post('', response_model=AddressForRead)
@@ -57,57 +63,54 @@ def deletion(customer_token: Annotated[str, Header()], address_id: int, session:
     return deleted_address
 
 
-@router.get('/admin', response_model=List[AddressForRead])
-def show_all_for_admin(admin_token: Annotated[str, Header()], session: Session = Depends(get_session)):
-    token_payload = check_token(token=admin_token)
+@router.get('', response_model=LimitOffsetPage[AddressForRead])
+def search(
+        customer_or_admin_token: str,
+        address_filter: AddressFilter = FilterDepends(AddressFilter),
+        session: Session = Depends(get_session)
+):
+    token_payload = check_token(token=customer_or_admin_token)
 
     token_role = token_payload['role']
-    if token_role != Role.admin:
+    if token_role != Role.customer and token_role != Role.admin:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='You don\'t have access to see addresses of this customer'
         )
 
-    addresses = Address.show_all_for_admin(session=session)
+    if token_role == Role.admin:
+        if address_id is None:
+            pass
+            addresses = Address.show_all_for_admin(session=session, address_filter=address_filter)
 
-    return addresses
+            return paginate(addresses)
 
+        else:
+            address = Address.search_for_admin(session=session, address_id=address_id)
+            if address is None:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail='An address with this id not found'
+                )
+            jsonable_address = jsonable_encoder(address)
 
-@router.get('/customer', response_model=List[AddressForRead])
-def show_all_for_customer(customer_token: Annotated[str, Header()], session: Session = Depends(get_session)):
-    token_payload = check_token(token=customer_token)
-    token_role = token_payload['role']
-    if token_role != Role.customer:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail='You don\'t have access to see addresses of this customer'
-        )
+            return JSONResponse(status_code=200, content=jsonable_address)
 
     customer_id = token_payload['id']
-    addresses = Address.show_all_for_customer(session=session, customer_id=customer_id)
+    if token_role == Role.customer:
+        if address_id is None:
+            addresses = Address.show_all_for_customer(session=session, customer_id=customer_id)
 
-    return addresses
+            return paginate(addresses)
 
+        else:
+            address = Address.search_for_customer(session=session, address_id=address_id, customer_id=customer_id)
+            if address is None:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail='a customer with this id does not have an address with this id '
+                )
+            jsonable_address = jsonable_encoder(address)
 
-@router.get('/{address_id}', response_model=AddressForRead)
-def show_specific(customer_token: Annotated[str, Header()], address_id: int, session: Session = Depends(get_session)):
-    token_payload = check_token(token=customer_token)
-
-    token_role = token_payload['role']
-    if token_role != Role.customer:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail='You don\'t have access to see addresses of this customer'
-        )
-
-    customer_id = token_payload['id']
-    address = Address.search(session=session, customer_id=customer_id, address_id=address_id)
-
-    if address is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail='An address with this id not found'
-        )
-
-    return address
+            return JSONResponse(status_code=200, content=jsonable_address)
 

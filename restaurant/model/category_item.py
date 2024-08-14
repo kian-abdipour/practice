@@ -3,8 +3,7 @@ from sqlalchemy.orm import relationship, Session
 
 from restaurant.model.base import Base
 from restaurant.model.mixin import DateTimeMixin
-from restaurant.model import Category, Item
-from restaurant.custom_exception import LengthError
+from restaurant.model import Item
 
 
 class CategoryItem(DateTimeMixin, Base):

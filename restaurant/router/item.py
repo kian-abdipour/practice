@@ -32,7 +32,7 @@ def addition(
             detail='You don\'t have access to add item'
         )
 
-    result = Item.search_by_name(session=session, name=item.name)
+    result = Item.search_by_name(session=session, item_name=item.name)
     if result is not None:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
@@ -48,26 +48,11 @@ def addition(
     return added_item
 
 
-@router.get('', response_model=List[ItemForRead])
-def show_all(customer_or_admin_token: Annotated[str, Header()], session: Session = Depends(get_session)):
-    token_payload = check_token(token=customer_or_admin_token)
-
-    token_role = token_payload['role']
-    if token_role != Role.admin and token_role != Role.customer:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail='You don\'t have access to see item'
-        )
-
-    result = Item.show_all(session=session)
-
-    return result
-
-
-@router.get('/{item_id}', response_model=ItemForRead)
-def show_specific_by_id(
+@router.get('', response_model=List[ItemForRead] | ItemForRead)
+def search(
         customer_or_admin_token: Annotated[str, Header()],
-        item_id: int,
+        item_id: int = None,
+        item_name: str = None,
         session: Session = Depends(get_session)
 ):
     token_payload = check_token(token=customer_or_admin_token)
@@ -79,37 +64,79 @@ def show_specific_by_id(
             detail='You don\'t have access to see item'
         )
 
-    item = Item.search_by_id(session=session, item_id=item_id)
-    if item is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail='Item with this id not found'
-        )
+    if item_id is not None:
+        item = Item.search_by_id(session=session, item_id=item_id)
+        if item is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail='An item with this id not found'
+            )
 
-    return item
+        return item
+
+    elif item_name is not None:
+        item = Item.search_by_name(session=session, item_name=item_name)
+        if item is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail='An item with this name not found'
+            )
+
+        return item
+
+    elif item_id is None and item_name is None:
+        items = Item.show_all(session=session)
+
+        return items
 
 
-@router.get('/{item_name}', response_model=ItemForRead)
-def show_specific_by_name(
-        customer_or_admin_token: Annotated[str, Header()],
-        item_name: str,
-        session: Session = Depends(get_session)
-):
-    token_payload = check_token(token=customer_or_admin_token)
-
-    token_role = token_payload['role']
-    if token_role != Role.admin and token_role != Role.customer:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail='You don\'t have access to see item'
-        )
-
-    item = Item.search_by_name(session=session, name=item_name)
-    if item is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail='Item with this name not found'
-        )
-
-    return item
-
+#@router.get('/{item_id}', response_model=ItemForRead)
+#def show_specific_by_id(
+#        customer_or_admin_token: Annotated[str, Header()],
+#        item_id: int,
+#        session: Session = Depends(get_session)
+#):
+#    token_payload = check_token(token=customer_or_admin_token)
+#
+#    token_role = token_payload['role']
+#    if token_role != Role.admin and token_role != Role.customer:
+#        raise HTTPException(
+#            status_code=status.HTTP_403_FORBIDDEN,
+#            detail='You don\'t have access to see item'
+#        )
+#
+#    item = Item.search_by_id(session=session, item_id=item_id)
+#    if item is None:
+#        raise HTTPException(
+#            status_code=status.HTTP_404_NOT_FOUND,
+#            detail='Item with this id not found'
+#        )
+#
+#    return item
+#
+#
+#@router.get('/{item_name}', response_model=ItemForRead)
+#def show_specific_by_name(
+#        customer_or_admin_token: Annotated[str, Header()],
+#        item_name: str,
+#        session: Session = Depends(get_session)
+#):
+#    token_payload = check_token(token=customer_or_admin_token)
+#
+#    token_role = token_payload['role']
+#    if token_role != Role.admin and token_role != Role.customer:
+#        raise HTTPException(
+#            status_code=status.HTTP_403_FORBIDDEN,
+#            detail='You don\'t have access to see item'
+#        )
+#
+#    item = Item.search_by_name(session=session, item_name=item_name)
+#    if item is None:
+#        raise HTTPException(
+#            status_code=status.HTTP_404_NOT_FOUND,
+#            detail='Item with this name not found'
+#        )
+#
+#    return item
+#
+#

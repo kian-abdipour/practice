@@ -20,6 +20,9 @@ class DiscountForRead(BaseModel):
     one_use: bool
     created_at: datetime
 
+    class Config:
+        from_attributes = True
+
 
 class DiscountForCreate(BaseModel):
     start_date: str = Field(description='Start date should be like 2024-07-12')
@@ -129,4 +132,14 @@ class DiscountForCreate(BaseModel):
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail='one_use should be bool like true or false'
             )
+
+    class Config:
+        from_attributes = True
+
+
+class DiscountForUpdateDisposable(BaseModel):
+    disposable: bool
+
+    class Config:
+        from_attributes = True
 

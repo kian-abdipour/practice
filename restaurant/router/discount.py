@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, status, Depends, Header
 
-from restaurant.scheme.discount import DiscountForCreate, DiscountForRead
+from restaurant.scheme.discount import DiscountForCreate, DiscountForRead, DiscountForUpdateDisposable
 from restaurant.database import get_session
 from restaurant.authentication import check_token
 from restaurant.model.helper import Role
@@ -48,11 +48,11 @@ def addition(
     return added_discount
 
 
-@router.put('/{Discount_id}/{disposable}', response_model=DiscountForRead)
+@router.put('/{Discount_id}', response_model=DiscountForRead)
 def update_disposable(
         admin_token: Annotated[str, Header()],
-        discount_code,
-        disposable,
+        discount_id: int,
+        updated_discount: DiscountForUpdateDisposable,
         session: Session = Depends(get_session)
 ):
     token_payload = check_token(token=admin_token)
@@ -64,14 +64,18 @@ def update_disposable(
             detail='You don\'t have access to add discount'
         )
 
-    discount = Discount.search_by_code(session=session, code=discount_code)
+    discount = Discount.search_by_id(session=session, discount_id=discount_id)
     if discount is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail='Discount with this code not found'
+            detail='Discount with this id not found'
         )
 
-    updated_discount = Discount.update_disposable(session=session, discount_id=discount.id, disposable=disposable)
+    updated_discount = Discount.update_disposable(
+        session=session,
+        discount_id=discount.id,
+        disposable=updated_discount.disposable
+    )
 #    if updated_discount.disposable is False:
 #        updated_discount.disposable = 'false'
 #
@@ -81,24 +85,8 @@ def update_disposable(
     return updated_discount
 
 
-@router.get('', response_model=List[DiscountForRead])
-def show_all(admin_token: Annotated[str, Header()], session: Session = Depends(get_session)):
-    token_payload = check_token(token=admin_token)
-
-    token_role = token_payload['role']
-    if token_role != Role.admin:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail='You don\'t have access to see discounts'
-        )
-
-    discounts = Discount.show_all(session=session)
-
-    return discounts
-
-
-@router.get('/{discount_code}', response_model=DiscountForRead)
-def show_specific(admin_token: str, discount_code: str, session: Session = Depends(get_session)):
+@router.get('', response_model=List[DiscountForRead] | DiscountForRead)
+def search(admin_token: str, discount_id: str = None, session: Session = Depends(get_session)):
     token_payload = check_token(admin_token)
 
     token_role = token_payload['role']
@@ -108,12 +96,18 @@ def show_specific(admin_token: str, discount_code: str, session: Session = Depen
             detail='You don\'t have access to se discount'
         )
 
-    discount = Discount.search_by_code(session=session, code=discount_code)
-    if discount is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail='Discount with this id not found'
-        )
+    if discount_id is not None:
+        discount = Discount.search_by_id(session=session, discount_id=discount_id)
+        if discount is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail='Discount with this id not found'
+            )
 
-    return discount
+        return discount
+
+    else:
+        discounts = Discount.show_all(session=session)
+
+        return discounts
 

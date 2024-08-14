@@ -5,6 +5,7 @@ from restaurant.model.base import Base
 from restaurant.model.mixin import DateTimeMixin
 from restaurant.model.item import Item
 from restaurant.database import get_session
+from restaurant.custom_exception import OutOfStockError, ItemNotInCartError
 
 from copy import deepcopy
 
@@ -25,14 +26,14 @@ class CartItem(DateTimeMixin, Base):
     item = relationship('Item', overlaps='carts', cascade='all, delete', back_populates='carts')
 
     @classmethod
-    def add(cls, session: Session, item_id, cart_id, quantity, cart_item_in_database):
-        if cart_item_in_database is not None:
-            session.query(cls).filter(cls.id == cart_item_in_database.id).update({cls.quantity: cls.quantity + quantity})
-
-            session.commit()
-            session.refresh(cart_item_in_database)
-
-            return cart_item_in_database
+    def add(cls, session: Session, item_id, cart_id, quantity):
+#        if cart_item_in_database is not None:
+#            session.query(cls).filter(cls.id == cart_item_in_database.id).update({cls.quantity: cls.quantity + quantity})
+#
+#            session.commit()
+#            session.refresh(cart_item_in_database)
+#
+#            return cart_item_in_database
 
         cart_item = cls(item_id=item_id, cart_id=cart_id, quantity=quantity)
 
@@ -57,25 +58,41 @@ class CartItem(DateTimeMixin, Base):
         return cart_item_for_response
 
     @classmethod
-    def decrease_quantity(cls, session: Session, item_id, cart_id):
-        cart_item = cls.search_by_item_id(session=session, item_id=item_id, cart_id=cart_id)
-        if cart_item is None:
-            return None
+    def update_quantity(cls, session: Session, item_id, cart_id, quantity, item):
+        cart_item_in_database = cls.search_by_item_id(session=session, item_id=item_id, cart_id=cart_id)
+        if cart_item_in_database is None:
+            if quantity == 1:
+                if item.stock == 0:
+                    raise OutOfStockError('')
 
-        if cart_item.quantity == 1:
-            cls.delete(session=session, item_id=item_id, cart_id=cart_id)
+                cart_item = cls(cart_id=cart_id, item_id=item_id, quantity=quantity)
+                session.add(cart_item)
+
+                session.commit()
+
+                return cart_item
+
+            else:
+                raise ItemNotInCartError('')
+
+        if cart_item_in_database.quantity == 1 and quantity == -1:
+            session.query(cls).filter(cls.id == cart_item_in_database.id).delete()
 
             session.commit()
 
-            return cart_item
+            return cart_item_in_database
+
+        if cart_item_in_database.quantity >= item.stock:
+            raise OutOfStockError('')
 
         session.query(cls).filter(cls.item_id == item_id, cls.cart_id == cart_id).update(
-            {cls.quantity: cls.quantity - 1}
+            {cls.quantity: cls.quantity + quantity}
         )
+        session.refresh(cart_item_in_database)
 
         session.commit()
 
-        return cart_item
+        return cart_item_in_database
 
     @classmethod
     def search_by_item_id(cls, session: Session, item_id, cart_id):

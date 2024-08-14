@@ -5,15 +5,15 @@ from fastapi import HTTPException, status
 
 class CartItemForCreate(BaseModel):
     item_id: int
-    quantity: int = Field(default=1, description='Quantity should be positive integer')
+    quantity: int = Field(description='Quantity should be integer -1 or 1')
 
     @field_validator('quantity')
     @classmethod
     def validate_quantity(cls, quantity):
-        if quantity <= 0:
+        if quantity != -1 and quantity != 1:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail='Quantity should be positive integer'
+                detail='Quantity should be integer -1 or 1'
             )
 
         return quantity

@@ -2,7 +2,6 @@ from sqlalchemy import Column, Unicode, ForeignKey, Integer
 from restaurant.model.base import Base
 from sqlalchemy.orm import relationship, Session
 from restaurant.model.mixin import DateTimeMixin
-#from restaurant.custom_exception import LengthError
 
 
 class Address(DateTimeMixin, Base):
@@ -24,6 +23,12 @@ class Address(DateTimeMixin, Base):
         return address
 
     @classmethod
+    def show_all_for_admin(cls, session: Session, address_filter):
+        sorted_addresses = address_filter.sort(session.query(cls)).all()
+
+        return sorted_addresses
+
+    @classmethod
     def show_all_for_customer(cls, session: Session, customer_id):
         result = session.query(cls).filter(cls.customer_id == customer_id).all()
 
@@ -34,14 +39,20 @@ class Address(DateTimeMixin, Base):
             return []
 
     @classmethod
-    def search(cls, session: Session, address_id, customer_id):
+    def search_for_customer(cls, session: Session, address_id, customer_id):
         result = session.query(cls).filter(cls.id == address_id, cls.customer_id == customer_id).one_or_none()
 
         return result
 
     @classmethod
+    def search_for_admin(cls, session: Session, address_id):
+        result = session.query(cls).filter(cls.id == address_id).one_or_none()
+
+        return result
+    
+    @classmethod
     def delete(cls, session: Session, address_id, customer_id):
-        address = cls.search(session, address_id, customer_id)
+        address = cls.search_for_customer(session, address_id, customer_id)
         result = session.query(cls).filter(cls.id == address_id, cls.customer_id == customer_id).delete()
 
         session.commit()
@@ -51,10 +62,4 @@ class Address(DateTimeMixin, Base):
 
         else:
             return None
-
-    @classmethod
-    def show_all_for_admin(cls, session: Session):
-        addresses = session.query(cls).all()
-
-        return addresses
 

@@ -29,14 +29,14 @@ class Customer(DateTimeMixin, Base):
         return customer
 
     @classmethod
-    def search_by_username(cls, session: Session, username):
-        result = session.query(cls).filter(cls.username == username).one_or_none()
+    def search_by_id(cls, session: Session, customer_id):
+        result = session.query(cls).filter(cls.id == customer_id).one_or_none()
 
         return result
 
     @classmethod
-    def search_by_username_password(cls, session: Session, username, password):
-        result = session.query(cls).filter(cls.username == username, cls.password == password).one_or_none()
+    def search_by_username(cls, session: Session, username):
+        result = session.query(cls).filter(cls.username == username).one_or_none()
 
         return result
 
@@ -47,8 +47,14 @@ class Customer(DateTimeMixin, Base):
         return result
 
     @classmethod
-    def show_all(cls, session: Session):
-        customers = session.query(cls).all()
+    def search_by_username_password(cls, session: Session, username, password):
+        result = session.query(cls).filter(cls.username == username, cls.password == password).one_or_none()
+
+        return result
+
+    @classmethod
+    def show_all(cls, session: Session, customer_filter):
+        customers = customer_filter.sort(session.query(cls)).all()
 
         return customers
 

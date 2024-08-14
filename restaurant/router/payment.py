@@ -20,24 +20,15 @@ router = APIRouter(
 )
 
 
-@router.post('', response_model=PaymentForRead)
-def addition(
-        customer_token: Annotated[str, Header()],
-        payment: PaymentForCreate,
-        session: Session = Depends(get_session)
+#@router.post('', response_model=PaymentForRead)
+def addition_payment(
+        customer_id,
+        payment_state,
+        payment_type,
+        discount_code,
+        cart_items,
+        session: Session
 ):
-    token_payload = check_token(token=customer_token)
-
-    token_role = token_payload['role']
-    if token_role != Role.customer:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail='You don\'t have access to add payment'
-        )
-
-    customer_id = token_payload['id']
-    cart = Cart.search_cart_by_customer(session=session, customer_id=customer_id)
-    cart_items = CartItem.search_by_cart_id(session=session, cart_id=cart.id)
     if len(cart_items) == 0:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -48,9 +39,9 @@ def addition(
     for cart_item in cart_items:
         item = Item.search_by_id(session=session, item_id=cart_item.item_id)
         amount += (item.price * cart_item.quantity)
-    print(f'>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>: {amount}')
-    if payment.discount_code is not None:
-        discount = Discount.search_by_code(session=session, code=payment.discount_code)
+
+    if discount_code is not None:
+        discount = Discount.search_by_code(session=session, code=discount_code)
         if discount is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -100,13 +91,13 @@ def addition(
 
     added_payment = Payment.add(
         session=session,
-        state=payment.state,
-        type_=payment.type,
+        state=payment_state,
+        type_=payment_type,
         amount=effected_amount,
         customer_id=customer_id
     )
 
-    if added_payment.state == State.successful and payment.discount_code is not None:
+    if added_payment.state == State.successful and discount_code is not None:
         if discount.usage_limitation is not None:
             Discount.decrease_usage_limitation(session=session, discount_id=discount.id)
         DiscountHistory.add(
@@ -120,8 +111,8 @@ def addition(
     return added_payment
 
 
-@router.get('', response_model=List[PaymentForRead])
-def show_all(admin_token: Annotated[str, Header()], session: Session = Depends(get_session)):
+@router.get('', response_model=List[PaymentForRead] | PaymentForRead)
+def search(admin_token: Annotated[str, Header()], payment_id: int = None, session: Session = Depends(get_session)):
     token_payload = check_token(admin_token)
 
     token_role = token_payload['role']
@@ -131,28 +122,20 @@ def show_all(admin_token: Annotated[str, Header()], session: Session = Depends(g
             detail='You don\'t have access to see payments'
         )
 
-    payments = Payment.show_all(session=session)
+    if payment_id is not None:
+        payment = Payment.search_by_id(session=session, payment_id=payment_id)
+        if payment is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail='A payment with this id not found'
+            )
 
-    return payments
+        return payment
+
+    else:
+        payments = Payment.show_all(session=session)
+
+        return payments
 
 
-@router.get('/{payment_id}', response_model=PaymentForRead)
-def show_specific(admin_token: Annotated[str, Header()], payment_id, session: Session = Depends(get_session)):
-    token_payload = check_token(admin_token)
-
-    token_role = token_payload['role']
-    if token_role != Role.admin:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail='You don\'t have access to see payments'
-        )
-
-    payment = Payment.search_by_id(session=session, payment_id=payment_id)
-    if payment is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail='A payment with this id not found'
-        )
-
-    return payment
 

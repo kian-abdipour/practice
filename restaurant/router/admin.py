@@ -53,7 +53,7 @@ def addition(
     return added_admin
 
 
-@router.post('/login/tokens')
+@router.post('-tokens')
 def login(admin: AdminForLogin, session: Session = Depends(get_session)):
     admin_in_database = Admin.search_by_username(session=session, username=admin.username)
     if admin_in_database is None:
@@ -84,8 +84,11 @@ def login(admin: AdminForLogin, session: Session = Depends(get_session)):
     return JSONResponse(content=body, headers=header)
 
 
-@router.get('', response_model=List[AdminForRead])
-def show_all(super_admin_token: Annotated[str, Header()], session: Session = Depends(get_session)):
+@router.get('', response_model=List[AdminForRead] | AdminForRead)
+def show_all(
+        super_admin_token: Annotated[str, Header()],
+        admin_id: int = None,
+        session: Session = Depends(get_session)):
     token_payload = check_token(super_admin_token)
 
     token_role = token_payload['role']
@@ -95,30 +98,20 @@ def show_all(super_admin_token: Annotated[str, Header()], session: Session = Dep
             detail='You don\'t have access to see admin'
         )
 
-    admins = Admin.show_all(session=session)
+    if admin_id is not None:
+        admin = Admin.search_by_id(session=session, admin_id=admin_id)
+        if admin is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail='A customer with this id not found'
+            )
 
-    return admins
+        return admin
 
+    else:
+        admins = Admin.show_all(session=session)
 
-@router.get('/{admin_id}', response_model=AdminForRead)
-def show_specific(super_admin_token: Annotated[str, Header()], admin_id: str, session: Session = Depends(get_session)):
-    token_payload = check_token(super_admin_token)
-
-    token_role = token_payload['role']
-    if token_role != Role.super_admin:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail='You don\'t have access to see admin'
-        )
-
-    admin = Admin.search_by_id(session=session, admin_id=admin_id)
-    if admin is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail='An admin with this id not found'
-        )
-
-    return admin
+        return admins
 
 
 @router.delete('/{admin_id}', response_model=AdminForRead)

@@ -8,6 +8,9 @@ from restaurant.database import engine
 from restaurant.router import customer, address, admin, cart, category, category_item, item, order, payment, \
                               super_admin, discount
 
+from fastapi_pagination import add_pagination
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     Base.metadata.create_all(bind=engine)
@@ -27,4 +30,10 @@ app.include_router(router=category_item.router)
 app.include_router(router=order.router)
 app.include_router(router=payment.router)
 app.include_router(router=discount.router)
+
+add_pagination(app)
+
+
+if __name__ == '__main__':
+    uvicorn.run(app=app, port=8000)
 

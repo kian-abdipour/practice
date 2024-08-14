@@ -6,8 +6,6 @@ from typing import List
 
 
 class CategoryItemForRead(CategoryForRead):
-    id: int
-    name: str
     items: List[ItemForRead]
 
     class Config:
@@ -16,12 +14,18 @@ class CategoryItemForRead(CategoryForRead):
 
 class AdditionItemToCategory(BaseModel):
     item_id: int
-    category_id: int
 
     class Config:
         from_attributes = True
 
 
 class DeleteItemFromCategory(AdditionItemToCategory):
-    pass
+    category_id: int
+
+
+class AdditionItemToCategoryForRead(DeleteItemFromCategory):
+    item_id: int
+
+    class Config:
+        from_attributes = True
 
