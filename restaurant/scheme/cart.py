@@ -2,6 +2,12 @@ from pydantic import BaseModel, Field, field_validator
 
 from fastapi import HTTPException, status
 
+from fastapi_filter.contrib.sqlalchemy import Filter
+
+from restaurant.model import CartItem
+
+from typing import Optional, List
+
 
 class CartItemForCreate(BaseModel):
     item_id: int
@@ -42,4 +48,25 @@ class CartForRead(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class CartItemFilter(Filter):
+    class Constants(Filter.Constants):
+        model = CartItem
+
+    order_by: Optional[List[str]] = None
+
+    @field_validator('order_by')
+    @classmethod
+    def validate_order_by(cls, order_by):
+        item_attributes = ['id', 'quantity', 'unit_amount', 'total_amount',
+                           '-id', '-quantity', '-unit_amount', '-total_amount',]
+        for item in order_by:
+            if item not in item_attributes:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail='order by should be a valid attribute of cart_item'
+                )
+
+        return order_by
 

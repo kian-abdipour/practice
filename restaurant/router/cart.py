@@ -3,6 +3,7 @@ from fastapi import APIRouter, HTTPException, status, Depends, Header
 from sqlalchemy.orm import Session
 
 from restaurant.scheme.cart import CartForRead, CartItemForCreate, CartItemForRead
+from restaurant.scheme.item import ItemForRead, ItemInCartFilter
 from restaurant.model.cart_item import CartItem
 from restaurant.model.cart import Cart
 from restaurant.model.item import Item
@@ -10,15 +11,22 @@ from restaurant.database import get_session
 from restaurant.authentication import check_token
 from restaurant.custom_exception import OutOfStockError, ItemNotInCartError
 from restaurant.model.helper import Role
+from restaurant.scheme.cart import CartItemFilter
 
 from typing import Annotated, List
 
 from copy import deepcopy
 
+from fastapi_pagination import paginate, LimitOffsetPage, add_pagination
+
+from fastapi_filter import FilterDepends
+
+
 router = APIRouter(
     prefix='/carts',
     tags=['cart']
 )
+add_pagination(router)
 
 
 #@router.post('', response_model=CartItemForRead)
@@ -167,7 +175,7 @@ def update_quantity(
     return updated_cart_item
 
 
-@router.get('/item_stock')
+@router.get('/item-stock')
 def check_stock_of_item_in_cart(customer_token: str, session: Session = Depends(get_session)):
     token_payload = check_token(customer_token)
 
@@ -183,11 +191,34 @@ def check_stock_of_item_in_cart(customer_token: str, session: Session = Depends(
     items = []
     items_out_of_stock = []
     for cart_item in cart_items:
-        item = Item.search_by_id(session=session, item_id=cart_item.item_id)
+        item = Item.search_by_id(session=session, item_id=cart_item.id)
         items.append(item)
 
         if cart_item.quantity > item.stock:
             items_out_of_stock.append(item)
 
     return items_out_of_stock
+
+
+@router.get('/items', response_model=LimitOffsetPage[CartItemForRead])
+def show_all(
+        customer_token: str,
+        cart_item_filter: CartItemFilter = FilterDepends(CartItemFilter),
+        session: Session = Depends(get_session)
+):
+    token_payload = check_token(customer_token)
+
+    token_role = token_payload['role']
+    if token_role != Role.customer:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail='You don\'t have access to items in the cart of customer'
+        )
+
+    customer_id = token_payload['id']
+    cart = Cart.search_cart_by_customer(session=session, customer_id=customer_id)
+
+    cart_items = CartItem.search_by_cart_id(session=session, cart_id=cart.id, cart_item_filter=cart_item_filter)
+
+    return paginate(cart_items)
 

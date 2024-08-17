@@ -44,8 +44,8 @@ class CategoryItem(DateTimeMixin, Base):
         return category_item
 
     @classmethod
-    def show_item_side(cls, session: Session, category_id):
-        results = session.query(Item).join(cls).filter(cls.category_id == category_id).all()
+    def show_item_side(cls, session: Session, category_id, category_item_filter):
+        results = category_item_filter.sort(session.query(Item).join(cls).filter(cls.category_id == category_id)).all()
 
         return results
 

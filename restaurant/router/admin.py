@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status, Header
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 
-from restaurant.scheme.admin import AdminForAddition, AdminForLogin, AdminForRead
+from restaurant.scheme.admin import AdminForAddition, AdminForLogin, AdminForRead, AdminFilter
 from restaurant.database import get_session
 from restaurant.model import Admin
 from restaurant.authentication import get_hash_password, verify_password, check_token, make_token
@@ -14,11 +14,15 @@ from datetime import timedelta
 
 from typing import Annotated, List
 
+from fastapi_pagination import LimitOffsetPage, paginate, add_pagination
+from fastapi_filter import FilterDepends
+
 
 router = APIRouter(
     prefix='/admins',
     tags=['admin']
 )
+add_pagination(router)
 
 
 @router.post('', response_model=AdminForRead)
@@ -84,10 +88,10 @@ def login(admin: AdminForLogin, session: Session = Depends(get_session)):
     return JSONResponse(content=body, headers=header)
 
 
-@router.get('', response_model=List[AdminForRead] | AdminForRead)
-def show_all(
+@router.get('', response_model=LimitOffsetPage[AdminForRead])
+def search(
         super_admin_token: Annotated[str, Header()],
-        admin_id: int = None,
+        admin_filter: AdminFilter = FilterDepends(AdminFilter),
         session: Session = Depends(get_session)):
     token_payload = check_token(super_admin_token)
 
@@ -98,20 +102,23 @@ def show_all(
             detail='You don\'t have access to see admin'
         )
 
-    if admin_id is not None:
-        admin = Admin.search_by_id(session=session, admin_id=admin_id)
+    if admin_filter.id is not None:
+        admin = Admin.search_by_id(session=session, admin_id=admin_filter.id)
         if admin is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail='A customer with this id not found'
             )
+        admin_dict = admin.__dict__
+        admin_dict.pop('password')
+        jsonable_admin = jsonable_encoder(admin_dict)
 
-        return admin
+        return JSONResponse(status_code=200, content=jsonable_admin)
 
     else:
-        admins = Admin.show_all(session=session)
+        admins = Admin.show_all(session=session, admin_filter=admin_filter)
 
-        return admins
+        return paginate(admins)
 
 
 @router.delete('/{admin_id}', response_model=AdminForRead)

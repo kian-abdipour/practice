@@ -100,8 +100,8 @@ class Discount(DateTimeMixin, Base):
         return result
 
     @classmethod
-    def show_all(cls, session: Session):
-        discounts = session.query(cls).all()
+    def show_all(cls, session: Session, discount_filter):
+        discounts = discount_filter.sort(session.query(cls)).all()
 
         return discounts
 

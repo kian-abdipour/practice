@@ -40,8 +40,8 @@ class Payment(DateTimeMixin, Base):
 #       return result
 
     @classmethod
-    def show_all(cls, session: Session):
-        payments = session.query(cls).all()
+    def show_all(cls, session: Session, payment_filter):
+        payments = payment_filter.sort(session.query(cls)).all()
 
         return payments
 

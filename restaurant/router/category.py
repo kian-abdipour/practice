@@ -1,9 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Header
+from fastapi.responses import JSONResponse
+from fastapi.encoders import jsonable_encoder
 
-
-from restaurant.scheme.category import CategoryForCreate, CategoryForRead
+from restaurant.scheme.category import CategoryForCreate, CategoryForRead, CategoryFilter
 from restaurant.scheme.category_item import CategoryItemForRead, DeleteItemFromCategory, \
     AdditionItemToCategoryForRead, AdditionItemToCategory
+from restaurant.scheme.item import ItemInCategoryFilter, ItemForRead
 from restaurant.database import get_session
 from restaurant.model import Category, CategoryItem, Item
 from restaurant.authentication import check_token
@@ -13,10 +15,16 @@ from sqlalchemy.orm import Session
 
 from typing import Annotated, List
 
+from fastapi_pagination import LimitOffsetPage, paginate, add_pagination
+
+from fastapi_filter import FilterDepends
+
+
 router = APIRouter(
     prefix='/categories',
     tags=['Category']
 )
+add_pagination(router)
 
 
 @router.post('', response_model=CategoryForRead)
@@ -46,34 +54,49 @@ def addition(
     return added_category
 
 
-@router.get('', response_model=List[CategoryForRead] | CategoryForRead)
+@router.get('', response_model=LimitOffsetPage[CategoryForRead])
 def search(
-        admin_token: Annotated[str, Header()],
-        category_id: int = None,
+        admin_token_or_customer_token: Annotated[str, Header()],
+        category_filter: CategoryFilter = FilterDepends(CategoryFilter),
         session: Session = Depends(get_session)
 ):
-    token_payload = check_token(admin_token)
+    token_payload = check_token(admin_token_or_customer_token)
 
     token_role = token_payload['role']
-    if token_role != Role.admin:
+    if token_role != Role.admin and token_role != Role.customer:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='You don\'t have access to see category'
         )
-    if category_id is not None:
-        category = Category.search_by_id(session=session, category_id=category_id)
+
+    if category_filter.id is not None:
+        category = Category.search_by_id(session=session, category_id=category_filter.id)
         if category is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail='A category with this id not found'
             )
+        category_dict = category.__dict__
+        jsonable_category = jsonable_encoder(category_dict)
 
-        return category
+        return JSONResponse(status_code=200, content=jsonable_category)
+
+    elif category_filter.name is not None:
+        category = Category.search_by_name(session=session, name=category_filter.name)
+        if category is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail='A category with this name not found'
+            )
+        category_dict = category.__dict__
+        jsonable_category = jsonable_encoder(category_dict)
+
+        return JSONResponse(status_code=200, content=jsonable_category)
 
     else:
-        categories = Category.show_all(session=session)
+        categories = Category.show_all(session=session, category_filter=category_filter)
 
-        return categories
+        return paginate(categories)
 
 
 @router.delete('/{category_id}', response_model=CategoryForRead)
@@ -97,10 +120,10 @@ def delete(admin_token: Annotated[str, Header()], category_id: int, session: Ses
     return result
 
 
-@router.get('/{category_id}/items', response_model=CategoryItemForRead)
+@router.get('/{category_id}/items', response_model=LimitOffsetPage[ItemForRead])
 def show_item_side(
         admin_token_or_customer_token: Annotated[str, Header()],
-        category_id: int,
+        category_item_filter: ItemInCategoryFilter = FilterDepends(ItemInCategoryFilter),
         session: Session = Depends(get_session)
 ):
     token_payload = check_token(token=admin_token_or_customer_token)
@@ -112,22 +135,26 @@ def show_item_side(
             detail='You don\'t have access see item of category'
         )
 
-    category_in_database = Category.search_by_id(session=session, category_id=category_id)
+    category_in_database = Category.search_by_id(session=session, category_id=category_item_filter.category_id)
     if category_in_database is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail='A category with this id not found'
         )
 
-    item_in_category = CategoryItem.show_item_side(session=session, category_id=category_id)
-    category = CategoryItemForRead(
-        id=category_id,
-        name=category_in_database.name,
-        items=item_in_category,
-        created_at=category_in_database.created_at
+    item_in_category = CategoryItem.show_item_side(
+        session=session,
+        category_id=category_item_filter.category_id,
+        category_item_filter=category_item_filter
     )
+#    category = CategoryItemForRead(
+#        id=category_id,
+#        name=category_in_database.name,
+#        items=item_in_category,
+#        created_at=category_in_database.created_at
+#    )
 
-    return category
+    return paginate(item_in_category)
 
 
 @router.post('/{category_id}/items', response_model=AdditionItemToCategoryForRead)

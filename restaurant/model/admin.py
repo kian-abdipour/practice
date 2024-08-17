@@ -55,8 +55,8 @@ class Admin(DateTimeMixin, Base):
         return admin
 
     @classmethod
-    def show_all(cls, session: Session):
-        admins = session.query(cls).all()
+    def show_all(cls, session: Session, admin_filter):
+        admins = admin_filter.sort(session.query(cls)).all()
 
         return admins
 

@@ -110,8 +110,8 @@ def search(admin_token: Annotated[str, Header()],
             detail='You don\'t have access to see customers'
         )
 
-    if customer_filter.customer_id is not None:
-        customer = Customer.search_by_id(session=session, customer_id=customer_filter.customer_id)
+    if customer_filter.id is not None:
+        customer = Customer.search_by_id(session=session, customer_id=customer_filter.id)
         if customer is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -153,7 +153,7 @@ def search(admin_token: Annotated[str, Header()],
 
         return JSONResponse(status_code=200, content=jsonable_customer)
 
-    elif customer_filter.customer_id is None and customer_filter.username is None and \
+    elif customer_filter.id is None and customer_filter.username is None and \
             customer_filter.phone_number is None:
         customers = Customer.show_all(session=session, customer_filter=customer_filter)
 

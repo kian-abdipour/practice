@@ -3,8 +3,13 @@ from pydantic import BaseModel, Field, field_validator
 from fastapi import HTTPException, status
 
 from restaurant.model.helper import State, DeliveryType, TypePay
+from restaurant.model import Order
 
 from datetime import datetime
+
+from fastapi_filter.contrib.sqlalchemy import Filter
+
+from typing import Optional, List
 
 
 class OrderForCreate(BaseModel):
@@ -69,4 +74,40 @@ class OrderForRead(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class OrderFilter(Filter):
+    class Constants(Filter.Constants):
+        model = Order
+
+    id: int | None = None
+    state: str | None = None
+    order_by: Optional[List[str]] = None
+
+    @field_validator('order_by')
+    @classmethod
+    def validate_order_by(cls, order_by):
+        item_attributes = ['id', 'state', 'delivery_type', 'desk_number', 'customer_id',
+                           '-id', '-state', '-delivery_type', '-desk_number', '-customer_id']
+        for item in order_by:
+            if item not in item_attributes:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail='order by should be a valid attribute of order'
+                )
+
+        return order_by
+
+    @field_validator('state')
+    @classmethod
+    def validate_state(cls, state):
+        if state != State.confirm_and_finish and state != State.waiting_to_confirmation:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f'An state should be {State.confirm_and_finish} or {State.waiting_to_confirmation}'
+            )
+
+        return state
+
+
 

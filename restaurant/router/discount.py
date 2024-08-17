@@ -1,6 +1,8 @@
 from fastapi import APIRouter, HTTPException, status, Depends, Header
+from fastapi.responses import JSONResponse
+from fastapi.encoders import jsonable_encoder
 
-from restaurant.scheme.discount import DiscountForCreate, DiscountForRead, DiscountForUpdateDisposable
+from restaurant.scheme.discount import DiscountForCreate, DiscountForRead, DiscountForUpdateDisposable, DiscountFilter
 from restaurant.database import get_session
 from restaurant.authentication import check_token
 from restaurant.model.helper import Role
@@ -10,10 +12,16 @@ from sqlalchemy.orm import Session
 
 from typing import List, Annotated
 
+from fastapi_filter import FilterDepends
+
+from fastapi_pagination import paginate, LimitOffsetPage, add_pagination
+
+
 router = APIRouter(
     prefix='/discounts',
     tags=['discount']
 )
+add_pagination(router)
 
 
 @router.post('', response_model=DiscountForRead)
@@ -85,8 +93,12 @@ def update_disposable(
     return updated_discount
 
 
-@router.get('', response_model=List[DiscountForRead] | DiscountForRead)
-def search(admin_token: str, discount_id: str = None, session: Session = Depends(get_session)):
+@router.get('', response_model=LimitOffsetPage[DiscountForRead])
+def search(
+        admin_token: str,
+        discount_filter: DiscountFilter = FilterDepends(DiscountFilter),
+        session: Session = Depends(get_session)
+):
     token_payload = check_token(admin_token)
 
     token_role = token_payload['role']
@@ -96,18 +108,20 @@ def search(admin_token: str, discount_id: str = None, session: Session = Depends
             detail='You don\'t have access to se discount'
         )
 
-    if discount_id is not None:
-        discount = Discount.search_by_id(session=session, discount_id=discount_id)
+    if discount_filter.id is not None:
+        discount = Discount.search_by_id(session=session, discount_id=discount_filter.id)
         if discount is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail='Discount with this id not found'
             )
+        customer_dict = discount.__dict__
+        jsonable_discount = jsonable_encoder(customer_dict)
 
-        return discount
+        return JSONResponse(status_code=200, content=jsonable_discount)
 
     else:
-        discounts = Discount.show_all(session=session)
+        discounts = Discount.show_all(session=session, discount_filter=discount_filter)
 
-        return discounts
+        return paginate(discounts)
 

@@ -24,19 +24,15 @@ class Address(DateTimeMixin, Base):
 
     @classmethod
     def show_all_for_admin(cls, session: Session, address_filter):
-        sorted_addresses = address_filter.sort(session.query(cls)).all()
+        sorted_addresses = address_filter.sort(address_filter.sort(session.query(cls))).all()
 
         return sorted_addresses
 
     @classmethod
-    def show_all_for_customer(cls, session: Session, customer_id):
-        result = session.query(cls).filter(cls.customer_id == customer_id).all()
+    def show_all_for_customer(cls, session: Session, customer_id, address_filter):
+        result = address_filter.sort(session.query(cls).filter(cls.customer_id == customer_id)).all()
 
-        if len(result) > 0:
-            return result
-
-        else:
-            return []
+        return result
 
     @classmethod
     def search_for_customer(cls, session: Session, address_id, customer_id):
@@ -45,7 +41,7 @@ class Address(DateTimeMixin, Base):
         return result
 
     @classmethod
-    def search_for_admin(cls, session: Session, address_id):
+    def search_for_admin(cls, session: Session, address_id, address_filter):
         result = session.query(cls).filter(cls.id == address_id).one_or_none()
 
         return result

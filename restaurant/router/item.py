@@ -1,20 +1,26 @@
 from fastapi import APIRouter, HTTPException, status, Depends, Header
+from fastapi.encoders import jsonable_encoder
+from fastapi.responses import JSONResponse
 
 from sqlalchemy.orm import Session
 
 from restaurant.authentication import check_token
 from restaurant.model import Item
-from restaurant.scheme.item import ItemForCreate, ItemForRead
+from restaurant.scheme.item import ItemForCreate, ItemForRead, ItemFilter
 from restaurant.database import get_session
 from restaurant.model.helper import Role
 
 from typing import Annotated, List
+
+from fastapi_pagination import paginate, LimitOffsetPage, add_pagination
+from fastapi_filter import FilterDepends
 
 
 router = APIRouter(
     prefix='/items',
     tags=['item']
 )
+add_pagination(router)
 
 
 @router.post('', response_model=ItemForRead)
@@ -48,11 +54,10 @@ def addition(
     return added_item
 
 
-@router.get('', response_model=List[ItemForRead] | ItemForRead)
+@router.get('', response_model=LimitOffsetPage[ItemForRead])
 def search(
         customer_or_admin_token: Annotated[str, Header()],
-        item_id: int = None,
-        item_name: str = None,
+        item_filter: ItemFilter = FilterDepends(ItemFilter),
         session: Session = Depends(get_session)
 ):
     token_payload = check_token(token=customer_or_admin_token)
@@ -64,30 +69,34 @@ def search(
             detail='You don\'t have access to see item'
         )
 
-    if item_id is not None:
-        item = Item.search_by_id(session=session, item_id=item_id)
+    if item_filter.id is not None:
+        item = Item.search_by_id(session=session, item_id=item_filter.id)
         if item is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail='An item with this id not found'
             )
+        customer_dict = Item.__dict__
+        jsonable_customer = jsonable_encoder(customer_dict)
 
-        return item
+        return JSONResponse(status_code=200, content=jsonable_customer)
 
-    elif item_name is not None:
-        item = Item.search_by_name(session=session, item_name=item_name)
+    elif item_filter.name is not None:
+        item = Item.search_by_name(session=session, item_name=item_filter.name)
         if item is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail='An item with this name not found'
             )
+        customer_dict = Item.__dict__
+        jsonable_customer = jsonable_encoder(customer_dict)
 
-        return item
+        return JSONResponse(status_code=200, content=jsonable_customer)
 
-    elif item_id is None and item_name is None:
-        items = Item.show_all(session=session)
+    elif item_filter.id is None and item_filter.name is None:
+        items = Item.show_all(session=session, item_filter=item_filter)
 
-        return items
+        return paginate(items)
 
 
 #@router.get('/{item_id}', response_model=ItemForRead)

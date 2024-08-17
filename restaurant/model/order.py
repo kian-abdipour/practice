@@ -42,21 +42,23 @@ class Order(DateTimeMixin, Base):
         return order
 
     @classmethod
-    def show_all_for_customer(cls, session: Session, customer_id):
+    def show_all_for_customer(cls, session: Session, customer_id, order_filter):
 #        result = session.query(cls, Address.address).filter(cls.customer_id == customer_id).join(Address).order_by(cls.id).all()
-        result = session.query(cls).filter(cls.customer_id == customer_id).all()
+        result = order_filter.sort(session.query(cls).filter(cls.customer_id == customer_id)).all()
 
         return result
 
     @classmethod
-    def show_by_state_for_admin(cls, session: Session, state):
-        result = session.query(cls).filter(cls.state == state).all()  # Question where to be cut
+    def show_by_state_for_admin(cls, session: Session, state, order_filter):
+        result = order_filter.sort(session.query(cls).filter(cls.state == state)).all()  # Question where to be cut
 
         return result
 
     @classmethod
-    def show_by_state_for_customer(cls, session: Session, customer_id, state):
-        result = session.query(cls).filter(cls.state == state, cls.customer_id == customer_id).all()
+    def show_by_state_for_customer(cls, session: Session, customer_id, state, order_filter):
+        result = order_filter.sort(session.query(cls).filter(
+            cls.state == state, cls.customer_id == customer_id
+        )).all()
 
         return result
 
@@ -88,8 +90,8 @@ class Order(DateTimeMixin, Base):
         return orders
 
     @classmethod
-    def show_all_for_admin(cls, session: Session):
-        orders = session.query(cls).all()
+    def show_all_for_admin(cls, session: Session, order_filter):
+        orders = order_filter.sort(session.query(cls)).all()
 
         return orders
 

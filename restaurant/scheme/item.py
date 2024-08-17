@@ -4,6 +4,13 @@ from fastapi import HTTPException, status
 
 from datetime import datetime
 
+from fastapi_filter.contrib.sqlalchemy import Filter
+from pydantic_core.core_schema import ValidationInfo
+
+from restaurant.model import Item
+
+from typing import List, Optional
+
 
 class ItemForCreate(BaseModel):
     name: str = Field(description='An item name should be at least 40 character')
@@ -57,5 +64,67 @@ class ItemForRead(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class ItemFilter(Filter):
+    class Constants(Filter.Constants):
+        model = Item
+
+    id: int | None = None
+    name: str | None = None
+    order_by: Optional[List[str]] = None
+
+    @field_validator('order_by')
+    @classmethod
+    def validate_order_by(cls, order_by):
+        item_attributes = ['id', 'name', 'country', 'price', 'stock',
+                           '-id', '-name', '-country', '-price', '-stock']
+        for item in order_by:
+            if item not in item_attributes:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail='order by should be a valid attribute of item'
+                )
+
+        return order_by
+
+    @field_validator('name')
+    @classmethod
+    def validate_name(cls, name):
+        if len(name) > 40:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail='An item name should be at least 40 character'
+            )
+
+        return name
+
+
+class ItemInCartFilter(Filter):
+    class Constants(Filter.Constants):
+        model = Item
+
+    order_by: Optional[List[str]] = None
+
+    @field_validator('order_by')
+    @classmethod
+    def validate_order_by(cls, order_by):
+        item_attributes = ['id', 'name', 'country', 'price', 'stock',
+                           '-id', '-name', '-country', '-price', '-stock']
+        for item in order_by:
+            if item not in item_attributes:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail='order by should be a valid attribute of item'
+                )
+
+        return order_by
+
+
+class ItemInCategoryFilter(ItemInCartFilter):
+    class Constants(Filter.Constants):
+        model = Item
+
+    category_id: int
 
 

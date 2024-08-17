@@ -111,7 +111,7 @@ class CustomerFilter(Filter):
     class Constants(Filter.Constants):
         model = Customer
 
-    customer_id: int | None = None
+    id: int | None = None
     username: str | None = None
     phone_number: str | None = None
     order_by: Optional[List[str]] = None

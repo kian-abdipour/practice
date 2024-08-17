@@ -4,8 +4,9 @@ from sqlalchemy.orm import relationship, Session, column_property
 
 from restaurant.model.base import Base
 from restaurant.model.mixin import DateTimeMixin
-from restaurant.model.cart_item import CartItem
+from restaurant.model import CartItem, Item
 from restaurant.database import get_session
+
 
 for database_session in get_session():
     db_session = database_session
@@ -53,4 +54,13 @@ class Cart(DateTimeMixin, Base):
 
         return cart_items
 
+    @classmethod
+    def show_item_in_a_cart(cls, session: Session, customer_id, item_filter):
+        cart = session.query(cls).filter(cls.customer_id == customer_id).one_or_none()
+        if cart is None:
+            return None
+
+        items = item_filter.sort(session.query(Item).join(CartItem).filter(CartItem.cart_id == cart.id)).all()
+
+        return items
 

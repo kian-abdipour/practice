@@ -35,8 +35,8 @@ class Category(DateTimeMixin, Base):
         return category
 
     @classmethod
-    def show_all(cls, session: Session):
-        result = session.query(cls).all()
+    def show_all(cls, session: Session, category_filter):
+        result = category_filter.sort(session.query(cls)).all()
 
         return result
 

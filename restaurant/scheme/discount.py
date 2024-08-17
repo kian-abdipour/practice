@@ -6,6 +6,12 @@ from re import match
 
 from fastapi import HTTPException, status
 
+from fastapi_filter.contrib.sqlalchemy import Filter
+
+from typing import List, Optional
+
+from restaurant.model import Discount
+
 
 class DiscountForRead(BaseModel):
     id: int
@@ -143,3 +149,27 @@ class DiscountForUpdateDisposable(BaseModel):
     class Config:
         from_attributes = True
 
+
+class DiscountFilter(Filter):
+    class Constants(Filter.Constants):
+        model = Discount
+
+    id: int | None = None
+    order_by: Optional[List[str]] = None
+
+    @field_validator('order_by')
+    @classmethod
+    def validate_order_by(cls, order_by):
+        item_attributes = [
+            'id', 'start_date', 'expire_date', 'title', 'percent', 'usage_limitation', 'disposable', 'one_use',
+            '-id', '-start_date', '-expire_date', '-title', '-percent', '-usage_limitation', '-disposable', 'one_use'
+        ]
+        for item in order_by:
+            print(item)
+            if item not in item_attributes:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail='order by should be a valid attribute of payment'
+                )
+
+        return order_by

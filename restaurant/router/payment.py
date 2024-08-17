@@ -1,6 +1,8 @@
 from fastapi import APIRouter, HTTPException, status, Depends, Header
+from fastapi.responses import JSONResponse
+from fastapi.encoders import jsonable_encoder
 
-from restaurant.scheme.payment import PaymentForRead, PaymentForCreate
+from restaurant.scheme.payment import PaymentForRead, PaymentForCreate, PaymentFilter
 from restaurant.model import Payment, Discount, DiscountHistory, Item, CartItem, Cart
 from restaurant.database import get_session
 from restaurant.custom_exception import DisposableDiscountError, StartDateDiscountError, ExpireDateDiscountError, \
@@ -11,6 +13,10 @@ from restaurant.authentication import check_token
 from sqlalchemy.orm import Session
 
 from typing import Annotated, List
+
+from fastapi_pagination import paginate, add_pagination, LimitOffsetPage
+
+from fastapi_filter import FilterDepends
 
 
 router = APIRouter(
@@ -37,7 +43,7 @@ def addition_payment(
 
     amount = 0
     for cart_item in cart_items:
-        item = Item.search_by_id(session=session, item_id=cart_item.item_id)
+        item = Item.search_by_id(session=session, item_id=cart_item.id)
         amount += (item.price * cart_item.quantity)
 
     if discount_code is not None:
@@ -111,8 +117,12 @@ def addition_payment(
     return added_payment
 
 
-@router.get('', response_model=List[PaymentForRead] | PaymentForRead)
-def search(admin_token: Annotated[str, Header()], payment_id: int = None, session: Session = Depends(get_session)):
+@router.get('', response_model=LimitOffsetPage[PaymentForRead])
+def search(
+        admin_token: Annotated[str, Header()],
+        payment_filter: PaymentFilter = FilterDepends(PaymentFilter),
+        session: Session = Depends(get_session)
+):
     token_payload = check_token(admin_token)
 
     token_role = token_payload['role']
@@ -122,20 +132,20 @@ def search(admin_token: Annotated[str, Header()], payment_id: int = None, sessio
             detail='You don\'t have access to see payments'
         )
 
-    if payment_id is not None:
-        payment = Payment.search_by_id(session=session, payment_id=payment_id)
+    if payment_filter.id is not None:
+        payment = Payment.search_by_id(session=session, payment_id=payment_filter.id)
         if payment is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail='A payment with this id not found'
             )
+        payment_dict = payment.__dict__
+        jsonable_payment = jsonable_encoder(payment_dict)
 
-        return payment
+        return JSONResponse(status_code=200, content=jsonable_payment)
 
     else:
-        payments = Payment.show_all(session=session)
+        payments = Payment.show_all(session=session, payment_filter=payment_filter)
 
-        return payments
-
-
+        return paginate(payments)
 

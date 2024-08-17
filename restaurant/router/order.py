@@ -1,6 +1,8 @@
 from fastapi import APIRouter, HTTPException, status, Depends, Header
+from fastapi.responses import JSONResponse
+from fastapi.encoders import jsonable_encoder
 
-from restaurant.scheme.order import OrderForCreate, OrderForRead
+from restaurant.scheme.order import OrderForCreate, OrderForRead, OrderFilter
 from restaurant.database import get_session
 from restaurant.model import Order, OrderItem
 from restaurant.model.cart import Cart, CartItem
@@ -14,6 +16,10 @@ from sqlalchemy.orm import Session
 
 from typing import Annotated, List
 
+from fastapi_pagination import paginate, LimitOffsetPage, add_pagination
+
+from fastapi_filter import FilterDepends
+
 
 router = APIRouter(
     prefix='/orders',
@@ -21,13 +27,13 @@ router = APIRouter(
 )
 
 
-def show_by_state(
-        state: str,
-        session: Session = Depends(get_session)
-):
-    orders = Order.show_by_state_for_admin(session=session, state=state)
-
-    return orders
+#def show_by_state(
+#        state: str,
+#        session: Session = Depends(get_session)
+#):
+#    orders = Order.show_by_state_for_admin(session=session, state=state)
+#
+#    return orders
 
 
 def show_specific_order(order_id: int, session: Session = Depends(get_session)):
@@ -60,34 +66,22 @@ def show_all_orders_for_customer(
     return orders
 
 
-def show_all_orders_for_admin(session):
-    orders = Order.show_all_for_admin(session=session)
-
-    return orders
-
-
-def show_specific_order_for_customer(session, order_id, customer_id):
-    order = Order.search_by_customer_id_and_order_id(session=session, order_id=order_id, customer_id=customer_id)
-
-    if order is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail='This customer does not have any order with this id'
-        )
-
-    return order
+#def show_specific_order_for_customer(session, order_id, customer_id):
+#    order = Order.search_by_customer_id_and_order_id(session=session, order_id=order_id, customer_id=customer_id)
+#
+#    if order is None:
+#        raise HTTPException(
+#            status_code=status.HTTP_404_NOT_FOUND,
+#            detail='This customer does not have any order with this id'
+#        )
+#
+#    return order
 
 
-def show_by_state_for_customer(session: Session, customer_id, order_state):
-    orders = Order.show_by_state_for_customer(session=session, customer_id=customer_id, state=order_state)
-
-    return orders
-
-
-def show_all_for_customer(session, customer_id):
-    orders = Order.show_all_for_customer(session=session, customer_id=customer_id)
-
-    return orders
+#def show_by_state_for_customer(session: Session, customer_id, order_state):
+#    orders = Order.show_by_state_for_customer(session=session, customer_id=customer_id, state=order_state)
+#
+#    return orders
 
 
 @router.post('', response_model=OrderForRead)
@@ -138,7 +132,7 @@ def addition_order(
             OrderItem.add(
                 session=session,
                 order_id=added_order.id,
-                item_id=cart_item.item_id,
+                item_id=cart_item.id,
                 quantity=cart_item.quantity,
                 unit_amount=cart_item.unit_amount,
                 total_amount=cart_item.total_amount
@@ -147,10 +141,10 @@ def addition_order(
         except OutOfStockError:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f'The item with id {cart_item.item_id} is out of stock'
+                detail=f'The item with id {cart_item.id} is out of stock'
             )
 
-        CartItem.delete(session=session, item_id=cart_item.item_id, cart_id=cart_item.cart_id)
+        CartItem.delete(session=session, item_id=cart_item.id, cart_id=cart_item.cart_id)
 
     return added_order
 
@@ -193,11 +187,10 @@ def confirm_order(
     return confirmed_order
 
 
-@router.get('/orders', response_model=List[OrderForRead] | OrderForRead)
+@router.get('/orders', response_model=LimitOffsetPage[OrderForRead])
 def search(
         customer_or_admin_token: Annotated[str, Header()],
-        order_id: int = None,
-        order_state: str = None,
+        order_filter: OrderFilter = FilterDepends(OrderFilter),
         session: Session = Depends(get_session)
 ):
     token_payload = check_token(customer_or_admin_token)
@@ -211,34 +204,48 @@ def search(
         )
 
     if token_role == Role.admin:
-        if order_id is not None:
-            order = show_specific_order(order_id=order_id, session=session)
+        if order_filter.id is not None:
+            order = show_specific_order(order_id=order_filter.id, session=session)
+            order_dict = order.__dict__
+            jsonable_order = jsonable_encoder(order_dict)
 
-            return order
+            return JSONResponse(status_code=200, content=jsonable_order)
 
-        elif order_state is not None:
-            orders = show_by_state(state=order_state, session=session)
+        elif order_filter.state is not None:
+            orders = Order.show_by_state_for_admin(state=order_filter.state, session=session, order_filter=order_filter)
 
-            return orders
+            return paginate(orders)
 
         else:
-            orders = show_all_orders_for_admin(session=session)
+            orders = Order.show_all_for_admin(session=session, order_filter=order_filter)
 
-            return orders
+            return paginate(orders)
 
     if token_role == Role.customer:
-        if order_id is not None:
-            order = show_specific_order_for_customer(session=session, customer_id=customer_id, order_id=order_id)
+        if order_filter.id is not None:
+            order = Order.search_by_customer_id_and_order_id(
+                session=session, customer_id=customer_id, order_id=order_filter.id
+            )
+            if order is None:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail='This customer does not have any order with this id'
+                )
 
             return order
 
-        elif order_state is not None:
-            orders = show_by_state_for_customer(session=session, customer_id=customer_id, order_state=order_state)
+        elif order_filter.state is not None:
+            orders = Order.show_by_state_for_customer(
+                session=session,
+                customer_id=customer_id,
+                state=order_filter.state,
+                order_filter=order_filter
+            )
 
-            return orders
+            return paginate(orders)
 
         else:
-            orders = show_all_for_customer(session=session, customer_id=customer_id)
+            orders = Order.show_all_for_customer(session=session, customer_id=customer_id, order_filter=order_filter)
 
-            return orders
+            return paginate(orders)
 

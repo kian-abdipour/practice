@@ -101,8 +101,8 @@ class CartItem(DateTimeMixin, Base):
         return cart_item
 
     @classmethod
-    def search_by_cart_id(cls, session: Session, cart_id):
-        cart_items = session.query(cls).filter(cls.cart_id == cart_id).all()
+    def search_by_cart_id(cls, session: Session, cart_id, cart_item_filter):
+        cart_items = cart_item_filter.sort(session.query(cls).filter(cls.cart_id == cart_id)).all()
 
         return cart_items
 

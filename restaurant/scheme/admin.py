@@ -4,6 +4,14 @@ from fastapi import HTTPException, status
 
 from re import match
 
+from fastapi_filter.contrib.sqlalchemy import Filter
+
+from restaurant.model import Admin
+
+from typing import Optional, List
+
+from datetime import datetime
+
 
 class AdminForLogin(BaseModel):
     username: str = Field(description='Length of username should be at most 16 character')
@@ -103,7 +111,31 @@ class AdminForRead(BaseModel):
     first_name: str
     last_name: str
     username: str
+    created_at: datetime
 
     class Config:
         from_attributes = True
+
+
+class AdminFilter(Filter):
+    class Constants(Filter.Constants):
+        model = Admin
+
+    id: int | None = None
+    order_by: Optional[List[str]] = None
+
+    @field_validator('order_by')
+    @classmethod
+    def validate_order_by(cls, order_by):
+        print(order_by)
+        admin_attributes = ['id', 'first_name', 'last_name', 'username', 'super_admin_id', 'created_at',
+                            '-id', '-first_name', '-last_name', '-username', '-super_admin_id', '-created_at']
+        for item in order_by:
+            if item not in admin_attributes:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail='order_by should be a valid attribute of Admin'
+                )
+
+        return order_by
 

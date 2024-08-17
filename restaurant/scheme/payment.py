@@ -1,11 +1,14 @@
-from typing import Any
-
 from pydantic import BaseModel, Field, field_validator
 
 from fastapi import HTTPException, status
-from pydantic.main import Model
 
 from restaurant.model.helper import TypePay, State
+
+from fastapi_filter.contrib.sqlalchemy import Filter
+
+from restaurant.model import Payment
+
+from typing import Optional, List
 
 
 class PaymentForRead(BaseModel):
@@ -51,4 +54,29 @@ class PaymentForCreate(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class PaymentFilter(Filter):
+    class Constants(Filter.Constants):
+        model = Payment
+
+    id: int | None = None
+    order_by: Optional[List[str]] = None
+
+    @field_validator('order_by')
+    @classmethod
+    def validate_order_by(cls, order_by):
+        item_attributes = ['id', 'state', 'type', 'amount', 'customer_id',
+                           '-id', '-state', '-type', '-amount', '-customer_id']
+        for item in order_by:
+            print(item)
+            if item not in item_attributes:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail='order by should be a valid attribute of payment'
+                )
+
+        return order_by
+
+
 

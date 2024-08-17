@@ -8,6 +8,8 @@ from typing import Optional, List
 
 from restaurant.model import Address
 
+from datetime import datetime
+
 
 class AddressForAddition(BaseModel):
     address: str = Field(description='Length of address should not be more than 150 character')
@@ -31,6 +33,7 @@ class AddressForRead(BaseModel):
     id: int
     address: str
     customer_id: int
+    created_at: datetime
 
     class Config:
         from_attributes = True
@@ -40,15 +43,17 @@ class AddressFilter(Filter):
     class Constants(Filter.Constants):
         model = Address
 
-    address_id: int | None = None
+    id: int | None = None
     order_by: Optional[List[str]] = None
 
     @field_validator('order_by')
     @classmethod
     def validate_order_by(cls, order_by):
-        list_address_attribute = ['id', 'address', 'customer_id', '-id', '-address', '-customer_id']
+        print(order_by)
+        address_attributes = ['id', 'address', 'customer_id', 'created_at',
+                              '-id', '-address', '-customer_id', '-created_at']
         for item in order_by:
-            if item not in list_address_attribute:
+            if item not in address_attributes:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
                     detail='order_by should be a valid attribute of Address'

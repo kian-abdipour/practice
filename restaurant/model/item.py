@@ -30,8 +30,8 @@ class Item(DateTimeMixin, Base):
         return item
 
     @classmethod
-    def show_all(cls, session: Session):
-        result = session.query(cls).all()
+    def show_all(cls, session: Session, item_filter):
+        result = item_filter.sort(session.query(cls)).all()
 
         return result
 

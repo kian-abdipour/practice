@@ -79,14 +79,18 @@ def search(
         )
 
     if token_role == Role.admin:
-        if address_id is None:
+        if address_filter.id is None:
             pass
             addresses = Address.show_all_for_admin(session=session, address_filter=address_filter)
 
             return paginate(addresses)
 
         else:
-            address = Address.search_for_admin(session=session, address_id=address_id)
+            address = Address.search_for_admin(
+                session=session,
+                address_id=address_filter.id,
+                address_filter=address_filter
+            )
             if address is None:
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
@@ -98,13 +102,21 @@ def search(
 
     customer_id = token_payload['id']
     if token_role == Role.customer:
-        if address_id is None:
-            addresses = Address.show_all_for_customer(session=session, customer_id=customer_id)
+        if address_filter.id is None:
+            addresses = Address.show_all_for_customer(
+                session=session,
+                customer_id=customer_id,
+                address_filter=address_filter
+            )
 
             return paginate(addresses)
 
         else:
-            address = Address.search_for_customer(session=session, address_id=address_id, customer_id=customer_id)
+            address = Address.search_for_customer(
+                session=session,
+                address_id=address_filter.id,
+                customer_id=customer_id
+            )
             if address is None:
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
