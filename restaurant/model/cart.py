@@ -50,7 +50,7 @@ class Cart(DateTimeMixin, Base):
         if cart is None:
             return None
 
-        cart_items = session.query(CartItem).filter(cls.id == cart.id).all()
+        cart_items = session.query(CartItem).filter(CartItem.cart_id == cart.id).all()
 
         return cart_items
 

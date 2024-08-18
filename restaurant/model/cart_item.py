@@ -82,7 +82,7 @@ class CartItem(DateTimeMixin, Base):
 
             return cart_item_in_database
 
-        if cart_item_in_database.quantity >= item.stock:
+        if cart_item_in_database.quantity >= item.stock and quantity == 1:
             raise OutOfStockError('')
 
         session.query(cls).filter(cls.item_id == item_id, cls.cart_id == cart_id).update(

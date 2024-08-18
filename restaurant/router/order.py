@@ -3,8 +3,10 @@ from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 
 from restaurant.scheme.order import OrderForCreate, OrderForRead, OrderFilter
+from restaurant.scheme.item import ItemOutOfStock
 from restaurant.database import get_session
 from restaurant.model import Order, OrderItem
+from restaurant.router.cart import check_stock_of_item_in_cart
 from restaurant.model.cart import Cart, CartItem
 from restaurant.custom_exception import OutOfStockError
 from restaurant.authentication import check_token
@@ -84,7 +86,7 @@ def show_all_orders_for_customer(
 #    return orders
 
 
-@router.post('', response_model=OrderForRead)
+@router.post('', response_model=OrderForRead | List[ItemOutOfStock])
 def addition_order(
         customer_token: Annotated[str, Header()],
         order: OrderForCreate,
@@ -98,6 +100,11 @@ def addition_order(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='You don\'t have access to add order'
         )
+
+    items_out_of_stock = check_stock_of_item_in_cart(customer_token=customer_token, session=session)
+    if len(items_out_of_stock) > 0:
+
+        return items_out_of_stock
 
     customer_id = token_payload['id']
 
@@ -132,7 +139,7 @@ def addition_order(
             OrderItem.add(
                 session=session,
                 order_id=added_order.id,
-                item_id=cart_item.id,
+                item_id=cart_item.item_id,
                 quantity=cart_item.quantity,
                 unit_amount=cart_item.unit_amount,
                 total_amount=cart_item.total_amount
@@ -144,7 +151,7 @@ def addition_order(
                 detail=f'The item with id {cart_item.id} is out of stock'
             )
 
-        CartItem.delete(session=session, item_id=cart_item.id, cart_id=cart_item.cart_id)
+        CartItem.delete(session=session, item_id=cart_item.item_id, cart_id=cart_item.cart_id)
 
     return added_order
 

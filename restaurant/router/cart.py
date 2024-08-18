@@ -3,7 +3,7 @@ from fastapi import APIRouter, HTTPException, status, Depends, Header
 from sqlalchemy.orm import Session
 
 from restaurant.scheme.cart import CartForRead, CartItemForCreate, CartItemForRead
-from restaurant.scheme.item import ItemForRead, ItemInCartFilter
+from restaurant.scheme.item import ItemForRead, ItemInCartFilter, ItemOutOfStock
 from restaurant.model.cart_item import CartItem
 from restaurant.model.cart import Cart
 from restaurant.model.item import Item
@@ -175,7 +175,7 @@ def update_quantity(
     return updated_cart_item
 
 
-@router.get('/item-stock')
+@router.get('/item-stock', response_model=ItemOutOfStock)
 def check_stock_of_item_in_cart(customer_token: str, session: Session = Depends(get_session)):
     token_payload = check_token(customer_token)
 
@@ -188,13 +188,13 @@ def check_stock_of_item_in_cart(customer_token: str, session: Session = Depends(
 
     customer_id = token_payload['id']
     cart_items = Cart.show_item_identifiers_in_a_cart(session=session, customer_id=customer_id)
-    items = []
+
     items_out_of_stock = []
     for cart_item in cart_items:
-        item = Item.search_by_id(session=session, item_id=cart_item.id)
-        items.append(item)
+        item = Item.search_by_id(session=session, item_id=cart_item.item_id)
 
         if cart_item.quantity > item.stock:
+            item.quantity = cart_item.quantity
             items_out_of_stock.append(item)
 
     return items_out_of_stock

@@ -43,7 +43,7 @@ def addition_payment(
 
     amount = 0
     for cart_item in cart_items:
-        item = Item.search_by_id(session=session, item_id=cart_item.id)
+        item = Item.search_by_id(session=session, item_id=cart_item.item_id)
         amount += (item.price * cart_item.quantity)
 
     if discount_code is not None:

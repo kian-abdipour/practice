@@ -133,6 +133,11 @@ def delete(super_admin_token: Annotated[str, Header()], admin_id: int, session: 
         )
 
     deleted_admin = Admin.delete(session=session, admin_id=admin_id)
+    if deleted_admin is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail='An admin with this id not found'
+        )
 
     return deleted_admin
 

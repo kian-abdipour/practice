@@ -66,6 +66,14 @@ class ItemForRead(BaseModel):
         from_attributes = True
 
 
+class ItemOutOfStock(ItemForRead):
+    quantity: int
+
+    class Config:
+        from_attributes = True
+
+
+
 class ItemFilter(Filter):
     class Constants(Filter.Constants):
         model = Item
