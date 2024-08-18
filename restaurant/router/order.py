@@ -29,15 +29,6 @@ router = APIRouter(
 )
 
 
-#def show_by_state(
-#        state: str,
-#        session: Session = Depends(get_session)
-#):
-#    orders = Order.show_by_state_for_admin(session=session, state=state)
-#
-#    return orders
-
-
 def show_specific_order(order_id: int, session: Session = Depends(get_session)):
     order = Order.search_by_id(session=session, order_id=order_id)
     if order is None:
@@ -66,24 +57,6 @@ def show_all_orders_for_customer(
     orders = Order.search_by_customer_id(session=session, customer_id=customer_id)
 
     return orders
-
-
-#def show_specific_order_for_customer(session, order_id, customer_id):
-#    order = Order.search_by_customer_id_and_order_id(session=session, order_id=order_id, customer_id=customer_id)
-#
-#    if order is None:
-#        raise HTTPException(
-#            status_code=status.HTTP_404_NOT_FOUND,
-#            detail='This customer does not have any order with this id'
-#        )
-#
-#    return order
-
-
-#def show_by_state_for_customer(session: Session, customer_id, order_state):
-#    orders = Order.show_by_state_for_customer(session=session, customer_id=customer_id, state=order_state)
-#
-#    return orders
 
 
 @router.post('', response_model=OrderForRead | List[ItemOutOfStock])
@@ -117,11 +90,6 @@ def addition_order(
         cart_items=cart_items,
         session=session
     )
-#    if cart_items is None:
-#        raise HTTPException(
-#            status_code=status.HTTP_404_NOT_FOUND,
-#            detail='A customer with this id not found'
-#        )
 
     added_order = Order.add(
         session=session,
