@@ -43,14 +43,13 @@ class Order(DateTimeMixin, Base):
 
     @classmethod
     def show_all_for_customer(cls, session: Session, customer_id, order_filter):
-#        result = session.query(cls, Address.address).filter(cls.customer_id == customer_id).join(Address).order_by(cls.id).all()
         result = order_filter.sort(session.query(cls).filter(cls.customer_id == customer_id)).all()
 
         return result
 
     @classmethod
     def show_by_state_for_admin(cls, session: Session, state, order_filter):
-        result = order_filter.sort(session.query(cls).filter(cls.state == state)).all()  # Question where to be cut
+        result = order_filter.sort(session.query(cls).filter(cls.state == state)).all()
 
         return result
 

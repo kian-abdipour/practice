@@ -147,12 +147,6 @@ def show_item_side(
         category_id=category_item_filter.category_id,
         category_item_filter=category_item_filter
     )
-#    category = CategoryItemForRead(
-#        id=category_id,
-#        name=category_in_database.name,
-#        items=item_in_category,
-#        created_at=category_in_database.created_at
-#    )
 
     return paginate(item_in_category)
 

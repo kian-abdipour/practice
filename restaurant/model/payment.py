@@ -32,13 +32,6 @@ class Payment(DateTimeMixin, Base):
 
         return payment
 
-#    # This method is to check that customer used a specific discount or not
-#    @classmethod
-#    def check_discount_disposable(cls, session: Session, customer_id, discount_id):
-#        result = session.query(DiscountHistory).join(cls).filter(cls.customer_id == customer_id, DiscountHistory.discount_id == discount_id).one_or_none()3
-#
-#       return result
-
     @classmethod
     def show_all(cls, session: Session, payment_filter):
         payments = payment_filter.sort(session.query(cls)).all()

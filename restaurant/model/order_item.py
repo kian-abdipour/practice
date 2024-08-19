@@ -6,8 +6,6 @@ from restaurant.model.mixin import DateTimeMixin
 from restaurant.model.item import Item
 from restaurant.custom_exception import OutOfStockError
 
-from copy import deepcopy
-
 
 class OrderItem(DateTimeMixin, Base):
     __tablename__ = 'order_item'

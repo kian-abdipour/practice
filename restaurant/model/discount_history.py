@@ -23,8 +23,6 @@ class DiscountHistory(DateTimeMixin, Base):
                                base_amount=base_amount, affected_amount=affected_amount)
 
         session.add(discount_history)
-        #session.query(Discount).filter(Discount.id == discount_id).update({Discount.usage_limitation:
-        #                                                                  (Discount.usage_limitation - 1)})
 
         session.commit()
 

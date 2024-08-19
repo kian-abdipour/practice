@@ -5,7 +5,7 @@ from fastapi.encoders import jsonable_encoder
 from restaurant.database import get_session
 from restaurant.authentication import check_token
 from restaurant.model import Address, Customer
-from restaurant.scheme.address import AddressForAddition, AddressForRead, AddressFilter  # AllAddressForRead
+from restaurant.scheme.address import AddressForAddition, AddressForRead, AddressFilter
 from restaurant.model.helper import Role
 
 from sqlalchemy.orm import Session

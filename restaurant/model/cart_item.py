@@ -27,14 +27,6 @@ class CartItem(DateTimeMixin, Base):
 
     @classmethod
     def add(cls, session: Session, item_id, cart_id, quantity):
-#        if cart_item_in_database is not None:
-#            session.query(cls).filter(cls.id == cart_item_in_database.id).update({cls.quantity: cls.quantity + quantity})
-#
-#            session.commit()
-#            session.refresh(cart_item_in_database)
-#
-#            return cart_item_in_database
-
         cart_item = cls(item_id=item_id, cart_id=cart_id, quantity=quantity)
 
         session.add(cart_item)
