@@ -109,5 +109,3 @@ class OrderFilter(Filter):
 
         return state
 
-
-

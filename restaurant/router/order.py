@@ -127,7 +127,7 @@ def addition_order(
 @router.put('/{order_id}', response_model=OrderForRead)
 def confirm_order(
         admin_token: Annotated[str, Header()],
-        order_id: str,
+        order_id: int,
         session: Session = Depends(get_session)
 ):
     token_payload = check_token(token=admin_token)
@@ -162,8 +162,8 @@ def confirm_order(
     return confirmed_order
 
 
-@router.get('/orders', response_model=LimitOffsetPage[OrderForRead])
-def search(
+@router.get('', response_model=LimitOffsetPage[OrderForRead])
+def get(
         customer_or_admin_token: Annotated[str, Header()],
         order_filter: OrderFilter = FilterDepends(OrderFilter),
         session: Session = Depends(get_session)

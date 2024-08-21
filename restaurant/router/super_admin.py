@@ -21,7 +21,7 @@ load_dotenv()
 top_level_super_admin_username = getenv('TOP_LEVEL_SUPER_ADMIN_USERNAME')
 
 router = APIRouter(
-    prefix='/super-admins',
+    prefix='/super-admin',
     tags=['super_admin']
 )
 

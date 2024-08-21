@@ -55,7 +55,7 @@ def addition(
 
 
 @router.get('', response_model=LimitOffsetPage[CategoryForRead])
-def search(
+def get(
         admin_token_or_customer_token: Annotated[str, Header()],
         category_filter: CategoryFilter = FilterDepends(CategoryFilter),
         session: Session = Depends(get_session)
@@ -121,7 +121,7 @@ def delete(admin_token: Annotated[str, Header()], category_id: int, session: Ses
 
 
 @router.get('/{category_id}/items', response_model=LimitOffsetPage[ItemForRead])
-def show_item_side(
+def get_items_in_category(
         admin_token_or_customer_token: Annotated[str, Header()],
         category_item_filter: ItemInCategoryFilter = FilterDepends(ItemInCategoryFilter),
         session: Session = Depends(get_session)

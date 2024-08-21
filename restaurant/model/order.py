@@ -4,8 +4,6 @@ from sqlalchemy.orm import relationship, Session
 from restaurant.model.base import Base
 from restaurant.model.mixin import DateTimeMixin
 from restaurant.model.helper import State, DeliveryType
-from restaurant.model.address import Address
-from restaurant.model.payment import Payment
 
 
 class Order(DateTimeMixin, Base):

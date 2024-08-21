@@ -11,6 +11,9 @@ from typing import Optional, List
 
 class CartItemForCreate(BaseModel):
     item_id: int
+
+
+class CartItemForUpdate(CartItemForCreate):
     quantity: int = Field(description='Quantity should be integer -1 or 1')
 
     @field_validator('quantity')

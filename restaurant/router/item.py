@@ -5,7 +5,7 @@ from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 
 from restaurant.authentication import check_token
-from restaurant.model import Item
+from restaurant.model import Item, CategoryItem, Category
 from restaurant.scheme.item import ItemForCreate, ItemForRead, ItemFilter
 from restaurant.database import get_session
 from restaurant.model.helper import Role
@@ -45,17 +45,26 @@ def addition(
             detail='An item with this name is already exist choose another one'
         )
 
+    category = Category.search_by_id(session=session, category_id=item.category_id)
+    if category is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail='A category with this id not found'
+        )
+
     added_item = Item.add(
         session=session, name=item.name,
         country=item.country, price=item.price,
         stock=item.stock, description=item.description
     )
 
+    CategoryItem.add(session=session, category_id=category.id, item_id=added_item.id)
+
     return added_item
 
 
 @router.get('', response_model=LimitOffsetPage[ItemForRead])
-def search(
+def get(
         customer_or_admin_token: Annotated[str, Header()],
         item_filter: ItemFilter = FilterDepends(ItemFilter),
         session: Session = Depends(get_session)
@@ -98,54 +107,3 @@ def search(
 
         return paginate(items)
 
-
-#@router.get('/{item_id}', response_model=ItemForRead)
-#def show_specific_by_id(
-#        customer_or_admin_token: Annotated[str, Header()],
-#        item_id: int,
-#        session: Session = Depends(get_session)
-#):
-#    token_payload = check_token(token=customer_or_admin_token)
-#
-#    token_role = token_payload['role']
-#    if token_role != Role.admin and token_role != Role.customer:
-#        raise HTTPException(
-#            status_code=status.HTTP_403_FORBIDDEN,
-#            detail='You don\'t have access to see item'
-#        )
-#
-#    item = Item.search_by_id(session=session, item_id=item_id)
-#    if item is None:
-#        raise HTTPException(
-#            status_code=status.HTTP_404_NOT_FOUND,
-#            detail='Item with this id not found'
-#        )
-#
-#    return item
-#
-#
-#@router.get('/{item_name}', response_model=ItemForRead)
-#def show_specific_by_name(
-#        customer_or_admin_token: Annotated[str, Header()],
-#        item_name: str,
-#        session: Session = Depends(get_session)
-#):
-#    token_payload = check_token(token=customer_or_admin_token)
-#
-#    token_role = token_payload['role']
-#    if token_role != Role.admin and token_role != Role.customer:
-#        raise HTTPException(
-#            status_code=status.HTTP_403_FORBIDDEN,
-#            detail='You don\'t have access to see item'
-#        )
-#
-#    item = Item.search_by_name(session=session, item_name=item_name)
-#    if item is None:
-#        raise HTTPException(
-#            status_code=status.HTTP_404_NOT_FOUND,
-#            detail='Item with this name not found'
-#        )
-#
-#    return item
-#
-#

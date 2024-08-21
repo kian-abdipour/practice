@@ -69,5 +69,7 @@ class Item(DateTimeMixin, Base):
     @classmethod
     def check_item_stock(cls, item, quantity):
         if quantity > item.stock:
-            raise OutOfStockError(massage=f'Stock of {item.name} with id {item.id} is {item.stock} and you want {quantity}')
+            raise OutOfStockError(
+                massage=f'Stock of {item.name} with id {item.id} is {item.stock} and you want {quantity}'
+            )
 

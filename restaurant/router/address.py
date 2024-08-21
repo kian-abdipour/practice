@@ -64,8 +64,8 @@ def deletion(customer_token: Annotated[str, Header()], address_id: int, session:
 
 
 @router.get('', response_model=LimitOffsetPage[AddressForRead])
-def search(
-        customer_or_admin_token: str,
+def get(
+        customer_or_admin_token: Annotated[str, Header()],
         address_filter: AddressFilter = FilterDepends(AddressFilter),
         session: Session = Depends(get_session)
 ):

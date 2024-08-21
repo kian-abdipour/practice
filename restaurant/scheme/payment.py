@@ -78,5 +78,3 @@ class PaymentFilter(Filter):
 
         return order_by
 
-
-

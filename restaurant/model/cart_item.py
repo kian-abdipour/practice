@@ -53,24 +53,14 @@ class CartItem(DateTimeMixin, Base):
     def update_quantity(cls, session: Session, item_id, cart_id, quantity, item):
         cart_item_in_database = cls.search_by_item_id(session=session, item_id=item_id, cart_id=cart_id)
         if cart_item_in_database is None:
-            if quantity == 1:
-                if item.stock == 0:
-                    raise OutOfStockError('')
-
-                cart_item = cls(cart_id=cart_id, item_id=item_id, quantity=quantity)
-                session.add(cart_item)
-
-                session.commit()
-
-                return cart_item
-
-            else:
-                raise ItemNotInCartError('')
+            raise ItemNotInCartError('')
 
         if cart_item_in_database.quantity == 1 and quantity == -1:
             session.query(cls).filter(cls.id == cart_item_in_database.id).delete()
 
             session.commit()
+
+            cart_item_in_database.quantity = 0
 
             return cart_item_in_database
 
@@ -97,5 +87,4 @@ class CartItem(DateTimeMixin, Base):
         cart_items = cart_item_filter.sort(session.query(cls).filter(cls.cart_id == cart_id)).all()
 
         return cart_items
-
 

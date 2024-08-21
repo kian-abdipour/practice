@@ -84,18 +84,13 @@ def update_disposable(
         discount_id=discount.id,
         disposable=updated_discount.disposable
     )
-#    if updated_discount.disposable is False:
-#        updated_discount.disposable = 'false'
-#
-#    if updated_discount.disposable is True:
-#        updated_discount.disposable = 'true'
 
     return updated_discount
 
 
 @router.get('', response_model=LimitOffsetPage[DiscountForRead])
-def search(
-        admin_token: str,
+def get(
+        admin_token: Annotated[str, Header()],
         discount_filter: DiscountFilter = FilterDepends(DiscountFilter),
         session: Session = Depends(get_session)
 ):

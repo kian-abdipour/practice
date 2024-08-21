@@ -1,28 +1,40 @@
-from typing import Optional
+from sqlalchemy.orm import declarative_base
+from sqlalchemy import create_engine, Integer, Unicode, Column
+from sqlalchemy.orm import sessionmaker, Session
+from dotenv import load_dotenv
+from os import getenv
+from sqlalchemy.sql import text
 
-from fastapi_pa
-
-class AddressFilter(Filter):
-    street: Optional[str]
-    country: Optional[str]
-    city__in: Optional[list[str]]
-
-    class Constants(Filter.Constants):
-        model = Address
+load_dotenv()
+number = getenv('a')
 
 
-class UserFilter(Filter):
-    name: Optional[str]
-    address: Optional[AddressFilter] = FilterDepends(with_prefix("address", AddressFilter))
+Base = declarative_base()
 
-    class Constants(Filter.Constants):
-        model = User
+engine = create_engine('postgresql+psycopg2://kian:bmw1386z4@127.0.0.1:5432/practice', echo=False)
+
+database_session = sessionmaker(bind=engine)
+session = Session(bind=engine)
 
 
-@app.get("/users", response_model=list[UserOut])
-async def get_users(user_filter: UserFilter = FilterDepends(UserFilter), db: AsyncSession = Depends(get_db)) -> Any:
-    query = user_filter.filter(select(User).outerjoin(Address))   #
-    result = await db.execute(query)
+class Customer(Base):
+    __tablename__ = 'customer'
+    id = Column(Integer, primary_key=True)
+    username = Column(Unicode(20), unique=True, nullable=False)
 
-    return result.scalars().all()
+
+#Base.metadata.create_all(engine)
+try:
+    session.begin()
+
+    session.execute(text('BEGIN; LOCK TABLE database_version IN ACCESS EXCLUSIVE MODE;'))
+    session.commit()
+
+    customers = session.query(Customer).all()
+
+finally:
+    session.close()
+
+
+print(customers)
 

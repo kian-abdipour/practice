@@ -19,13 +19,12 @@ from fastapi_filter import FilterDepends
 
 
 router = APIRouter(
-    prefix='/admins',
     tags=['admin']
 )
 add_pagination(router)
 
 
-@router.post('', response_model=AdminForRead)
+@router.post('/admins', response_model=AdminForRead)
 def addition(
         super_admin_token: Annotated[str, Header()],
         admin: AdminForAddition,
@@ -57,7 +56,7 @@ def addition(
     return added_admin
 
 
-@router.post('-tokens')
+@router.post('/admin-tokens')
 def login(admin: AdminForLogin, session: Session = Depends(get_session)):
     admin_in_database = Admin.search_by_username(session=session, username=admin.username)
     if admin_in_database is None:
@@ -88,8 +87,8 @@ def login(admin: AdminForLogin, session: Session = Depends(get_session)):
     return JSONResponse(content=body, headers=header)
 
 
-@router.get('', response_model=LimitOffsetPage[AdminForRead])
-def search(
+@router.get('/admins', response_model=LimitOffsetPage[AdminForRead])
+def get(
         super_admin_token: Annotated[str, Header()],
         admin_filter: AdminFilter = FilterDepends(AdminFilter),
         session: Session = Depends(get_session)):
@@ -121,7 +120,7 @@ def search(
         return paginate(admins)
 
 
-@router.delete('/{admin_id}', response_model=AdminForRead)
+@router.delete('/admins/{admin_id}', response_model=AdminForRead)
 def delete(super_admin_token: Annotated[str, Header()], admin_id: int, session: Session = Depends(get_session)):
     token_payload = check_token(super_admin_token)
 

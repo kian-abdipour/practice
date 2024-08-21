@@ -20,13 +20,12 @@ from fastapi_filter import FilterDepends
 
 
 router = APIRouter(
-    prefix='/customers',
     tags=['customer']
 )
 add_pagination(router)
 
 
-@router.post('-registration')
+@router.post('/customer-registrations')
 def signup(customer: CustomerForCreate, session: Session = Depends(get_session)):
     if Customer.search_by_username(session=session, username=customer.username) is not None:
         raise HTTPException(
@@ -62,7 +61,7 @@ def signup(customer: CustomerForCreate, session: Session = Depends(get_session))
     return JSONResponse(content=body, headers=header)
 
 
-@router.post('-tokens')
+@router.post('/customer-tokens')
 def login(customer: CustomerForLogin, session: Session = Depends(get_session)):
     customer_in_database = Customer.search_by_username(
         session=session,
@@ -97,10 +96,10 @@ def login(customer: CustomerForLogin, session: Session = Depends(get_session)):
     return JSONResponse(content=body, headers=header)
 
 
-@router.get('', response_model=LimitOffsetPage[CustomerForRead])
-def search(admin_token: Annotated[str, Header()],
-           customer_filter: CustomerFilter = FilterDepends(CustomerFilter),
-           session: Session = Depends(get_session)):
+@router.get('/customers', response_model=LimitOffsetPage[CustomerForRead])
+def get(admin_token: Annotated[str, Header()],
+        customer_filter: CustomerFilter = FilterDepends(CustomerFilter),
+        session: Session = Depends(get_session)):
     token_payload = check_token(token=admin_token)
 
     token_role = token_payload['role']

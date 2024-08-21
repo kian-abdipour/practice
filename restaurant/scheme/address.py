@@ -20,7 +20,7 @@ class AddressForAddition(BaseModel):
         if len(address) > 150:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail='Password is to long it should be at most 150 character'
+                detail='Address is to long it should be at most 150 character'
             )
 
         return address

@@ -9,7 +9,7 @@ database_url = getenv('DATABASE_URL')
 
 engine = create_engine(database_url, echo=False)
 
-database_session = sessionmaker(bind=engine)
+database_session = sessionmaker(bind=engine, )
 
 
 def get_session():

@@ -13,5 +13,3 @@ from restaurant.model.discount_history import DiscountHistory
 from restaurant.model.cart_item import CartItem
 from restaurant.model.cart import Cart
 
-
-

@@ -17,6 +17,9 @@ class ItemForCreate(BaseModel):
     country: str = Field(description='A country name should be at least 30 character')
     price: float = Field()
     stock: int = Field(default=0)
+    category_id: int = Field(
+        description='When creating an item this item should be add to a category because of this we need this field'
+    )
     description: str | None = Field(description='If you don\'t want to add any description sent an empty string')
 
     @field_validator('name')
@@ -71,7 +74,6 @@ class ItemOutOfStock(ItemForRead):
 
     class Config:
         from_attributes = True
-
 
 
 class ItemFilter(Filter):
@@ -134,5 +136,4 @@ class ItemInCategoryFilter(ItemInCartFilter):
         model = Item
 
     category_id: int
-
 
