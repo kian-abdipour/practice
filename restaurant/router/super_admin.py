@@ -1,18 +1,16 @@
-from fastapi import APIRouter, HTTPException, status, Depends, Header
+from fastapi import APIRouter, HTTPException, status, Depends
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 
-from restaurant.scheme.super_admin import SuperAdminForLogin, SuperAdminForAddition, SuperAdminForRead
+from restaurant.scheme.super_admin import SuperAdminForLogin
 from restaurant.database import get_session
 from restaurant.model import SuperAdmin
-from restaurant.authentication import verify_password, make_token, check_token, get_hash_password
+from restaurant.authentication import verify_password, make_token
 from restaurant.model.helper import Role
 
 from sqlalchemy.orm import Session
 
 from datetime import timedelta
-
-from typing import Annotated, List
 
 from dotenv import load_dotenv
 from os import getenv

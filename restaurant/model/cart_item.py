@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, Float, ForeignKey, Column
+from sqlalchemy import Column, Integer, ForeignKey, Column
 from sqlalchemy.orm import relationship, Session, column_property, query
 
 from restaurant.model.base import Base
@@ -31,7 +31,8 @@ class CartItem(DateTimeMixin, Base):
 
         session.add(cart_item)
 
-        session.commit()
+        #session.commit()
+        session.flush()
         session.refresh(cart_item)
 
         return cart_item
@@ -58,7 +59,7 @@ class CartItem(DateTimeMixin, Base):
         if cart_item_in_database.quantity == 1 and quantity == -1:
             session.query(cls).filter(cls.id == cart_item_in_database.id).delete()
 
-            session.commit()
+#            session.commit()
 
             cart_item_in_database.quantity = 0
 
@@ -70,9 +71,11 @@ class CartItem(DateTimeMixin, Base):
         session.query(cls).filter(cls.item_id == item_id, cls.cart_id == cart_id).update(
             {cls.quantity: cls.quantity + quantity}
         )
+
+        session.flush()
         session.refresh(cart_item_in_database)
 
-        session.commit()
+#        session.commit()
 
         return cart_item_in_database
 

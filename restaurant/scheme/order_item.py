@@ -1,7 +1,4 @@
-from pydantic import BaseModel, Field, field_validator
-
-from fastapi import HTTPException, status
-
+from pydantic import BaseModel
 
 class OrderItemForCreate(BaseModel):
     quantity: int

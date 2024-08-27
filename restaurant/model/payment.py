@@ -1,13 +1,8 @@
-import datetime
-
 from sqlalchemy import Column, Integer, Unicode, ForeignKey, Float
 from sqlalchemy.orm import relationship, Session
 
-from copy import deepcopy
-
 from restaurant.model.base import Base
 from restaurant.model.mixin import DateTimeMixin
-from restaurant.model.helper import State, TypePay
 
 
 class Payment(DateTimeMixin, Base):

@@ -2,8 +2,8 @@ from fastapi import APIRouter, HTTPException, status, Depends, Header
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 
-from restaurant.scheme.payment import PaymentForRead, PaymentForCreate, PaymentFilter
-from restaurant.model import Payment, Discount, DiscountHistory, Item, CartItem, Cart
+from restaurant.scheme.payment import PaymentForRead, PaymentFilter
+from restaurant.model import Payment, Discount, DiscountHistory
 from restaurant.database import get_session
 from restaurant.custom_exception import DisposableDiscountError, StartDateDiscountError, ExpireDateDiscountError, \
                                          UsageLimitationDiscountError, UsedDiscountError
@@ -12,9 +12,9 @@ from restaurant.authentication import check_token
 
 from sqlalchemy.orm import Session
 
-from typing import Annotated, List
+from typing import Annotated
 
-from fastapi_pagination import paginate, add_pagination, LimitOffsetPage
+from fastapi_pagination import paginate, LimitOffsetPage
 
 from fastapi_filter import FilterDepends
 
@@ -113,6 +113,9 @@ def addition_payment(
             base_amount=amount,
             affected_amount=added_payment.amount
         )
+
+    session.flush()
+    session.refresh(added_payment)
 
     return added_payment
 

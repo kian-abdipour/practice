@@ -24,7 +24,8 @@ class Admin(DateTimeMixin, Base):
         )
         session.add(admin)
 
-        session.commit()
+        #session.commit()
+        session.flush()
         session.refresh(admin)
 
         return admin
@@ -36,7 +37,7 @@ class Admin(DateTimeMixin, Base):
             return None
 
         result = session.query(cls).filter(cls.id == admin_id).delete()
-        session.commit()
+        #session.commit()
 
         if result == 1:
             return admin

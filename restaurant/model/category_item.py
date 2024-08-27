@@ -26,7 +26,8 @@ class CategoryItem(DateTimeMixin, Base):
 
         session.add(category_item)
 
-        session.commit()
+        #session.commit()
+        session.flush()
         session.refresh(category_item)
 
         return category_item
@@ -39,7 +40,7 @@ class CategoryItem(DateTimeMixin, Base):
 
         session.query(cls).filter(cls.category_id == category_id, cls.item_id == item_id).delete()
 
-        session.commit()
+#        session.commit()
 
         return category_item
 

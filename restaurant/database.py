@@ -1,6 +1,5 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from restaurant.model.base import Base
 from dotenv import load_dotenv
 from os import getenv
 

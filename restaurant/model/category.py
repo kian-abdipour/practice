@@ -17,7 +17,8 @@ class Category(DateTimeMixin, Base):
         category = cls(name=name)
         session.add(category)
 
-        session.commit()
+#        session.commit()
+        session.flush()
         session.refresh(category)
 
         return category
@@ -30,7 +31,7 @@ class Category(DateTimeMixin, Base):
 
         session.query(cls).filter(cls.id == id_).delete()
 
-        session.commit()
+        #session.commit()
 
         return category
 

@@ -10,7 +10,7 @@ from restaurant.scheme.item import ItemForCreate, ItemForRead, ItemFilter
 from restaurant.database import get_session
 from restaurant.model.helper import Role
 
-from typing import Annotated, List
+from typing import Annotated
 
 from fastapi_pagination import paginate, LimitOffsetPage, add_pagination
 from fastapi_filter import FilterDepends

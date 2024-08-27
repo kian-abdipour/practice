@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 
 from restaurant.scheme.category import CategoryForCreate, CategoryForRead, CategoryFilter
-from restaurant.scheme.category_item import CategoryItemForRead, DeleteItemFromCategory, \
+from restaurant.scheme.category_item import DeleteItemFromCategory, \
     AdditionItemToCategoryForRead, AdditionItemToCategory
 from restaurant.scheme.item import ItemInCategoryFilter, ItemForRead
 from restaurant.database import get_session
@@ -13,7 +13,7 @@ from restaurant.model.helper import Role
 
 from sqlalchemy.orm import Session
 
-from typing import Annotated, List
+from typing import Annotated
 
 from fastapi_pagination import LimitOffsetPage, paginate, add_pagination
 
@@ -51,6 +51,9 @@ def addition(
         )
 
     added_category = Category.add(session=session, name=category.name)
+
+    session.commit()
+
     return added_category
 
 
@@ -116,6 +119,8 @@ def delete(admin_token: Annotated[str, Header()], category_id: int, session: Ses
             status_code=status.HTTP_404_NOT_FOUND,
             detail='A category with this id not found'
         )
+
+    session.commit()
 
     return result
 
@@ -190,6 +195,8 @@ def addition_item_to_category(
             detail='This item already is in this category'
         )
 
+    session.commit()
+
     return added_category_item
 
 
@@ -233,6 +240,8 @@ def delete_item_from_category(
             status_code=status.HTTP_404_NOT_FOUND,
             detail='This Item is not in this category'
         )
+
+    session.commit()
 
     return deleted_category_item
 

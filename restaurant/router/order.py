@@ -1,11 +1,8 @@
-from statistics import quantiles
-
 from fastapi import APIRouter, HTTPException, status, Depends, Header
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 
 from restaurant.scheme.order import OrderForCreate, OrderForRead, OrderFilter
-from restaurant.scheme.item import ItemOutOfStock
 from restaurant.database import get_session
 from restaurant.model import Order, OrderItem
 from restaurant.router.cart import update_stock_of_item
@@ -13,7 +10,6 @@ from restaurant.model.cart import Cart, CartItem
 from restaurant.custom_exception import OutOfStockError
 from restaurant.authentication import check_token
 from restaurant.model.helper import Role, State
-from restaurant.router.payment import addition_payment
 from restaurant.router.payment import addition_payment
 
 from sqlalchemy.orm import Session
@@ -105,8 +101,6 @@ def addition_order(
         amount = amount,
         session=session
     )
-    session.commit()
-    session.refresh(added_payment)
 
     added_order = Order.add(
         session=session,
@@ -118,9 +112,6 @@ def addition_order(
         address_id=order.address_id,
         customer_id=customer_id
     )
-
-    session.commit()
-    session.refresh(added_order)
 
     for cart_item in cart_items:
         try:
@@ -146,6 +137,7 @@ def addition_order(
         update_stock_of_item(item=item, session=session)
 
     session.commit()
+
     return added_order
 
 
@@ -183,6 +175,8 @@ def confirm_order(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail='An order with this id not found'
         )
+
+    session.commit()
 
     return confirmed_order
 

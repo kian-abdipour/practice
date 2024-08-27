@@ -12,7 +12,7 @@ from sqlalchemy.orm import Session
 
 from datetime import timedelta
 
-from typing import Annotated, List
+from typing import Annotated
 
 from fastapi_pagination import LimitOffsetPage, paginate, add_pagination
 from fastapi_filter import FilterDepends
@@ -52,6 +52,8 @@ def addition(
     added_admin = Admin.add(session=session, first_name=admin.first_name,
                             last_name=admin.last_name, username=admin.username,
                             password=hashed_password, super_admin_id=super_admin_id)
+
+    session.commit()
 
     return added_admin
 
@@ -137,6 +139,8 @@ def delete(super_admin_token: Annotated[str, Header()], admin_id: int, session: 
             status_code=status.HTTP_404_NOT_FOUND,
             detail='An admin with this id not found'
         )
+
+    session.commit()
 
     return deleted_admin
 

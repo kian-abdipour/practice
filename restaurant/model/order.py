@@ -3,7 +3,7 @@ from sqlalchemy.orm import relationship, Session
 
 from restaurant.model.base import Base
 from restaurant.model.mixin import DateTimeMixin
-from restaurant.model.helper import State, DeliveryType
+from restaurant.model.helper import State
 
 
 class Order(DateTimeMixin, Base):
@@ -35,7 +35,8 @@ class Order(DateTimeMixin, Base):
         session.add(order)
 
 #        session.commit()
-#        session.refresh(order)
+        session.flush()
+        session.refresh(order)
 
         return order
 
@@ -75,7 +76,8 @@ class Order(DateTimeMixin, Base):
             {cls.state: State.confirm_and_finish}
         )
 
-        session.commit()
+#        session.commit()
+        session.flush()
         session.refresh(order)
 
         return order

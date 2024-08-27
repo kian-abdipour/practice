@@ -11,7 +11,7 @@ from restaurant.model.helper import Role
 
 from sqlalchemy.orm import Session
 
-from typing import Any, List, Annotated
+from typing import Annotated
 
 from datetime import timedelta
 
@@ -57,6 +57,8 @@ def signup(customer: CustomerForCreate, session: Session = Depends(get_session))
         expire_delta=timedelta(hours=1)
     )
     header = {'token': token}
+
+    session.commit()
 
     return JSONResponse(content=body, headers=header)
 

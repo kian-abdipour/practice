@@ -1,8 +1,7 @@
-from sqlalchemy import Column, Integer, Unicode, ForeignKey
+from sqlalchemy import Column, Integer, Unicode
 from sqlalchemy.orm import relationship, Session
 from restaurant.model.base import Base
 from restaurant.model.mixin import DateTimeMixin
-from restaurant.custom_exception import LengthError
 
 
 class Customer(DateTimeMixin, Base):
@@ -22,7 +21,8 @@ class Customer(DateTimeMixin, Base):
         customer = cls(username=username, password=password, phone_number=phone_number)
         session.add(customer)
 
-        session.commit()
+        #session.commit()
+        session.flush()
         session.refresh(customer)
 
         return customer

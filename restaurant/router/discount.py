@@ -10,7 +10,7 @@ from restaurant.model.discount import Discount
 
 from sqlalchemy.orm import Session
 
-from typing import List, Annotated
+from typing import Annotated
 
 from fastapi_filter import FilterDepends
 
@@ -53,6 +53,9 @@ def addition(
         disposable=discount.disposable,
         one_use=discount.one_use
     )
+
+    session.commit()
+
     return added_discount
 
 
@@ -84,6 +87,8 @@ def update_disposable(
         discount_id=discount.id,
         disposable=updated_discount.disposable
     )
+
+    session.commit()
 
     return updated_discount
 

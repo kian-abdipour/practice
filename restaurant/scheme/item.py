@@ -5,7 +5,6 @@ from fastapi import HTTPException, status
 from datetime import datetime
 
 from fastapi_filter.contrib.sqlalchemy import Filter
-from pydantic_core.core_schema import ValidationInfo
 
 from restaurant.model import Item
 

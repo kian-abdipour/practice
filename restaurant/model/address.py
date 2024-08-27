@@ -17,7 +17,8 @@ class Address(DateTimeMixin, Base):
     def add(cls, session: Session, customer_id, address):
         address = cls(address=address, customer_id=customer_id)
         session.add(address)
-        session.commit()
+
+        session.flush()
         session.refresh(address)
 
         return address
@@ -51,7 +52,8 @@ class Address(DateTimeMixin, Base):
         address = cls.search_for_customer(session, address_id, customer_id)
         result = session.query(cls).filter(cls.id == address_id, cls.customer_id == customer_id).delete()
 
-        session.commit()
+        #session.commit()
+        session.flush()
 
         if result == 1:
             return address

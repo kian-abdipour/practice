@@ -1,6 +1,3 @@
-import datetime
-
-
 class State:
     waiting_to_select_item = 'Waiting to select item'
     waiting_to_payment = 'Waiting to payment'

@@ -4,13 +4,13 @@ from fastapi.encoders import jsonable_encoder
 
 from restaurant.database import get_session
 from restaurant.authentication import check_token
-from restaurant.model import Address, Customer
+from restaurant.model import Address
 from restaurant.scheme.address import AddressForAddition, AddressForRead, AddressFilter
 from restaurant.model.helper import Role
 
 from sqlalchemy.orm import Session
 
-from typing import Annotated, List
+from typing import Annotated
 
 from fastapi_pagination import LimitOffsetPage, paginate, add_pagination
 from fastapi_filter import FilterDepends
@@ -39,6 +39,8 @@ def addition(customer_token: Annotated[str, Header()],
     customer_id = token_payload['id']
     added_address = Address.add(session=session, customer_id=customer_id, address=address.address)
 
+    session.commit()
+
     return added_address
 
 
@@ -59,6 +61,8 @@ def deletion(customer_token: Annotated[str, Header()], address_id: int, session:
             status_code=status.HTTP_404_NOT_FOUND,
             detail='An address with this id not found'
         )
+
+    session.commit()
 
     return deleted_address
 

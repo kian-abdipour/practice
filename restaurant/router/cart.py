@@ -2,8 +2,7 @@ from fastapi import APIRouter, HTTPException, status, Depends, Header
 
 from sqlalchemy.orm import Session
 
-from restaurant.scheme.cart import CartForRead, CartItemForUpdate, CartItemForRead, CartItemForCreate
-from restaurant.scheme.item import ItemForRead, ItemInCartFilter, ItemOutOfStock
+from restaurant.scheme.cart import CartItemForUpdate, CartItemForRead, CartItemForCreate
 from restaurant.model.cart_item import CartItem
 from restaurant.model.cart import Cart
 from restaurant.model.item import Item
@@ -14,8 +13,6 @@ from restaurant.model.helper import Role
 from restaurant.scheme.cart import CartItemFilter
 
 from typing import Annotated, List
-
-from copy import deepcopy
 
 from fastapi_pagination import paginate, LimitOffsetPage, add_pagination
 
@@ -73,6 +70,9 @@ def addition_item_to_cart(
         cart_id=cart.id,
         quantity=1,
     )
+
+    session.commit()
+
     return added_cart_item
 
 
@@ -153,6 +153,8 @@ def update_quantity(
             status_code=status.HTTP_404_NOT_FOUND,
             detail='Item is not in cart, first you should add item'
         )
+
+    session.commit()
 
     return updated_cart_item
 
