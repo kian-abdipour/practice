@@ -113,6 +113,17 @@ def delete(admin_token: Annotated[str, Header()], category_id: int, session: Ses
             detail='You don\'t have access to delete category'
         )
 
+    items_in_category = CategoryItem.show_item_in_category(
+        session=session,
+        category_id=category_id,
+        category_item_filter=None
+    )
+    if len(items_in_category) > 0:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f'This category hase {len(items_in_category)} item first you should delete this items then delete category'
+        )
+
     result = Category.delete(session=session, id_=category_id)
     if result is None:
         raise HTTPException(
@@ -147,7 +158,7 @@ def get_items_in_category(
             detail='A category with this id not found'
         )
 
-    item_in_category = CategoryItem.show_item_side(
+    item_in_category = CategoryItem.show_item_in_category(
         session=session,
         category_id=category_item_filter.category_id,
         category_item_filter=category_item_filter
@@ -228,6 +239,13 @@ def delete_item_from_category(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail='Item with this id not found'
+        )
+
+    categories_of_item = CategoryItem.show_categories_of_items(session=session, item_id=item_id)
+    if categories_of_item == 1:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail='This item is just in this category first add it in another category then delete it from this category'
         )
 
     deleted_category_item = CategoryItem.delete(

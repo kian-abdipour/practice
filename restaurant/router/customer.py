@@ -135,6 +135,7 @@ def get(admin_token: Annotated[str, Header()],
             )
 
         customer_dict = customer.__dict__
+        print(customer_dict)
         customer_dict.pop('password')
         jsonable_customer = jsonable_encoder(customer)
 

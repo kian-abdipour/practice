@@ -1,3 +1,5 @@
+from unittest import removeResult
+
 from sqlalchemy import Column, Integer, ForeignKey
 from sqlalchemy.orm import relationship, Session
 
@@ -45,8 +47,26 @@ class CategoryItem(DateTimeMixin, Base):
         return category_item
 
     @classmethod
-    def show_item_side(cls, session: Session, category_id, category_item_filter):
-        results = category_item_filter.sort(session.query(Item).join(cls).filter(cls.category_id == category_id)).all()
+    def show_item_in_category(cls, session: Session, category_id, category_item_filter):
+        if category_item_filter is not None:
+            results = category_item_filter.sort(
+                session.query(Item).join(cls).filter(cls.category_id == category_id)).all()
+
+        else:
+            results = session.query(Item).join(cls).filter(cls.category_id == category_id).all()
 
         return results
 
+    @classmethod
+    def delete_by_category_id(cls, session: Session, category_id):
+        result = session.query(cls).filter(cls.category_id == category_id).delete()
+
+        session.flush()
+
+        return result
+
+    @classmethod
+    def show_categories_of_items(cls, session: Session, item_id):
+        result = session.query(cls).filter(cls.item_id == item_id).all()
+
+        return result

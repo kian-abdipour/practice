@@ -85,10 +85,11 @@ def get(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail='An item with this id not found'
             )
-        customer_dict = Item.__dict__
-        jsonable_customer = jsonable_encoder(customer_dict)
+        item_dict = item.__dict__
+        print(item_dict)
+        jsonable_item = jsonable_encoder(item_dict)
 
-        return JSONResponse(status_code=200, content=jsonable_customer)
+        return JSONResponse(status_code=200, content=jsonable_item)
 
     elif item_filter.name is not None:
         item = Item.search_by_name(session=session, item_name=item_filter.name)
@@ -97,10 +98,11 @@ def get(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail='An item with this name not found'
             )
-        customer_dict = Item.__dict__
-        jsonable_customer = jsonable_encoder(customer_dict)
+        item_dict = item.__dict__
+        print(f">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>: {item_dict}")
+        jsonable_item = jsonable_encoder(item_dict)
 
-        return JSONResponse(status_code=200, content=jsonable_customer)
+        return JSONResponse(status_code=200, content=jsonable_item)
 
     elif item_filter.id is None and item_filter.name is None:
         items = Item.show_all(session=session, item_filter=item_filter)
