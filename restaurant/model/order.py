@@ -34,8 +34,8 @@ class Order(DateTimeMixin, Base):
         )
         session.add(order)
 
-        session.commit()
-        session.refresh(order)
+#        session.commit()
+#        session.refresh(order)
 
         return order
 

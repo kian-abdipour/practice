@@ -32,19 +32,19 @@ def addition_payment(
         payment_state,
         payment_type,
         discount_code,
-        cart_items,
+        amount,
         session: Session
 ):
-    if len(cart_items) == 0:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail='Customer does not have any item in it\'s cart'
-        )
+#    if len(cart_items) == 0:
+#        raise HTTPException(
+#            status_code=statu
+#            s.HTTP_400_BAD_REQUEST,
+#            detail='Customer does not have any item in it\'s cart'
+#        )
 
-    amount = 0
-    for cart_item in cart_items:
-        item = Item.search_by_id(session=session, item_id=cart_item.item_id)
-        amount += (item.price * cart_item.quantity)
+#   for cart_item in cart_items:
+#        item = Item.search_by_id(session=session, item_id=cart_item.item_id)
+#        amount += (item.price * cart_item.quantity)
 
     if discount_code is not None:
         discount = Discount.search_by_code(session=session, code=discount_code)
@@ -105,7 +105,7 @@ def addition_payment(
 
     if added_payment.state == State.successful and discount_code is not None:
         if discount.usage_limitation is not None:
-            Discount.decrease_usage_limitation(session=session, discount_id=discount.id)
+            Discount.usage_limitation = discount.usage_limitation - 1
         DiscountHistory.add(
             session=session,
             discount_id=discount.id,

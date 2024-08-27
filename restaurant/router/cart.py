@@ -103,6 +103,8 @@ def deletion(customer_token: Annotated[str, Header()], item_id, session: Session
             detail='An item is not in this cart'
         )
 
+    session.commit()
+
     return deleted_cart_item
 
 
@@ -155,29 +157,17 @@ def update_quantity(
     return updated_cart_item
 
 
-@router.get('/item-stock', response_model=ItemOutOfStock)
-def check_stock_of_item_in_cart(customer_token: Annotated[str, Header()], session: Session = Depends(get_session)):
-    token_payload = check_token(customer_token)
+#@router.get('/item-stock', response_model=ItemOutOfStock)
+def update_stock_of_item(item, session: Session):
+    cart_items = CartItem.show_cart_item_by_item_id(session=session, item_id=item.id)
 
-    token_role = token_payload['role']
-    if token_role != Role.customer:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail='You don\'t have access to delete item from cart for customer'
-        )
-
-    customer_id = token_payload['id']
-    cart_items = Cart.show_item_identifiers_in_a_cart(session=session, customer_id=customer_id)
-
-    items_out_of_stock = []
     for cart_item in cart_items:
-        item = Item.search_by_id(session=session, item_id=cart_item.item_id)
+        if item.stock == 0:
+            CartItem.delete(session=session, item_id=cart_item.item_id, cart_id=cart_item.cart_id)
 
-        if cart_item.quantity > item.stock:
-            item.quantity = cart_item.quantity
-            items_out_of_stock.append(item)
-
-    return items_out_of_stock
+        else:
+            if cart_item.quantity > item.stock:
+                cart_item.quantity = item.stock
 
 
 @router.get('/items', response_model=LimitOffsetPage[CartItemForRead])

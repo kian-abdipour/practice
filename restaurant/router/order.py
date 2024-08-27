@@ -1,3 +1,5 @@
+from statistics import quantiles
+
 from fastapi import APIRouter, HTTPException, status, Depends, Header
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
@@ -6,7 +8,7 @@ from restaurant.scheme.order import OrderForCreate, OrderForRead, OrderFilter
 from restaurant.scheme.item import ItemOutOfStock
 from restaurant.database import get_session
 from restaurant.model import Order, OrderItem
-from restaurant.router.cart import check_stock_of_item_in_cart
+from restaurant.router.cart import update_stock_of_item
 from restaurant.model.cart import Cart, CartItem
 from restaurant.custom_exception import OutOfStockError
 from restaurant.authentication import check_token
@@ -59,7 +61,7 @@ def show_all_orders_for_customer(
     return orders
 
 
-@router.post('', response_model=OrderForRead | List[ItemOutOfStock])
+@router.post('', response_model=OrderForRead)
 def addition_order(
         customer_token: Annotated[str, Header()],
         order: OrderForCreate,
@@ -74,22 +76,37 @@ def addition_order(
             detail='You don\'t have access to add order'
         )
 
-    items_out_of_stock = check_stock_of_item_in_cart(customer_token=customer_token, session=session)
-    if len(items_out_of_stock) > 0:
+#    items_out_of_stock = check_stock_of_item_in_cart(customer_token=customer_token, session=session)
+#    if len(items_out_of_stock) > 0:
+#
+#        return items_out_of_stock
+    customer_id = token_payload['id']
 
-        return items_out_of_stock
+    items = Cart.show_item_in_a_cart(session=session, customer_id=customer_id, item_filter=None)
+    cart_items = Cart.show_item_identifiers_in_a_cart(session=session, customer_id=customer_id)
+    if len(cart_items) == 0:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail='Customer does\'nt hase any item in its cart'
+        )
+
+    else:
+        amount = 0
+        for cart_item in cart_items:
+            amount = amount + cart_item.total_amount
 
     customer_id = token_payload['id']
 
-    cart_items = Cart.show_item_identifiers_in_a_cart(session=session, customer_id=customer_id)
     added_payment = addition_payment(
         customer_id=customer_id,
         payment_state='Successful',
         payment_type=order.payment_type,
         discount_code=order.discount_code,
-        cart_items=cart_items,
+        amount = amount,
         session=session
     )
+    session.commit()
+    session.refresh(added_payment)
 
     added_order = Order.add(
         session=session,
@@ -102,8 +119,12 @@ def addition_order(
         customer_id=customer_id
     )
 
+    session.commit()
+    session.refresh(added_order)
+
     for cart_item in cart_items:
         try:
+
             OrderItem.add(
                 session=session,
                 order_id=added_order.id,
@@ -121,6 +142,10 @@ def addition_order(
 
         CartItem.delete(session=session, item_id=cart_item.item_id, cart_id=cart_item.cart_id)
 
+    for item in items:
+        update_stock_of_item(item=item, session=session)
+
+    session.commit()
     return added_order
 
 

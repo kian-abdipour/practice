@@ -27,8 +27,8 @@ class Payment(DateTimeMixin, Base):
         payment = cls(state=state, type=type_, amount=amount, customer_id=customer_id)
         session.add(payment)
 
-        session.commit()
-        session.refresh(payment)
+#        session.commit()
+#        session.refresh(payment)
 
         return payment
 

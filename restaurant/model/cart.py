@@ -60,7 +60,15 @@ class Cart(DateTimeMixin, Base):
         if cart is None:
             return None
 
-        items = item_filter.sort(session.query(Item).join(CartItem).filter(CartItem.cart_id == cart.id)).all()
+        if item_filter is not None:
+            items = item_filter.sort(
+                session.query(Item).join(CartItem).filter(CartItem.cart_id == cart.id).with_for_update()
+            ).all()
+            print(items)
+
+        else:
+            items = session.query(Item).join(CartItem).filter(CartItem.cart_id == cart.id).with_for_update().all()
+            print(items)
 
         return items
 

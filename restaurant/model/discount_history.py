@@ -24,7 +24,7 @@ class DiscountHistory(DateTimeMixin, Base):
 
         session.add(discount_history)
 
-        session.commit()
+#        session.commit()
 
         return discount_history
 

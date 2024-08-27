@@ -45,7 +45,7 @@ class CartItem(DateTimeMixin, Base):
         cart_item_for_response = deepcopy(cart_item)
         session.query(cls).filter(cls.item_id == item_id, cls.cart_id == cart_id).delete()
 
-        session.commit()
+#        session.commit()
 
         return cart_item_for_response
 
@@ -85,6 +85,12 @@ class CartItem(DateTimeMixin, Base):
     @classmethod
     def search_by_cart_id(cls, session: Session, cart_id, cart_item_filter):
         cart_items = cart_item_filter.sort(session.query(cls).filter(cls.cart_id == cart_id)).all()
+
+        return cart_items
+
+    @classmethod
+    def show_cart_item_by_item_id(cls, session: Session, item_id):
+        cart_items = session.query(cls).filter(cls.item_id == item_id).with_for_update().all()
 
         return cart_items
 

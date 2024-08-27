@@ -15,6 +15,7 @@ engine = create_engine('postgresql+psycopg2://kian:bmw1386z4@127.0.0.1:5432/prac
 
 database_session = sessionmaker(bind=engine)
 session = Session(bind=engine)
+another_session = Session(bind=engine)
 
 
 class Customer(Base):
@@ -25,16 +26,16 @@ class Customer(Base):
 
 #Base.metadata.create_all(engine)
 try:
-    session.begin()
+    customer = session.query(Customer).filter(Customer.id == 11).with_for_update().all()
 
-    session.execute(text('BEGIN; LOCK TABLE database_version IN ACCESS EXCLUSIVE MODE;'))
+    customer_after_lock = another_session.query(Customer).filter(Customer.id == 11).one_or_none()
+    customer_after_lock.username = 'nima'
+
+    print(customer)
+
     session.commit()
-
-    customers = session.query(Customer).all()
 
 finally:
     session.close()
 
-
-print(customers)
 

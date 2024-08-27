@@ -33,7 +33,7 @@ class OrderItem(DateTimeMixin, Base):
         session.add(order_item)
         session.query(Item).filter(Item.id == item_id).update({Item.stock: (Item.stock - quantity)})
 
-        session.commit()
+ #       session.commit()
         session.refresh(order_item)
 
         return order_item

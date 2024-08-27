@@ -43,7 +43,7 @@ class Item(DateTimeMixin, Base):
 
     @classmethod
     def search_by_id(cls, session: Session, item_id):
-        result = session.query(cls).filter(cls.id == item_id).one_or_none()
+        result = session.query(cls).filter(cls.id == item_id).with_for_update().one_or_none()
 
         return result
 
