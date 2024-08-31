@@ -121,7 +121,8 @@ def delete(admin_token: Annotated[str, Header()], category_id: int, session: Ses
     if len(items_in_category) > 0:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f'This category hase {len(items_in_category)} item first you should delete this items then delete category'
+            detail=f'This category hase {len(items_in_category)} item first'
+                   f' you should delete this items from category then delete this category'
         )
 
     result = Category.delete(session=session, id_=category_id)

@@ -77,7 +77,7 @@ def addition_item_to_cart(
 
 
 @router.delete('/{item_id}', response_model=CartItemForRead)
-def deletion(customer_token: Annotated[str, Header()], item_id, session: Session = Depends(get_session)):
+def delete(customer_token: Annotated[str, Header()], item_id, session: Session = Depends(get_session)):
     token_payload = check_token(customer_token)
 
     token_role = token_payload['role']

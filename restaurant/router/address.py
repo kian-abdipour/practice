@@ -45,7 +45,7 @@ def addition(customer_token: Annotated[str, Header()],
 
 
 @router.delete('/{address_id}', response_model=AddressForRead)
-def deletion(customer_token: Annotated[str, Header()], address_id: int, session: Session = Depends(get_session)):
+def delete(customer_token: Annotated[str, Header()], address_id: int, session: Session = Depends(get_session)):
     token_payload = check_token(token=customer_token)
     token_role = token_payload['role']
     if token_role != Role.customer:

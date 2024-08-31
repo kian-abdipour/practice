@@ -39,3 +39,21 @@ class Payment(DateTimeMixin, Base):
 
         return payment
 
+    @classmethod
+    def search_by_state(cls, session: Session, payment_state):
+        payments = session.query(cls).filter(cls.state == payment_state).all()
+
+        return payments
+
+    @classmethod
+    def search_by_type(cls, session: Session, payment_type):
+        payments = session.query(cls).filter(cls.type == payment_type).all()
+
+        return payments
+
+    @classmethod
+    def search_by_customer_id(cls, session: Session, customer_id):
+        payments = session.query(cls).filter(cls.customer_id == customer_id).all()
+
+        return payments
+

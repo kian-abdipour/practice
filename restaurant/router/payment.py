@@ -121,7 +121,7 @@ def addition_payment(
 
 
 @router.get('', response_model=LimitOffsetPage[PaymentForRead])
-def search(
+def get(
         admin_token: Annotated[str, Header()],
         payment_filter: PaymentFilter = FilterDepends(PaymentFilter),
         session: Session = Depends(get_session)
@@ -147,8 +147,24 @@ def search(
 
         return JSONResponse(status_code=200, content=jsonable_payment)
 
+    elif payment_filter.state is not None:
+        payments = Payment.search_by_state(session=session, payment_state=payment_filter.state)
+
+        return paginate(payments)
+
+    elif payment_filter.type is not None:
+        payments = Payment.search_by_type(session=session, payment_type=payment_filter.type)
+
+        return paginate(payments)
+
+    elif payment_filter.customer_id is not None:
+        payments = Payment.search_by_customer_id(session=session, customer_id=payment_filter.customer_id)
+
+        return paginate(payments)
+
     else:
         payments = Payment.show_all(session=session, payment_filter=payment_filter)
 
         return paginate(payments)
+
 

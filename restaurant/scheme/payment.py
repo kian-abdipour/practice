@@ -61,6 +61,9 @@ class PaymentFilter(Filter):
         model = Payment
 
     id: int | None = None
+    state: str  | None = None
+    type: str | None = None
+    customer_id: int | None = None
     order_by: Optional[List[str]] = None
 
     @field_validator('order_by')
@@ -77,4 +80,29 @@ class PaymentFilter(Filter):
                 )
 
         return order_by
+
+    @field_validator('state')
+    @classmethod
+    def validate_state(cls, state):
+        if state != State.successful and state != State.failed:
+            print(state)
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f'A state should be {State.successful} or {State.failed}'
+            )
+
+        return state
+
+
+    @field_validator('type')
+    @classmethod
+    def validate_type(cls, type_):
+        if type_ != TypePay.online and type_ != TypePay.cash and type_ != TypePay.transfer:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f'A type should be {TypePay.online} and {TypePay.cash} and {TypePay.transfer}'
+
+            )
+
+        return type_
 
