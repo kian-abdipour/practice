@@ -6,7 +6,7 @@ from os import getenv
 load_dotenv()
 database_url = getenv('DATABASE_URL')
 
-engine = create_engine(database_url, echo=True)
+engine = create_engine(database_url, echo=False)
 
 database_session = sessionmaker(bind=engine)
 
