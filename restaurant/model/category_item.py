@@ -70,3 +70,4 @@ class CategoryItem(DateTimeMixin, Base):
         result = session.query(cls).filter(cls.item_id == item_id).all()
 
         return result
+

@@ -33,7 +33,7 @@ class Cart(DateTimeMixin, Base):
         return cart
 
     @classmethod
-    def search_cart_by_customer(cls, session: Session, customer_id):
+    def search_cart_by_customer_id(cls, session: Session, customer_id):
         cart = session.query(cls).filter(cls.customer_id == customer_id).one()
 
         return cart
@@ -45,30 +45,18 @@ class Cart(DateTimeMixin, Base):
         return cart
 
     @classmethod
-    def show_item_identifiers_in_a_cart(cls, session: Session, customer_id):
+    def show_all_cart_items_by_customer_id(cls, session: Session, customer_id):
         cart = session.query(cls).filter(cls.customer_id == customer_id).one_or_none()
-        if cart is None:
-            return None
 
-        cart_items = session.query(CartItem).filter(CartItem.cart_id == cart.id).all()
+        cart_items = session.query(CartItem).join(cls, CartItem.cart_id == cart.id).all()
 
         return cart_items
 
     @classmethod
-    def show_item_in_a_cart(cls, session: Session, customer_id, item_filter):
+    def show_item_in_a_cart(cls, session: Session, customer_id):
         cart = session.query(cls).filter(cls.customer_id == customer_id).one_or_none()
-        if cart is None:
-            return None
 
-        if item_filter is not None:
-            items = item_filter.sort(
-                session.query(Item).join(CartItem).filter(CartItem.cart_id == cart.id).with_for_update()
-            ).all()
-            print(items)
-
-        else:
-            items = session.query(Item).join(CartItem).filter(CartItem.cart_id == cart.id).with_for_update().all()
-            print(items)
+        items = session.query(Item).join(CartItem, CartItem.cart_id == cart.id).with_for_update().all()
 
         return items
 

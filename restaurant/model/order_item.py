@@ -26,7 +26,7 @@ class OrderItem(DateTimeMixin, Base):
             total_amount=total_amount, order_id=order_id, item_id=item_id
         )
         item = session.query(Item).filter(Item.id == item_id).one_or_none()
-        print(item)
+
         if item.stock == 0:
             raise OutOfStockError(massage='The item is out of stock')
 

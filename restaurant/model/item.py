@@ -37,12 +37,18 @@ class Item(DateTimeMixin, Base):
 
     @classmethod
     def search_by_name(cls, session: Session, item_name):
-        result = session.query(cls).filter(cls.name == item_name).with_for_update().one_or_none()
+        result = session.query(cls).filter(cls.name == item_name).one_or_none()
 
         return result
 
     @classmethod
     def search_by_id(cls, session: Session, item_id):
+        result = session.query(cls).filter(cls.id == item_id).one_or_none()
+
+        return result
+
+    @classmethod
+    def search_by_id_by_lock(cls, session: Session, item_id):
         result = session.query(cls).filter(cls.id == item_id).with_for_update().one_or_none()
 
         return result

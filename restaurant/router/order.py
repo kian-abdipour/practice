@@ -72,14 +72,10 @@ def addition_order(
             detail='You don\'t have access to add order'
         )
 
-#    items_out_of_stock = check_stock_of_item_in_cart(customer_token=customer_token, session=session)
-#    if len(items_out_of_stock) > 0:
-#
-#        return items_out_of_stock
     customer_id = token_payload['id']
 
-    items = Cart.show_item_in_a_cart(session=session, customer_id=customer_id, item_filter=None)
-    cart_items = Cart.show_item_identifiers_in_a_cart(session=session, customer_id=customer_id)
+    items = Cart.show_item_in_a_cart(session=session, customer_id=customer_id)
+    cart_items = Cart.show_all_cart_items_by_customer_id(session=session, customer_id=customer_id)
     if len(cart_items) == 0:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -87,9 +83,9 @@ def addition_order(
         )
 
     else:
-        amount = 0
-        for cart_item in cart_items:
-            amount = amount + cart_item.total_amount
+
+        cart = Cart.search_cart_by_customer_id(session=session, customer_id=customer_id)
+        amount = cart.total_amount
 
     customer_id = token_payload['id']
 

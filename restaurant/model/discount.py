@@ -135,7 +135,7 @@ class Discount(DateTimeMixin, Base):
 
     @classmethod
     def search_by_id(cls, session: Session, discount_id):
-        discount = session.query(cls).filter(cls.id == discount_id).with_for_update().one_or_none()
+        discount = session.query(cls).filter(cls.id == discount_id).one_or_none()
 
         return discount
 

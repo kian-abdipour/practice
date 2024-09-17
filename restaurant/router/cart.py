@@ -42,7 +42,7 @@ def addition_item_to_cart(
             detail='You don\'t have access to add item to cart for customer'
         )
 
-    item = Item.search_by_id(session=session, item_id=cart_item.item_id)
+    item = Item.search_by_id_by_lock(session=session, item_id=cart_item.item_id)
     if item is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -55,7 +55,7 @@ def addition_item_to_cart(
             detail=f'Stock of {item.name} with id {item.id} is out of stock'
         )
 
-    cart = Cart.search_cart_by_customer(session=session, customer_id=customer_id)
+    cart = Cart.search_cart_by_customer_id(session=session, customer_id=customer_id)
 
     cart_item_in_database = CartItem.search_by_item_id(session=session, cart_id=cart.id, item_id=item.id)
     if cart_item_in_database is not None:
@@ -94,7 +94,7 @@ def delete(customer_token: Annotated[str, Header()], item_id, session: Session =
         )
 
     customer_id = token_payload['id']
-    cart = Cart.search_cart_by_customer(session=session, customer_id=customer_id)
+    cart = Cart.search_cart_by_customer_id(session=session, customer_id=customer_id)
 
     deleted_cart_item = CartItem.delete(session=session, item_id=item_id, cart_id=cart.id)
     if deleted_cart_item is None:
@@ -124,7 +124,7 @@ def update_quantity(
         )
 
     customer_id = token_payload['id']
-    cart = Cart.search_cart_by_customer(session=session, customer_id=customer_id)
+    cart = Cart.search_cart_by_customer_id(session=session, customer_id=customer_id)
 
     item = Item.search_by_id(session=session, item_id=cart_item.item_id)
     if item is None:
@@ -188,7 +188,7 @@ def get_items_in_customer_cart(
         )
 
     customer_id = token_payload['id']
-    cart = Cart.search_cart_by_customer(session=session, customer_id=customer_id)
+    cart = Cart.search_cart_by_customer_id(session=session, customer_id=customer_id)
 
     cart_items = CartItem.search_by_cart_id(session=session, cart_id=cart.id, cart_item_filter=cart_item_filter)
 
