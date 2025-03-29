@@ -105,7 +105,7 @@ def addition_payment(
 
     if added_payment.state == State.successful and discount_code is not None:
         if discount.usage_limitation is not None:
-            Discount.usage_limitation = discount.usage_limitation - 1
+            Discount.usage_limitation = discount.usage_limitation - 1  # Maybe there is a bug by Discount check it
         DiscountHistory.add(
             session=session,
             discount_id=discount.id,

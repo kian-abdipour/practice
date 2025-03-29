@@ -10,7 +10,7 @@ class Address(DateTimeMixin, Base):
     address = Column(Unicode(150), nullable=False)
     customer_id = Column(ForeignKey('customer.id'))
 
-    orders = relationship('Order', cascade='all, delete')
+    orders = relationship('Order', cascade='all, delete', back_populates='address')
     customer = relationship('Customer', back_populates='addresses')
 
     @classmethod

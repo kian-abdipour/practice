@@ -115,8 +115,8 @@ def get(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail='Discount with this id not found'
             )
-        customer_dict = discount.__dict__
-        jsonable_discount = jsonable_encoder(customer_dict)
+        discount_dict = discount.__dict__
+        jsonable_discount = jsonable_encoder(discount_dict)
 
         return JSONResponse(status_code=200, content=jsonable_discount)
 

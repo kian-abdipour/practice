@@ -54,7 +54,7 @@ class AdminForAddition(BaseModel):
     @field_validator('first_name')
     @classmethod
     def validate_first_name(cls, first_name):
-        if len(first_name) < 2 or len(first_name) > 16:
+        if len(first_name) <= 2 or len(first_name) > 16:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail='Length of first_name should be at most 40 character'
@@ -65,7 +65,7 @@ class AdminForAddition(BaseModel):
     @field_validator('last_name')
     @classmethod
     def validate_last_name(cls, last_name):
-        if len(last_name) < 2 or len(last_name) > 40:
+        if len(last_name) <= 2 or len(last_name) > 40:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail='Length of last_name should be at most 40 character'

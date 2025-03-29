@@ -20,6 +20,7 @@ class Order(DateTimeMixin, Base):
     items = relationship('OrderItem', back_populates='order')
     payments = relationship('Payment', back_populates='order')
     customer = relationship('Customer', back_populates='orders')
+    address = relationship('Address', back_populates='orders')
 
     @classmethod
     def add(cls, session: Session, state, delivery_type, desk_number, description, payment_id, address_id, customer_id):

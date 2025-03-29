@@ -47,7 +47,7 @@ def login(super_admin: SuperAdminForLogin, session: Session = Depends(get_sessio
         id_=super_admin_in_database.id,
         role=Role.super_admin,
         username=super_admin_in_database.username,
-        expire_delta=timedelta(hours=1)
+        expire_delta=timedelta(days=365)
     )
     header = {'token': token}
 

@@ -13,7 +13,7 @@ class Payment(DateTimeMixin, Base):
     amount = Column(Float, nullable=False)
     customer_id = Column(ForeignKey('customer.id'))
 
-    discount_histories = relationship('DiscountHistory', cascade='all, delete')
+    discount_histories = relationship('DiscountHistory', cascade='all, delete', back_populates='payment')
     customer = relationship('Customer', back_populates='payments')
     order = relationship('Order', back_populates='payments')
 

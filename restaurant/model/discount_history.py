@@ -16,6 +16,7 @@ class DiscountHistory(DateTimeMixin, Base):
     discounted_amount = column_property(base_amount - affected_amount)  # Column property
 
     discount = relationship('Discount', back_populates='discount_histories')
+    payment = relationship('Payment', back_populates='discount_histories')
 
     @classmethod
     def add(cls, session: Session, discount_id, payment_id, base_amount, affected_amount):

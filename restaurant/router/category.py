@@ -243,7 +243,7 @@ def delete_item_from_category(
         )
 
     categories_of_item = CategoryItem.show_categories_of_items(session=session, item_id=item_id)
-    if categories_of_item == 1:
+    if categories_of_item == 1:  # This maybe doesnt work check it
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail='This item is just in this category first add it in another category then delete it from this category'
