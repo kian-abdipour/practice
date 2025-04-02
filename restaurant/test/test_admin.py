@@ -1,6 +1,7 @@
 from fastapi.testclient import TestClient
 from restaurant.main import app
 
+
 client = TestClient(app)
 
 
@@ -98,16 +99,17 @@ def test_login():
 
 
 def test_get():
-    # 1_Get an admin successful
-    admin = {'id': 24}
+    # 1_Get all admins successful
     header = {'super-admin-token': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwicm9sZSI6InN1cGVyX2FkbWluIiwidXNlcm5hbWUiOiJLaWFuX0FiZGlwb3VyIiwiZXhwIjoxNzc0ODE3MDU3fQ.sTi3zNOa4R-ZHDWdRhyOHIA4rbLd-IqveOUU7-Y_75U'}
-    responses = client.get('/admins', params=admin, headers=header)
+    responses = client.get('/admins', headers=header)
 
     assert responses.status_code == 200
 
-    # 2_Get all admins successful
+    # 2_Get an admin successful
+    admin_id = eval(client.get('/admins', headers=header).content.decode())['items'][0]['id']
+    admin = {'id': admin_id}
     header = {'super-admin-token': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwicm9sZSI6InN1cGVyX2FkbWluIiwidXNlcm5hbWUiOiJLaWFuX0FiZGlwb3VyIiwiZXhwIjoxNzc0ODE3MDU3fQ.sTi3zNOa4R-ZHDWdRhyOHIA4rbLd-IqveOUU7-Y_75U'}
-    responses = client.get('/admins', headers=header)
+    responses = client.get('/admins', params=admin, headers=header)
 
     assert responses.status_code == 200
 
@@ -135,16 +137,14 @@ def test_get():
 
 def test_delete():
     # 1_Delete admin successful
-#    admin = {'id': 24}
     header = {'super-admin-token': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwicm9sZSI6InN1cGVyX2FkbWluIiwidXNlcm5hbWUiOiJLaWFuX0FiZGlwb3VyIiwiZXhwIjoxNzc0ODE3MDU3fQ.sTi3zNOa4R-ZHDWdRhyOHIA4rbLd-IqveOUU7-Y_75U'}
-    responses = client.delete('/admins/24', headers=header)
+    admin_id = eval(client.get('/admins', headers=header).content.decode())['items'][0]['id']
+    responses = client.delete(f'/admins/{admin_id}', headers=header)
 
     assert responses.status_code == 200
 
-    # 2_Delete admin with wrong password
-    #    admin = {'id': 24}
-    header = {
-        'super-admin-token': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwicm9sZSI6InN1cGVyX2FkbWluIiwidXNlcm5hbWUiOiJLaWFuX0FiZGlwb3VyIiwiZXhwIjoxNzc0ODE3MDU3fQ.sTi3zNOa4R-ZHDWdRhyOHIA4rbLd-IqveOUU7-Y_75U'}
+    # 2_Delete admin with wrong id
+    header = {'super-admin-token': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwicm9sZSI6InN1cGVyX2FkbWluIiwidXNlcm5hbWUiOiJLaWFuX0FiZGlwb3VyIiwiZXhwIjoxNzc0ODE3MDU3fQ.sTi3zNOa4R-ZHDWdRhyOHIA4rbLd-IqveOUU7-Y_75U'}
     responses = client.delete('/admins/2', headers=header)
 
     assert responses.status_code == 404

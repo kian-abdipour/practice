@@ -90,7 +90,7 @@ class CustomerForCreate(BaseModel):
     @classmethod
     def validate(cls, phone_number):
         phone_number_pattern = r'09[0-9]{9,9}'
-        if bool(match(phone_number_pattern, phone_number)) is False:
+        if bool(match(phone_number_pattern, phone_number)) is False or len(phone_number) != 11:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                                 detail='Phone number should start with 09 and length of phone number should be 11')
 

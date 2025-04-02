@@ -82,7 +82,7 @@ def login(admin: AdminForLogin, session: Session = Depends(get_session)):
         id_=admin_in_database.id,
         role=Role.admin,
         username=admin_in_database.username,
-        expire_delta=timedelta(hours=1)
+        expire_delta=timedelta(days=365)
     )
     header = {'token': token}
 
