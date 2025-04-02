@@ -1,7 +1,5 @@
-from restaurant.model.super_admin import SuperAdmin
-from restaurant.router.super_admin import login
-from restaurant.scheme.super_admin import SuperAdminForLogin
 from fastapi.testclient import TestClient
+
 from restaurant.main import app
 
 

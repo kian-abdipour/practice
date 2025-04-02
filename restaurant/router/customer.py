@@ -91,7 +91,7 @@ def login(customer: CustomerForLogin, session: Session = Depends(get_session)):
         id_=customer_in_database.id,
         role=Role.customer,
         username=customer_in_database.username,
-        expire_delta=timedelta(hours=1)
+        expire_delta=timedelta(days=365)
     )
     header = {'token': token}
 

@@ -1,4 +1,5 @@
 from fastapi.testclient import TestClient
+
 from restaurant.main import app
 
 client = TestClient(app)
@@ -6,25 +7,25 @@ client = TestClient(app)
 
 def test_signup():
     # 1_Signup successful to get 200
-    customer = {'username': 'matin', 'password': 'kK86!@Kk', 'phone_number': '09100739360'}
+    customer = {'username': 'matin_gh', 'password': 'kK86!@Kk', 'phone_number': '09100739361'}
     response = client.post('/customer-registrations', json=customer)
 
     assert response.status_code == 200
 
     # 2_Signup with long username
-    customer = {'username': 'matinnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn', 'password': 'kK86!@Kk', 'phone_number': '09100739360'}
+    customer = {'username': 'matinnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn', 'password': 'kK86!@Kk', 'phone_number': '09100739361'}
     response = client.post('/customer-registrations', json=customer)
 
     assert response.status_code == 400
 
     # 3_Signup with short username
-    customer = {'username': 'm', 'password': 'kK86!@Kk', 'phone_number': '09100739360'}
+    customer = {'username': 'm', 'password': 'kK86!@Kk', 'phone_number': '09100739361'}
     response = client.post('/customer-registrations', json=customer)
 
     assert response.status_code == 400
 
     # 4_Signup with wrong password pattern
-    customer = {'username': 'matin', 'password': 'asdf', 'phone_number': '09100739360'}
+    customer = {'username': 'matin', 'password': 'asdf', 'phone_number': '09100739361'}
     response = client.post('/customer-registrations', json=customer)
 
     assert response.status_code == 400
@@ -36,13 +37,13 @@ def test_signup():
     assert response.status_code == 400
 
     # 6_Signup with username that already exist
-    customer = {'username': 'matin', 'password': 'kK86!@Kk', 'phone_number': '09100739360'}
+    customer = {'username': 'matin', 'password': 'kK86!@Kk', 'phone_number': '09100739361'}
     response = client.post('/customer-registrations', json=customer)
 
     assert response.status_code == 409
 
     # 7_Signup with phone_number that already exist
-    customer = {'username': 'kian', 'password': 'kK86!@Kk', 'phone_number': '09100739360'}
+    customer = {'username': 'kian', 'password': 'kK86!@Kk', 'phone_number': '09100739361'}
     response = client.post('/customer-registrations', json=customer)
 
     assert response.status_code == 409
@@ -50,7 +51,7 @@ def test_signup():
 
 def test_login():
     # 1_Login successful to get 200
-    customer = {'username': 'matin', 'password': 'kK86!@Kk'}
+    customer = {'username': 'matin_gh', 'password': 'kK86!@Kk'}
     response = client.post('/customer-tokens', json=customer)
 
     assert response.status_code == 200
@@ -62,7 +63,7 @@ def test_login():
     assert response.status_code == 401
 
     # 3_Login with wrong password
-    customer = {'username': 'matin', 'password': 'aK86!@Kk'}
+    customer = {'username': 'matin_gh', 'password': 'aK86!@Kk'}
     response = client.post('/customer-tokens', json=customer)
 
     assert response.status_code == 401
@@ -70,7 +71,7 @@ def test_login():
 
 def test_get():
     # 1_Get with username successful
-    customer = {'username': 'matin'}
+    customer = {'username': 'matin_gh'}
     header = {'admin-token': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MjYsInJvbGUiOiJhZG1pbiIsInVzZXJuYW1lIjoiamoiLCJleHAiOjE3NzQ5MDU3OTd9.nhq20V7Ei7ifUsTK5zWflBGv2VFYv0IC2Ge1rD2xpGI'}
     response = client.get('/customers', params=customer, headers=header)
 
@@ -85,7 +86,7 @@ def test_get():
     assert response.status_code == 200
 
     # 3_Get with phone_number successful
-    customer = {'phone_number': '09100739360'}
+    customer = {'phone_number': '09100739361'}
     header = {'admin-token': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MjYsInJvbGUiOiJhZG1pbiIsInVzZXJuYW1lIjoiamoiLCJleHAiOjE3NzQ5MDU3OTd9.nhq20V7Ei7ifUsTK5zWflBGv2VFYv0IC2Ge1rD2xpGI'}
     response = client.get('/customers', params=customer, headers=header)
 
@@ -119,7 +120,7 @@ def test_get():
     assert response.status_code == 404
 
     # 8_Get with wrong phone_number
-    customer = {'phone_number': '09100739361'}
+    customer = {'phone_number': '09100739369'}
     header = {'admin-token': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MjYsInJvbGUiOiJhZG1pbiIsInVzZXJuYW1lIjoiamoiLCJleHAiOjE3NzQ5MDU3OTd9.nhq20V7Ei7ifUsTK5zWflBGv2VFYv0IC2Ge1rD2xpGI'}
     response = client.get('/customers', params=customer, headers=header)
 
