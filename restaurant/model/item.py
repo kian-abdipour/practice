@@ -24,7 +24,8 @@ class Item(DateTimeMixin, Base):
         item = cls(name=name, country=country, price=price, stock=stock, description=description)
         session.add(item)
 
-        session.commit()
+#        session.commit()
+        session.flush()
         session.refresh(item)
 
         return item

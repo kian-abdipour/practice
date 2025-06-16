@@ -60,6 +60,8 @@ def addition(
 
     CategoryItem.add(session=session, category_id=category.id, item_id=added_item.id)
 
+    session.commit()
+
     return added_item
 
 

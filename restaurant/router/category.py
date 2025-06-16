@@ -242,7 +242,7 @@ def delete_item_from_category(
             detail='Item with this id not found'
         )
 
-    categories_of_item = CategoryItem.show_categories_of_items(session=session, item_id=item_id)
+    categories_of_item = len(CategoryItem.show_categories_of_items(session=session, item_id=item_id))
     if categories_of_item == 1:  # This maybe doesnt work check it
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
