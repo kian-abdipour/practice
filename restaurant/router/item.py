@@ -38,18 +38,18 @@ def addition(
             detail='You don\'t have access to add item'
         )
 
-    result = Item.search_by_name(session=session, item_name=item.name)
-    if result is not None:
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
-            detail='An item with this name is already exist choose another one'
-        )
-
     category = Category.search_by_id(session=session, category_id=item.category_id)
     if category is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail='A category with this id not found'
+        )
+
+    result = Item.search_by_name(session=session, item_name=item.name)
+    if result is not None:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail='An item with this name is already exist choose another one'
         )
 
     added_item = Item.add(

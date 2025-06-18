@@ -34,7 +34,7 @@ class ItemForCreate(BaseModel):
 
     @field_validator('country')
     @classmethod
-    def validate(cls, country):
+    def validate_country(cls, country):
         if len(country) > 30:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
@@ -42,6 +42,28 @@ class ItemForCreate(BaseModel):
             )
 
         return country
+
+    @field_validator('price')
+    @classmethod
+    def validate_price(cls, price):
+        if price <= 0:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail='A price should be more than zero'
+            )
+
+        return price
+
+    @field_validator('stock')
+    @classmethod
+    def validate_stock(cls, stock):
+        if stock < 0:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail='A stock should be more or equal to zero'
+            )
+
+        return stock
 
     @field_validator('description')
     @classmethod
