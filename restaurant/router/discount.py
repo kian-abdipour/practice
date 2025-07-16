@@ -59,7 +59,7 @@ def addition(
     return added_discount
 
 
-@router.put('/{Discount_id}', response_model=DiscountForRead)
+@router.put('/{discount_id}', response_model=DiscountForRead)
 def update_disposable(
         admin_token: Annotated[str, Header()],
         discount_id: int,

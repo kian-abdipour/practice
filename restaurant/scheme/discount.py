@@ -59,7 +59,7 @@ class DiscountForCreate(BaseModel):
 
     @field_validator('expire_date')
     @classmethod
-    def validate_start_date(cls, expire_date):
+    def validate_expire_date(cls, expire_date):
         pattern = '[0-9]{4,4}-[0-9]{2,2}-[0-9]{2,2}'
         if bool(match(pattern=pattern, string=expire_date)) is False:
             raise HTTPException(
@@ -89,7 +89,7 @@ class DiscountForCreate(BaseModel):
     @field_validator('percent')
     @classmethod
     def validate_percent(cls, percent):
-        if 0.1 > percent > 0.99:
+        if percent < 0.1 or percent > 0.99:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail='Percent should be between 0.1 to 0.99'
