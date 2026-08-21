@@ -30,8 +30,8 @@ class DiscountHistory(DateTimeMixin, Base):
         return discount_history
 
     @classmethod
-    def check_one_use(cls, session: Session, customer_id):
-        discount_history = session.query(Payment).join(cls).filter(Payment.customer_id == customer_id).one_or_none()
+    def check_one_use(cls, session: Session, customer_id, discount_id):
+        discount_history = session.query(Payment).join(cls).filter(Payment.id == cls.payment_id, Payment.customer_id == customer_id, cls.discount_id == discount_id).one_or_none()
 
         return discount_history
 

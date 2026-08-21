@@ -112,7 +112,7 @@ class Discount(DateTimeMixin, Base):
             raise DisposableDiscountError('')
 
         if discount.one_use is True:
-            if DiscountHistory.check_one_use(session=session, customer_id=customer_id) is not None:
+            if DiscountHistory.check_one_use(session=session, customer_id=customer_id, discount_id=discount.id) is not None:
                 raise UsedDiscountError('')
 
         if discount.start_date > date.today():

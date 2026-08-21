@@ -28,12 +28,12 @@ router = APIRouter(
 
 #@router.post('', response_model=PaymentForRead)
 def addition_payment(
+        session: Session,
         customer_id,
         payment_state,
         payment_type,
         discount_code,
-        amount,
-        session: Session
+        amount
 ):
 #    if len(cart_items) == 0:
 #        raise HTTPException(

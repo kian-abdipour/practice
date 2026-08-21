@@ -23,7 +23,8 @@ class Payment(DateTimeMixin, Base):
         session.add(payment)
 
 #        session.commit()
-#        session.refresh(payment)
+        session.flush()
+        session.refresh(payment)
 
         return payment
 
