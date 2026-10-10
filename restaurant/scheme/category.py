@@ -6,7 +6,7 @@ from datetime import datetime
 
 from fastapi_filter.contrib.sqlalchemy import Filter
 
-from restaurant.model import Category
+from model import Category
 
 from typing import Optional, List
 

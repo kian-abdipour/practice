@@ -2,14 +2,14 @@ from fastapi import APIRouter, Depends, HTTPException, status, Header
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 
-from restaurant.scheme.category import CategoryForCreate, CategoryForRead, CategoryFilter
-from restaurant.scheme.category_item import DeleteItemFromCategory, \
+from scheme.category import CategoryForCreate, CategoryForRead, CategoryFilter
+from scheme.category_item import DeleteItemFromCategory, \
     AdditionItemToCategoryForRead, AdditionItemToCategory
-from restaurant.scheme.item import ItemInCategoryFilter, ItemForRead
-from restaurant.database import get_session
-from restaurant.model import Category, CategoryItem, Item
-from restaurant.authentication import check_token
-from restaurant.model.helper import Role
+from scheme.item import ItemInCategoryFilter, ItemForRead
+from database import get_session
+from model import Category, CategoryItem, Item
+from authentication import check_token
+from model.helper import Role
 
 from sqlalchemy.orm import Session
 

@@ -2,11 +2,11 @@ from fastapi import APIRouter, Depends, HTTPException, status, Header
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 
-from restaurant.scheme.admin import AdminForAddition, AdminForLogin, AdminForRead, AdminFilter
-from restaurant.database import get_session
-from restaurant.model import Admin
-from restaurant.authentication import get_hash_password, verify_password, check_token, make_token
-from restaurant.model.helper import Role
+from scheme.admin import AdminForAddition, AdminForLogin, AdminForRead, AdminFilter
+from database import get_session
+from model import Admin
+from authentication import get_hash_password, verify_password, check_token, make_token
+from model.helper import Role
 
 from sqlalchemy.orm import Session
 

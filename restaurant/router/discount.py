@@ -2,11 +2,11 @@ from fastapi import APIRouter, HTTPException, status, Depends, Header
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 
-from restaurant.scheme.discount import DiscountForCreate, DiscountForRead, DiscountForUpdateDisposable, DiscountFilter
-from restaurant.database import get_session
-from restaurant.authentication import check_token
-from restaurant.model.helper import Role
-from restaurant.model.discount import Discount
+from scheme.discount import DiscountForCreate, DiscountForRead, DiscountForUpdateDisposable, DiscountFilter
+from database import get_session
+from authentication import check_token
+from model.helper import Role
+from model.discount import Discount
 
 from sqlalchemy.orm import Session
 

@@ -1,10 +1,10 @@
 from sqlalchemy import Column, Integer, ForeignKey, Float
 from sqlalchemy.orm import relationship, Session, ColumnProperty
 
-from restaurant.model.base import Base
-from restaurant.model.mixin import DateTimeMixin
-from restaurant.model.item import Item
-from restaurant.custom_exception import OutOfStockError
+from model.base import Base
+from model.mixin import DateTimeMixin
+from model.item import Item
+from custom_exception import OutOfStockError
 
 
 class OrderItem(DateTimeMixin, Base):

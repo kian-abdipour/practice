@@ -4,11 +4,11 @@ from fastapi.responses import JSONResponse
 
 from sqlalchemy.orm import Session
 
-from restaurant.authentication import check_token
-from restaurant.model import Item, CategoryItem, Category
-from restaurant.scheme.item import ItemForCreate, ItemForRead, ItemFilter
-from restaurant.database import get_session
-from restaurant.model.helper import Role
+from authentication import check_token
+from model import Item, CategoryItem, Category
+from scheme.item import ItemForCreate, ItemForRead, ItemFilter
+from database import get_session
+from model.helper import Role
 
 from typing import Annotated
 

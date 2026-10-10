@@ -8,7 +8,7 @@ from datetime import datetime
 
 from fastapi_filter.contrib.sqlalchemy import Filter
 
-from restaurant.model import Customer
+from model import Customer
 
 from typing import Optional, List
 

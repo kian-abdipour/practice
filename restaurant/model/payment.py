@@ -1,8 +1,8 @@
 from sqlalchemy import Column, Integer, Unicode, ForeignKey, Float
 from sqlalchemy.orm import relationship, Session
 
-from restaurant.model.base import Base
-from restaurant.model.mixin import DateTimeMixin
+from model.base import Base
+from model.mixin import DateTimeMixin
 
 
 class Payment(DateTimeMixin, Base):
@@ -14,8 +14,8 @@ class Payment(DateTimeMixin, Base):
     customer_id = Column(ForeignKey('customer.id'))
 
     discount_histories = relationship('DiscountHistory', cascade='all, delete', back_populates='payment')
-    customer = relationship('Customer', back_populates='payments')
-    order = relationship('Order', back_populates='payments')
+    customer = relationship('Customer', back_populates='payments', cascade='all, delete')
+    order = relationship('Order', back_populates='payments', cascade='all, delete')
 
     @classmethod
     def add(cls, session: Session, state, type_, amount, customer_id):

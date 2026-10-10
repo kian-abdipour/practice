@@ -1,6 +1,6 @@
 from pydantic import BaseModel
-from restaurant.scheme.item import ItemForRead
-from restaurant.scheme.category import CategoryForRead
+from scheme.item import ItemForRead
+from scheme.category import CategoryForRead
 
 from typing import List
 

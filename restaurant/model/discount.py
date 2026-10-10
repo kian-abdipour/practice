@@ -7,12 +7,12 @@ from datetime import date
 from sqlalchemy import Column, Integer, Unicode, String, Float, Date, Boolean
 from sqlalchemy.orm import relationship, Session
 
-from restaurant.custom_exception import DisposableDiscountError, StartDateDiscountError, \
+from custom_exception import DisposableDiscountError, StartDateDiscountError, \
     ExpireDateDiscountError, UsageLimitationDiscountError, UsedDiscountError
-from restaurant.model.base import Base
-from restaurant.model.helper import character_for_discount_code
-from restaurant.model.mixin import DateTimeMixin
-from restaurant.model.discount_history import DiscountHistory
+from model.base import Base
+from model.helper import character_for_discount_code
+from model.mixin import DateTimeMixin
+from model.discount_history import DiscountHistory
 
 
 class Discount(DateTimeMixin, Base):
@@ -28,7 +28,7 @@ class Discount(DateTimeMixin, Base):
     disposable = Column(Boolean, nullable=False)
     one_use = Column(Boolean, nullable=False)
 
-    discount_histories = relationship('DiscountHistory', back_populates='discount')
+    discount_histories = relationship('DiscountHistory', back_populates='discount', cascade='all, delete')
 
     @classmethod
     def add(

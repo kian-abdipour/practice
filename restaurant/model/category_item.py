@@ -3,9 +3,9 @@ from unittest import removeResult
 from sqlalchemy import Column, Integer, ForeignKey
 from sqlalchemy.orm import relationship, Session
 
-from restaurant.model.base import Base
-from restaurant.model.mixin import DateTimeMixin
-from restaurant.model import Item
+from model.base import Base
+from model.mixin import DateTimeMixin
+from model import Item
 
 
 class CategoryItem(DateTimeMixin, Base):

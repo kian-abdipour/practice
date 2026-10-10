@@ -3,11 +3,12 @@ from sqlalchemy.orm import sessionmaker
 from dotenv import load_dotenv
 from os import getenv
 
+from model.base import Base
+
 load_dotenv()
+
 database_url = getenv('DATABASE_URL')
-
 engine = create_engine(database_url, echo=False)
-
 database_session = sessionmaker(bind=engine)
 
 

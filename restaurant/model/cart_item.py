@@ -1,11 +1,11 @@
 from sqlalchemy import Column, Integer, ForeignKey, Column
 from sqlalchemy.orm import relationship, Session, column_property, query
 
-from restaurant.model.base import Base
-from restaurant.model.mixin import DateTimeMixin
-from restaurant.model.item import Item
-from restaurant.database import get_session
-from restaurant.custom_exception import OutOfStockError, ItemNotInCartError
+from model.base import Base
+from model.mixin import DateTimeMixin
+from model.item import Item
+from database import get_session
+from custom_exception import OutOfStockError, ItemNotInCartError
 
 from copy import deepcopy
 

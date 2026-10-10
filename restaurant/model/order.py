@@ -1,9 +1,9 @@
 from sqlalchemy import Unicode, Column, Integer, ForeignKey
 from sqlalchemy.orm import relationship, Session
 
-from restaurant.model.base import Base
-from restaurant.model.mixin import DateTimeMixin
-from restaurant.model.helper import State
+from model.base import Base
+from model.mixin import DateTimeMixin
+from model.helper import State
 
 
 class Order(DateTimeMixin, Base):
@@ -17,10 +17,10 @@ class Order(DateTimeMixin, Base):
     customer_id = Column(ForeignKey('customer.id'))
     payment_id = Column(ForeignKey('payment.id'))
 
-    items = relationship('OrderItem', back_populates='order')
-    payments = relationship('Payment', back_populates='order')
-    customer = relationship('Customer', back_populates='orders')
-    address = relationship('Address', back_populates='orders')
+    items = relationship('OrderItem', back_populates='order', cascade='all, delete')
+    payments = relationship('Payment', back_populates='order', cascade='all, delete')
+    customer = relationship('Customer', back_populates='orders', cascade='all, delete')
+    address = relationship('Address', back_populates='orders', cascade='all, delete')
 
     @classmethod
     def add(cls, session: Session, state, delivery_type, desk_number, description, payment_id, address_id, customer_id):

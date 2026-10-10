@@ -2,11 +2,11 @@ from fastapi import APIRouter, Depends, HTTPException, status, Header
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 
-from restaurant.database import get_session
-from restaurant.authentication import check_token
-from restaurant.model import Address
-from restaurant.scheme.address import AddressForAddition, AddressForRead, AddressFilter
-from restaurant.model.helper import Role
+from database import get_session
+from authentication import check_token
+from model import Address
+from scheme.address import AddressForAddition, AddressForRead, AddressFilter
+from model.helper import Role
 
 from sqlalchemy.orm import Session
 

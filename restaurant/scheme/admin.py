@@ -6,7 +6,7 @@ from re import match
 
 from fastapi_filter.contrib.sqlalchemy import Filter
 
-from restaurant.model import Admin
+from model import Admin
 
 from typing import Optional, List
 

@@ -2,10 +2,10 @@ from sqlalchemy import Column, Integer, ForeignKey, func
 from sqlalchemy.orm import relationship, Session, column_property
 
 
-from restaurant.model.base import Base
-from restaurant.model.mixin import DateTimeMixin
-from restaurant.model import CartItem, Item
-from restaurant.database import get_session
+from model.base import Base
+from model.mixin import DateTimeMixin
+from model import CartItem, Item
+from database import get_session
 
 
 for database_session in get_session():
@@ -19,8 +19,8 @@ class Cart(DateTimeMixin, Base):
     total_amount = column_property(db_session.query(func.sum(CartItem.total_amount)).filter(id == CartItem.cart_id))
     customer_id = Column(ForeignKey('customer.id'))
 
-    customer = relationship('Customer', back_populates='cart')
-    items = relationship('CartItem', back_populates='cart')
+    customer = relationship('Customer', back_populates='cart', cascade='all, delete')
+    items = relationship('CartItem', back_populates='cart', cascade='all, delete')
 
     @classmethod
     def add(cls, session: Session, customer_id):

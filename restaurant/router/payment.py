@@ -2,13 +2,13 @@ from fastapi import APIRouter, HTTPException, status, Depends, Header
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 
-from restaurant.scheme.payment import PaymentForRead, PaymentFilter
-from restaurant.model import Payment, Discount, DiscountHistory
-from restaurant.database import get_session
-from restaurant.custom_exception import DisposableDiscountError, StartDateDiscountError, ExpireDateDiscountError, \
+from scheme.payment import PaymentForRead, PaymentFilter
+from model import Payment, Discount, DiscountHistory
+from database import get_session
+from custom_exception import DisposableDiscountError, StartDateDiscountError, ExpireDateDiscountError, \
                                          UsageLimitationDiscountError, UsedDiscountError
-from restaurant.model.helper import State, Role
-from restaurant.authentication import check_token
+from model.helper import State, Role
+from authentication import check_token
 
 from sqlalchemy.orm import Session
 

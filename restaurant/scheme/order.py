@@ -2,8 +2,8 @@ from pydantic import BaseModel, Field, field_validator
 
 from fastapi import HTTPException, status
 
-from restaurant.model.helper import State, DeliveryType, TypePay
-from restaurant.model import Order
+from model.helper import State, DeliveryType, TypePay
+from model import Order
 
 from datetime import datetime
 

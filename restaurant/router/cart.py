@@ -2,15 +2,15 @@ from fastapi import APIRouter, HTTPException, status, Depends, Header
 
 from sqlalchemy.orm import Session
 
-from restaurant.scheme.cart import CartItemForUpdate, CartItemForRead, CartItemForCreate
-from restaurant.model.cart_item import CartItem
-from restaurant.model.cart import Cart
-from restaurant.model.item import Item
-from restaurant.database import get_session
-from restaurant.authentication import check_token
-from restaurant.custom_exception import OutOfStockError, ItemNotInCartError
-from restaurant.model.helper import Role
-from restaurant.scheme.cart import CartItemFilter
+from scheme.cart import CartItemForUpdate, CartItemForRead, CartItemForCreate
+from model.cart_item import CartItem
+from model.cart import Cart
+from model.item import Item
+from database import get_session
+from authentication import check_token
+from custom_exception import OutOfStockError, ItemNotInCartError
+from model.helper import Role
+from scheme.cart import CartItemFilter
 
 from typing import Annotated, List
 

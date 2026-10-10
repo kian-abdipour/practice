@@ -2,11 +2,11 @@ from pydantic import BaseModel, Field, field_validator
 
 from fastapi import HTTPException, status
 
-from restaurant.model.helper import TypePay, State
+from model.helper import TypePay, State
 
 from fastapi_filter.contrib.sqlalchemy import Filter
 
-from restaurant.model import Payment
+from model import Payment
 
 from typing import Optional, List
 

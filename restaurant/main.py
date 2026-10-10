@@ -3,9 +3,9 @@ from fastapi import FastAPI
 
 from contextlib import asynccontextmanager
 
-from restaurant.model.base import Base
-from restaurant.database import engine
-from restaurant.router import customer, address, admin, cart, category, item, order, payment, \
+from model.base import Base
+from database import engine
+from router import customer, address, admin, cart, category, item, order, payment, \
                               super_admin, discount
 
 from fastapi_pagination import add_pagination

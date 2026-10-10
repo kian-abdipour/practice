@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Unicode, ForeignKey, Integer
-from restaurant.model.base import Base
+from model.base import Base
 from sqlalchemy.orm import relationship, Session
-from restaurant.model.mixin import DateTimeMixin
+from model.mixin import DateTimeMixin
 
 
 class Address(DateTimeMixin, Base):
@@ -11,7 +11,7 @@ class Address(DateTimeMixin, Base):
     customer_id = Column(ForeignKey('customer.id'))
 
     orders = relationship('Order', cascade='all, delete', back_populates='address')
-    customer = relationship('Customer', back_populates='addresses')
+    customer = relationship('Customer', back_populates='addresses', cascade='all, delete')
 
     @classmethod
     def add(cls, session: Session, customer_id, address):

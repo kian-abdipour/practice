@@ -10,7 +10,7 @@ from fastapi_filter.contrib.sqlalchemy import Filter
 
 from typing import List, Optional
 
-from restaurant.model import Discount
+from model import Discount
 
 
 class DiscountForRead(BaseModel):

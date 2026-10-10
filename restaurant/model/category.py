@@ -1,8 +1,8 @@
 from sqlalchemy import Column, Integer, Unicode
 from sqlalchemy.orm import relationship, Session
 
-from restaurant.model.base import Base
-from restaurant.model.mixin import DateTimeMixin
+from model.base import Base
+from model.mixin import DateTimeMixin
 
 
 class Category(DateTimeMixin, Base):

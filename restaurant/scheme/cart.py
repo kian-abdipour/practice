@@ -4,7 +4,7 @@ from fastapi import HTTPException, status
 
 from fastapi_filter.contrib.sqlalchemy import Filter
 
-from restaurant.model import CartItem
+from model import CartItem
 
 from typing import Optional, List
 

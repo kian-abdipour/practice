@@ -1,9 +1,9 @@
 from sqlalchemy import Column, ForeignKey, Integer, Float
 from sqlalchemy.orm import column_property, Session, relationship
 
-from restaurant.model.mixin import DateTimeMixin
-from restaurant.model.payment import Payment
-from restaurant.model.base import Base
+from model.mixin import DateTimeMixin
+from model.payment import Payment
+from model.base import Base
 
 
 class DiscountHistory(DateTimeMixin, Base):
@@ -15,8 +15,8 @@ class DiscountHistory(DateTimeMixin, Base):
     affected_amount = Column(Float)
     discounted_amount = column_property(base_amount - affected_amount)  # Column property
 
-    discount = relationship('Discount', back_populates='discount_histories')
-    payment = relationship('Payment', back_populates='discount_histories')
+    discount = relationship('Discount', back_populates='discount_histories', cascade='all, delete')
+    payment = relationship('Payment', back_populates='discount_histories', cascade='all, delete')
 
     @classmethod
     def add(cls, session: Session, discount_id, payment_id, base_amount, affected_amount):

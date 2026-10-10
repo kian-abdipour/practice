@@ -2,15 +2,15 @@ from fastapi import APIRouter, HTTPException, status, Depends, Header
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 
-from restaurant.scheme.order import OrderForCreate, OrderForRead, OrderFilter
-from restaurant.database import get_session
-from restaurant.model import Order, OrderItem
-from restaurant.router.cart import update_stock_of_item
-from restaurant.model.cart import Cart, CartItem
-from restaurant.custom_exception import OutOfStockError
-from restaurant.authentication import check_token
-from restaurant.model.helper import Role, State
-from restaurant.router.payment import addition_payment
+from scheme.order import OrderForCreate, OrderForRead, OrderFilter
+from database import get_session
+from model import Order, OrderItem
+from router.cart import update_stock_of_item
+from model.cart import Cart, CartItem
+from custom_exception import OutOfStockError
+from authentication import check_token
+from model.helper import Role, State
+from router.payment import addition_payment
 
 from sqlalchemy.orm import Session
 

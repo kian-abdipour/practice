@@ -1,9 +1,9 @@
 from sqlalchemy import Column, Integer, Unicode, Float
 from sqlalchemy.orm import relationship, Session
 
-from restaurant.model.base import Base
-from restaurant.model.mixin import DateTimeMixin
-from restaurant.custom_exception import OutOfStockError
+from model.base import Base
+from model.mixin import DateTimeMixin
+from custom_exception import OutOfStockError
 
 
 class Item(DateTimeMixin, Base):
@@ -15,9 +15,9 @@ class Item(DateTimeMixin, Base):
     stock = Column(Integer, default=0, nullable=False)
     description = Column(Unicode)
 
-    orders = relationship('OrderItem', back_populates='item')
-    categories = relationship('CategoryItem', back_populates='item')
-    carts = relationship('CartItem', back_populates='item')
+    orders = relationship('OrderItem', back_populates='item', cascade='all, delete')
+    categories = relationship('CategoryItem', back_populates='item', cascade='all, delete')
+    carts = relationship('CartItem', back_populates='item', cascade='all, delete')
 
     @classmethod
     def add(cls, session: Session, name, country, price, stock, description):

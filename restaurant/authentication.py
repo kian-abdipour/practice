@@ -77,5 +77,5 @@ def verify_password_pattern(password):
     else:
         return 'Password should contain a-z, A-Z, 0-9 and at least one of !@#$%'
 
-print(get_hash_password('kK86!@Kk'))
+#print(get_hash_password('kK86!@Kk'))
 

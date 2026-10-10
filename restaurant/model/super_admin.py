@@ -1,8 +1,8 @@
 from sqlalchemy import Column, Integer, Unicode
 from sqlalchemy.orm import relationship, Session
 
-from restaurant.model.base import Base
-from restaurant.model.mixin import DateTimeMixin
+from model.base import Base
+from model.mixin import DateTimeMixin
 
 
 class SuperAdmin(DateTimeMixin, Base):
@@ -13,7 +13,7 @@ class SuperAdmin(DateTimeMixin, Base):
     username = Column(Unicode(16), unique=True, nullable=False)
     password = Column(Unicode(64), nullable=False)
 
-    admins = relationship('Admin', back_populates='super_admin')
+    admins = relationship('Admin', back_populates='super_admin', cascade='all, delete')
 
     @classmethod
     def add(cls, session: Session, first_name, last_name, username, password):
